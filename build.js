@@ -1,24 +1,29 @@
 import { rm } from "node:fs/promises";
 import dts from "bun-plugin-dts";
 
-async function build(target, minify, genTypes) {
-	const targetName = target === "browser" ? "" : `.${target}`;
+async function buildBrowser(minify = true) {
+	const minSuffix = minify ? "-min" : "";
 
 	await Bun.build({
-		entrypoints: ["./src/gotei.ts"],
+		entrypoints: ["./src/index.ts"],
 		outdir: "./dist",
-		target,
+		target: "browser",
 		format: "esm",
 		minify,
-		plugins: genTypes ? [dts()] : [],
-		naming: `[dir]/[name]${targetName}.[ext]`,
+		naming: `[dir]/gotei${minSuffix}.[ext]`,
+	});
+}
+
+async function buildNode() {
+	await Bun.build({
+		entrypoints: ["./src/index.ts"],
+		outdir: "./dist",
+		target: "node",
+		format: "esm",
+		plugins: [dts()],
+		naming: "[dir]/[name].[ext]",
 	});
 }
 
 await rm("./dist", { recursive: true });
-
-await Promise.allSettled([
-	build("browser", true, true),
-	build("bun", false, false),
-	build("node", false, false),
-]);
+await Promise.allSettled([buildNode(), buildBrowser()]);

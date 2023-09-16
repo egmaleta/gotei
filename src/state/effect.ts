@@ -1,10 +1,7 @@
-const effectStack: Effect[] = [];
+import { pop, push } from "./effect-stack";
+import type { IEffect } from "./types";
 
-export function topEffect() {
-	return effectStack.at(-1);
-}
-
-export class Effect {
+export class Effect implements IEffect {
 	private callback: () => any;
 
 	constructor(callback: () => any) {
@@ -13,8 +10,8 @@ export class Effect {
 	}
 
 	run() {
-		effectStack.push(this);
+		push(this);
 		this.callback();
-		effectStack.pop();
+		pop();
 	}
 }

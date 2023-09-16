@@ -1,15 +1,16 @@
-import { type Effect, topEffect } from "./effect";
+import { read } from "./effect-stack";
+import type { IEffect } from "./types";
 
 export class Signal<T = any> {
 	private value: T;
-	private deps: Effect[];
+	private deps: IEffect[];
 
 	constructor(value: T) {
 		this.value = value;
 		this.deps = [];
 	}
 
-	private sub(effect: Effect) {
+	private sub(effect: IEffect) {
 		if (!this.deps.includes(effect)) {
 			this.deps.push(effect);
 		}
@@ -21,25 +22,17 @@ export class Signal<T = any> {
 		}
 	}
 
-	get val() {
-		const effect = topEffect();
+	get() {
+		const effect = read();
 		effect && this.sub(effect);
 
 		return this.value;
 	}
 
-	set val(value: T) {
+	set(value: T) {
 		if (value !== this.value) {
 			this.value = value;
 			this.pub();
 		}
-	}
-
-	peek() {
-		return this.value;
-	}
-
-	map(func: (old: T) => T) {
-		this.val = func(this.value);
 	}
 }

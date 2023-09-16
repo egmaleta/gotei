@@ -1,13 +1,30 @@
 {
-  "name": "gotei",
-  "version": "0.0.0",
-  "type": "module",
-  "files": ["dist"],
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "devDependencies": {
-    "@biomejs/biome": "1.2.1",
-    "bun-plugin-dts": "^0.2.0",
-    "bun-types": "^1.0.2"
-  }
+	"name": "gotei",
+	"version": "0.0.0",
+
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/gotei.js",
+	"module": "./dist/gotei.js",
+	"types": "./dist/gotei.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/gotei.js",
+			"types": "./dist/gotei.d.ts"
+		},
+		"./bun": {
+			"import": "./dist/gotei.bun.js",
+			"types": "./dist/gotei.d.ts"
+		},
+		"./node": {
+			"import": "./dist/gotei.node.js",
+			"types": "./dist/gotei.d.ts"
+		}
+	},
+
+	"devDependencies": {
+		"@biomejs/biome": "1.2.1",
+		"bun-plugin-dts": "^0.2.0",
+		"bun-types": "^1.0.2"
+	}
 }

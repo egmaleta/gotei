@@ -965,3 +965,9 @@ export namespace Internal {
 
 	export type VNode<T extends Tag = Tag> = TagVNode<T> | TextVNode;
 }
+
+export function isTextVNode(
+	vnode: Internal.VNode,
+): vnode is Internal.TextVNode {
+	return vnode.tag === "text";
+}

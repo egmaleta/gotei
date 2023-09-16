@@ -1,5 +1,6 @@
 import { rm } from "node:fs/promises";
 import dts from "bun-plugin-dts";
+import { version } from "./package.json";
 
 async function buildBrowser(minify = true) {
 	const minSuffix = minify ? "-min" : "";
@@ -10,7 +11,7 @@ async function buildBrowser(minify = true) {
 		target: "browser",
 		format: "esm",
 		minify,
-		naming: `[dir]/gotei${minSuffix}.[ext]`,
+		naming: `[dir]/gotei-v${version}${minSuffix}.[ext]`,
 	});
 }
 

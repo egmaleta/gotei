@@ -47,7 +47,7 @@ export function render<T extends Internal.Tag>(vnode: Internal.VNode<T>) {
 
 	for (const [name, attr] of Object.entries(vnode.props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
-			addEventListener(el, name.slice(0, EVENT_LISTENER_PREFIX.length), attr);
+			addEventListener(el, name.slice(EVENT_LISTENER_PREFIX.length), attr);
 		} else if (typeof attr !== "function") {
 			setAttribute(el, name, attr);
 		} else {

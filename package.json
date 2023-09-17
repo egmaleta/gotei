@@ -1,32 +1,32 @@
 {
-  "name": "index",
-  "version": "0.0.0",
-  "type": "module",
-  "files": ["dist"],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./state": {
-      "import": "./dist/state.js",
-      "types": "./dist/state.d.ts"
-    },
-    "./runtime": {
-      "import": "./dist/runtime.js",
-      "types": "./dist/runtime.d.ts"
-    }
-  },
-  "scripts": {
-    "build": "vite build && tsc && bun run ./build-browser.js"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.2.1",
-    "@types/node": "^20.6.2",
-    "bun-types": "^1.0.2",
-    "vite": "^4.4.9"
-  }
+	"name": "index",
+	"version": "0.0.1",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./state": {
+			"import": "./dist/state.js",
+			"types": "./dist/state.d.ts"
+		},
+		"./runtime": {
+			"import": "./dist/runtime.js",
+			"types": "./dist/runtime.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "vite build && tsc && bun run ./build-browser.js"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.2.1",
+		"@types/node": "^20.6.2",
+		"bun-types": "^1.0.2",
+		"vite": "^4.4.9"
+	}
 }

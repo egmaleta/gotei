@@ -1,3 +1,4 @@
+export * from "./lib/render";
+
 export * from "./state";
-export * from "./h";
-export * from "./render";
+export * from "./runtime";

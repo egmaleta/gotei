@@ -23,7 +23,7 @@ type TagFunctions = {
 
 export const tags = new Proxy(Object.prototype, {
 	get(_, tag) {
-		return function (props, ...children) {
+		return function (props: any, ...children: any[]) {
 			return h(tag as any, props, children);
 		};
 	},

@@ -1,7 +1,7 @@
-export type OrComputed<T = any> = T | (() => T);
-export type OrArray<T = any> = T | T[];
-
 export namespace Internal {
+	type OrComputed<T = any> = T | (() => T);
+	type OrArray<T = any> = T | T[];
+
 	type TypedEvent<
 		E extends Event = Event,
 		T extends EventTarget = EventTarget,
@@ -945,29 +945,26 @@ export namespace Internal {
 		wbr: Attributes<HTMLAttributes, HTMLElement>;
 	}
 
-	export type Tag = keyof IntrinsicElements;
-	export type Props<T extends Tag> = IntrinsicElements[T];
+	export type Tag = keyof IntrinsicElements | "text";
 
-	export type TextRenderizable = string | number | boolean;
+	export type Props<T extends Tag> = T extends keyof IntrinsicElements
+		? IntrinsicElements[T]
+		: object;
 
-	export type TextVNode = {
-		tag: "text";
-		children: OrComputed<TextRenderizable>;
-	};
+	type TextRenderizable = string | number | boolean;
+	export type Child<T extends Tag> = T extends keyof IntrinsicElements
+		? VNode | TextRenderizable | undefined | null
+		: OrComputed<TextRenderizable>;
 
-	export type VNodeChild = VNode | TextRenderizable | undefined | null;
-
-	export type TagVNode<T extends Tag = Tag> = {
+	export type VNode<T extends Tag = Tag> = {
 		tag: T;
 		props: Props<T>;
-		children: VNodeChild[];
+		children: Child<T>[];
 	};
-
-	export type VNode<T extends Tag = Tag> = TagVNode<T> | TextVNode;
 }
 
 export function isTextVNode(
 	vnode: Internal.VNode,
-): vnode is Internal.TextVNode {
+): vnode is Internal.VNode<"text"> {
 	return vnode.tag === "text";
 }

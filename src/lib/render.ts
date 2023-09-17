@@ -25,22 +25,38 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-function renderText(vnode: Internal.TextVNode) {
-	const { children } = vnode;
-	if (typeof children !== "function") {
-		return document.createTextNode(`${children}`);
+function renderText(vnode: Internal.VNode<"text">) {
+	if (vnode.children.length === 0) {
+		return document.createTextNode("");
 	}
 
-	const text = document.createTextNode("");
-	effect(() => {
-		text.replaceData(0, text.length, `${children()}`);
+	const textNodes = vnode.children.map((child) => {
+		if (typeof child !== "function") {
+			return document.createTextNode(`${child}`);
+		}
+
+		const text = document.createTextNode("");
+		effect(() => text.replaceData(0, text.length, `${child()}`));
+		return text;
 	});
-	return text;
+
+	if (textNodes.length === 1) {
+		return textNodes[0];
+	}
+
+	const span = document.createElement("span");
+	span.append(...textNodes);
+	return span;
 }
+
+type RenderedElement<T extends Internal.Tag> =
+	T extends keyof Internal.IntrinsicElements
+		? HTMLElementTagNameMap[T]
+		: Text | HTMLSpanElement;
 
 export function render<T extends Internal.Tag>(vnode: Internal.VNode<T>) {
 	if (isTextVNode(vnode)) {
-		return renderText(vnode);
+		return renderText(vnode) as RenderedElement<T>;
 	}
 
 	const el = document.createElement(vnode.tag);
@@ -65,5 +81,5 @@ export function render<T extends Internal.Tag>(vnode: Internal.VNode<T>) {
 		}
 	}
 
-	return el;
+	return el as RenderedElement<T>;
 }

@@ -1,5 +1,5 @@
 # gotei
 
 ```sh
-bun run build.js
+bun run build
 ```

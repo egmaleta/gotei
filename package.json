@@ -21,7 +21,7 @@
 		}
 	},
 	"scripts": {
-		"build": "vite build && tsc"
+		"build": "vite build && tsc && bun run ./build-browser.js"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.2.1",

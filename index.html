@@ -8,16 +8,21 @@
 <body style="height: 100vh;">
   <main style="display: grid; place-items: center; height: 100%;"></main>
   <script type="module">
-    import { signal, tags, text, render, effect } from "./dist/gotei.min.js";
+    import { signal, tags, render, effect } from "./dist/gotei.min.js";
 
     const [count, setCount] = signal(0);
-    effect(() => console.log(count()));
 
-    const { button, span } = tags;
+    const { button, span, text } = tags;
 
     const buttonNode = button(
       {
-        onclick: () => setCount(count() + 1)
+        onclick: [
+          () => setCount(count() + 1),
+          {
+            handler: () => console.log(count()),
+            options: { once: true }
+          }
+        ]
       },
       span(
         {},

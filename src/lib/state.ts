@@ -1,16 +1,30 @@
 let EFFECT_STACK: Effect[] = [];
 
-class Effect {
-	private callback: () => any;
+function untrack<T>(signalish: SignalGetter<T>) {
+	const temp = EFFECT_STACK;
+	EFFECT_STACK = [];
 
-	constructor(callback: () => any) {
+	const value = signalish();
+	EFFECT_STACK = temp;
+
+	return value;
+}
+
+type UntrackFunction = typeof untrack;
+type Computation<T> = (untrack: UntrackFunction) => T;
+type EffectCallback = Computation<any>;
+
+class Effect {
+	private callback: EffectCallback;
+
+	constructor(callback: EffectCallback) {
 		this.callback = callback;
 		this.run();
 	}
 
 	run() {
 		EFFECT_STACK.push(this);
-		this.callback();
+		this.callback(untrack);
 		EFFECT_STACK.pop();
 	}
 }
@@ -62,26 +76,16 @@ export function signal<T>(
 	return [s.get.bind(s), s.set.bind(s)] as const;
 }
 
-export function effect(callback: () => any) {
+export function effect(callback: EffectCallback) {
 	new Effect(callback);
 }
 
-export function derived<T>(computation: () => T): SignalGetter<T> {
+export function derived<T>(computation: Computation<T>): SignalGetter<T> {
 	const s = new Signal<any>(null);
 
 	new Effect(() => {
-		s.set(computation());
+		s.set(computation(untrack));
 	});
 
 	return s.get.bind(s);
-}
-
-export function peek<T>(signalish: SignalGetter<T>) {
-	const temp = EFFECT_STACK;
-	EFFECT_STACK = [];
-
-	const value = signalish();
-	EFFECT_STACK = temp;
-
-	return value;
 }

@@ -1,3 +1,5 @@
+export const TAG = Symbol();
+
 export namespace Internal {
 	type OrComputed<T = any> = T | (() => T);
 	type OrArray<T = any> = T | T[];
@@ -957,7 +959,7 @@ export namespace Internal {
 		: OrComputed<TextRenderizable>;
 
 	export type VNode<T extends Tag = Tag> = {
-		tag: T;
+		[TAG]: T;
 		props: Props<T>;
 		children: Child<T>[];
 	};
@@ -966,5 +968,5 @@ export namespace Internal {
 export function isTextVNode(
 	vnode: Internal.VNode,
 ): vnode is Internal.VNode<"text"> {
-	return vnode.tag === "text";
+	return vnode[TAG] === "text";
 }

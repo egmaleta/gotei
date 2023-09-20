@@ -1,4 +1,4 @@
-import { type Internal, isTextVNode } from "./internal";
+import { type Internal, isTextVNode, TAG } from "./internal";
 import { effect } from "./state";
 
 const EVENT_LISTENER_PREFIX = "on";
@@ -59,7 +59,7 @@ export function render<T extends Internal.Tag>(vnode: Internal.VNode<T>) {
 		return renderText(vnode) as RenderedElement<T>;
 	}
 
-	const el = document.createElement(vnode.tag);
+	const el = document.createElement(vnode[TAG]);
 
 	for (const [name, attr] of Object.entries(vnode.props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {

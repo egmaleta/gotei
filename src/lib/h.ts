@@ -1,11 +1,11 @@
-import type { Internal } from "./internal";
+import { type Internal, TAG } from "./internal";
 
 export function h<T extends Internal.Tag>(
 	tag: T,
 	props: Internal.Props<T>,
 	children: Internal.Child<T>[],
 ): Internal.VNode<T> {
-	return { tag, props, children };
+	return { [TAG]: tag, props, children };
 }
 
 type TagFunctions = {

@@ -1,4 +1,2 @@
-export * from "./lib/render";
-
-export * from "./state";
-export * from "./runtime";
+export { render } from "./lib/render";
+export { TAGS } from "./lib/h";

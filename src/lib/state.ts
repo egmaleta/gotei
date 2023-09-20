@@ -66,14 +66,25 @@ class Signal<T = any> {
 }
 
 export type SignalGetter<T> = () => T;
-export type SignalSetter<T> = (value: T) => void;
+export type SignalSetter<T> = {
+	(value: T): void;
+	(map: (old: T) => T): void;
+};
 
 export function signal<T>(
 	value: T,
 ): readonly [SignalGetter<T>, SignalSetter<T>] {
 	const s = new Signal(value);
 
-	return [s.get.bind(s), s.set.bind(s)] as const;
+	const setter = (valueOrFunction: any) => {
+		if (typeof valueOrFunction === "function") {
+			s.set(valueOrFunction(s.get()));
+		} else {
+			s.set(valueOrFunction);
+		}
+	};
+
+	return [s.get.bind(s), setter] as const;
 }
 
 export function effect(callback: EffectCallback) {

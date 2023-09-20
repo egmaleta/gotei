@@ -1,11 +1,11 @@
-import { type Internal, TAG } from "./internal";
+import { type Internal, TAG as TAG_SYMBOL } from "./internal";
 
 export function h<T extends Internal.Tag>(
 	tag: T,
 	props: Internal.Props<T>,
 	children: Internal.Child<T>[],
 ): Internal.VNode<T> {
-	return { [TAG]: tag, props, children };
+	return { [TAG_SYMBOL]: tag, props, children };
 }
 
 type TagFunctions = {
@@ -20,7 +20,7 @@ type TagFunctions = {
 	text: (...children: Internal.Child<"text">[]) => Internal.VNode<"text">;
 };
 
-export const tags = new Proxy(Object.prototype, {
+export const TAGS = new Proxy(Object.prototype, {
 	get(_, tag: any) {
 		return (...args: any[]) => {
 			if (tag !== "text" && args.length > 0) {
@@ -28,7 +28,7 @@ export const tags = new Proxy(Object.prototype, {
 				if (
 					typeof head === "object" &&
 					head !== null &&
-					typeof head[TAG] === "undefined"
+					typeof head[TAG_SYMBOL] === "undefined"
 				) {
 					return h(tag, head, args.slice(1));
 				}

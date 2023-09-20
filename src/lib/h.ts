@@ -9,20 +9,32 @@ export function h<T extends Internal.Tag>(
 }
 
 type TagFunctions = {
-	[T in keyof Internal.IntrinsicElements]: (
-		props: Internal.Props<T>,
-		...children: Internal.Child<T>[]
-	) => Internal.VNode<T>;
+	[T in keyof Internal.IntrinsicElements]: {
+		(
+			props: Internal.Props<T>,
+			...children: Internal.Child<T>[]
+		): Internal.VNode<T>;
+		(...children: Internal.Child<T>[]): Internal.VNode<T>;
+	};
 } & {
 	text: (...children: Internal.Child<"text">[]) => Internal.VNode<"text">;
 };
 
 export const tags = new Proxy(Object.prototype, {
 	get(_, tag: any) {
-		if (tag === "text") {
-			return (...children: any) => h(tag, {}, children);
-		}
+		return (...args: any[]) => {
+			if (tag !== "text" && args.length > 0) {
+				const head = args[0];
+				if (
+					typeof head === "object" &&
+					head !== null &&
+					typeof head[TAG] === "undefined"
+				) {
+					return h(tag, head, args.slice(1));
+				}
+			}
 
-		return (props: any, ...children: any[]) => h(tag, props, children);
+			return h(tag, {}, args);
+		};
 	},
 }) as TagFunctions;

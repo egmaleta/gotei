@@ -1,35 +1,34 @@
 {
-	"name": "gotei",
-	"version": "0.0.2",
-	"type": "module",
-	"files": ["dist"],
-	"main": "./dist/index.js",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
-			"types": "./dist/index.d.ts"
-		},
-		"./state": {
-			"import": "./dist/state.js",
-			"require": "./dist/state.cjs",
-			"types": "./dist/state.d.ts"
-		},
-		"./runtime": {
-			"import": "./dist/runtime.js",
-			"require": "./dist/runtime.cjs",
-			"types": "./dist/runtime.d.ts"
-		}
-	},
-	"scripts": {
-		"build": "vite build && tsc && bun run ./build-browser.js"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.2.1",
-		"bun-types": "^1.0.2",
-		"typescript": "^5.0.0",
-		"vite": "^4.4.9"
-	}
+  "name": "gotei",
+  "version": "0.0.2",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./state": {
+      "import": "./dist/state.js",
+      "require": "./dist/state.cjs",
+      "types": "./dist/state.d.ts"
+    },
+    "./runtime": {
+      "import": "./dist/runtime.js",
+      "require": "./dist/runtime.cjs",
+      "types": "./dist/runtime.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "vite build && vite build --config vite.config.browser.ts && tsc"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.2.1",
+    "typescript": "^5.0.0",
+    "vite": "^4.4.9"
+  }
 }

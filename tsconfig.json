@@ -1,25 +1,22 @@
 {
 	"compilerOptions": {
-		"outDir": "./dist",
-		"target": "ES2020",
-		"useDefineForClassFields": true,
-		"module": "ES2020",
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"skipLibCheck": true,
+		"types": ["bun-types"],
 
-		/* Bundler mode */
+		"lib": ["esnext"],
+		"module": "esnext",
+		"target": "esnext",
+
 		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"declaration": true,
 		"emitDeclarationOnly": true,
-
-		/* Linting */
+		"useDefineForClassFields": true,
+		"skipLibCheck": true,
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
+
+		"outDir": "./dist"
 	},
 	"include": ["./src"],
 	"exclude": ["./src/gotei.ts"]

@@ -1,3 +1,6 @@
+/// <reference lib="dom" />
+/// <reference lib="dom.iterable" />
+
 export const TAG = Symbol();
 
 export namespace Internal {

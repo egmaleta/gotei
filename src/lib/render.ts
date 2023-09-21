@@ -1,6 +1,11 @@
 import { type Internal, isTextVNode, TAG } from "./internal";
 import { effect } from "./state";
 
+type RenderedElement<T extends Internal.Tag> =
+	T extends keyof Internal.IntrinsicElements
+		? HTMLElementTagNameMap[T]
+		: Text | HTMLSpanElement;
+
 const EVENT_LISTENER_PREFIX = "on";
 
 function addEventListener(target: EventTarget, name: string, handler: any) {
@@ -48,11 +53,6 @@ function renderText(vnode: Internal.VNode<"text">) {
 	span.append(...textNodes);
 	return span;
 }
-
-type RenderedElement<T extends Internal.Tag> =
-	T extends keyof Internal.IntrinsicElements
-		? HTMLElementTagNameMap[T]
-		: Text | HTMLSpanElement;
 
 export function render<T extends Internal.Tag>(vnode: Internal.VNode<T>) {
 	if (isTextVNode(vnode)) {

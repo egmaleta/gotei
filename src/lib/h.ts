@@ -1,13 +1,5 @@
 import { type Internal, TAG as TAG_SYMBOL } from "./internal";
 
-export function h<T extends Internal.Tag>(
-	tag: T,
-	props: Internal.Props<T>,
-	children: Internal.Child<T>[],
-): Internal.VNode<T> {
-	return { [TAG_SYMBOL]: tag, props, children };
-}
-
 type TagFunctions = {
 	[T in keyof Internal.IntrinsicElements]: {
 		(
@@ -19,6 +11,14 @@ type TagFunctions = {
 } & {
 	text: (...children: Internal.Child<"text">[]) => Internal.VNode<"text">;
 };
+
+export function h<T extends Internal.Tag>(
+	tag: T,
+	props: Internal.Props<T>,
+	children: Internal.Child<T>[],
+): Internal.VNode<T> {
+	return { [TAG_SYMBOL]: tag, props, children };
+}
 
 export const TAGS = new Proxy(Object.prototype, {
 	get(_, tag: any) {

@@ -76,11 +76,11 @@ export function signal<T>(
 ): readonly [SignalGetter<T>, SignalSetter<T>] {
 	const s = new Signal(value);
 
-	const setter = (valueOrFunction: any) => {
-		if (typeof valueOrFunction === "function") {
-			s.set(valueOrFunction(s.get()));
+	const setter = (v: T | ((old: T) => T)) => {
+		if (v instanceof Function) {
+			s.set(v(s.get()));
 		} else {
-			s.set(valueOrFunction);
+			s.set(v);
 		}
 	};
 

@@ -4,8 +4,8 @@ type EffectCallback = Computation<any>;
 
 export type SignalGetter<T> = () => T;
 export type SignalSetter<T> = {
-	(value: T): void;
-	(map: (old: T) => T): void;
+	set(value: T): void;
+	map(func: (old: T) => T): void;
 };
 
 let EFFECT_STACK: Effect[] = [];
@@ -71,20 +71,13 @@ class Signal<T = any> {
 	}
 }
 
-export function signal<T>(
-	value: T,
-): readonly [SignalGetter<T>, SignalSetter<T>] {
+export function signal<T>(value: T): SignalGetter<T> & SignalSetter<T> {
 	const s = new Signal(value);
 
-	const setter = (v: T | ((old: T) => T)) => {
-		if (v instanceof Function) {
-			s.set(v(s.get()));
-		} else {
-			s.set(v);
-		}
-	};
-
-	return [s.get.bind(s), setter] as const;
+	return Object.assign(s.get.bind(s), {
+		set: s.set.bind(s),
+		map: (func: (old: T) => T) => s.set(func(s.get())),
+	});
 }
 
 export function effect(callback: EffectCallback) {

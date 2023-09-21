@@ -87,7 +87,7 @@ export function effect(callback: EffectCallback) {
 export function derived<T>(computation: Computation<T>): SignalGetter<T> {
 	const s = new Signal<any>(null);
 
-	new Effect(() => {
+	new Effect((untrack) => {
 		s.set(computation(untrack));
 	});
 

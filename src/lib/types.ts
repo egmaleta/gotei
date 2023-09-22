@@ -1,9 +1,21 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-export const TAG = Symbol();
+import { tagSymbol } from "./symbols";
 
-export namespace Internal {
+// state
+export type SignalGetter<T> = () => T;
+export type SignalSetter<T> = {
+	set(value: T): void;
+	map(func: (old: T) => T): void;
+};
+
+export type UntrackFunction = <T>(signalish: SignalGetter<T>) => T;
+export type Computation<T> = (untrack: UntrackFunction) => T;
+export type Callback = Computation<any>;
+
+// Gotei namespace
+export namespace Gotei {
 	type OrComputed<T = any> = T | (() => T);
 	type OrArray<T = any> = T | T[];
 
@@ -962,14 +974,24 @@ export namespace Internal {
 		: OrComputed<TextRenderizable>;
 
 	export type VNode<T extends Tag = Tag> = {
-		[TAG]: T;
+		[tagSymbol]: T;
 		props: Props<T>;
 		children: Child<T>[];
 	};
 }
 
-export function isTextVNode(
-	vnode: Internal.VNode,
-): vnode is Internal.VNode<"text"> {
-	return vnode[TAG] === "text";
-}
+// h
+export type TagFunctions = {
+	[T in keyof Gotei.IntrinsicElements]: {
+		(props: Gotei.Props<T>, ...children: Gotei.Child<T>[]): Gotei.VNode<T>;
+		(...children: Gotei.Child<T>[]): Gotei.VNode<T>;
+	};
+} & {
+	text: (...children: Gotei.Child<"text">[]) => Gotei.VNode<"text">;
+};
+
+// render
+export type RenderedElement<T extends Gotei.Tag> =
+	T extends keyof Gotei.IntrinsicElements
+		? HTMLElementTagNameMap[T]
+		: Text | HTMLSpanElement;

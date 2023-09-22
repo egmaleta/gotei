@@ -1,12 +1,11 @@
-type UntrackFunction = typeof untrack;
-type Computation<T> = (untrack: UntrackFunction) => T;
-type EffectCallback = Computation<any>;
+import type {
+	Callback,
+	Computation,
+	SignalGetter,
+	SignalSetter,
+} from "./types";
 
-export type SignalGetter<T> = () => T;
-export type SignalSetter<T> = {
-	set(value: T): void;
-	map(func: (old: T) => T): void;
-};
+export type { SignalGetter, SignalSetter };
 
 let EFFECT_STACK: Effect[] = [];
 
@@ -21,9 +20,9 @@ function untrack<T>(signalish: SignalGetter<T>) {
 }
 
 class Effect {
-	private callback: EffectCallback;
+	private callback: Callback;
 
-	constructor(callback: EffectCallback) {
+	constructor(callback: Callback) {
 		this.callback = callback;
 		this.run();
 	}
@@ -80,7 +79,7 @@ export function signal<T>(value: T): SignalGetter<T> & SignalSetter<T> {
 	});
 }
 
-export function effect(callback: EffectCallback) {
+export function effect(callback: Callback) {
 	new Effect(callback);
 }
 

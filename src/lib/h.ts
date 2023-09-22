@@ -1,26 +1,15 @@
-import { type Internal, TAG as TAG_SYMBOL } from "./internal";
+import { tagSymbol } from "./symbols";
+import type { Gotei, TagFunctions } from "./types";
 
-type TagFunctions = {
-	[T in keyof Internal.IntrinsicElements]: {
-		(
-			props: Internal.Props<T>,
-			...children: Internal.Child<T>[]
-		): Internal.VNode<T>;
-		(...children: Internal.Child<T>[]): Internal.VNode<T>;
-	};
-} & {
-	text: (...children: Internal.Child<"text">[]) => Internal.VNode<"text">;
-};
-
-export function h<T extends Internal.Tag>(
+export function h<T extends Gotei.Tag>(
 	tag: T,
-	props: Internal.Props<T>,
-	children: Internal.Child<T>[],
-): Internal.VNode<T> {
-	return { [TAG_SYMBOL]: tag, props, children };
+	props: Gotei.Props<T>,
+	children: Gotei.Child<T>[],
+): Gotei.VNode<T> {
+	return { [tagSymbol]: tag, props, children };
 }
 
-export const TAGS = new Proxy(Object.prototype, {
+export const tags = new Proxy(Object.prototype, {
 	get(_, tag: any) {
 		return (...args: any[]) => {
 			if (tag !== "text" && args.length > 0) {
@@ -28,7 +17,7 @@ export const TAGS = new Proxy(Object.prototype, {
 				if (
 					typeof head === "object" &&
 					head !== null &&
-					typeof head[TAG_SYMBOL] === "undefined"
+					typeof head[tagSymbol] === "undefined"
 				) {
 					return h(tag, head, args.slice(1));
 				}

@@ -1,10 +1,6 @@
-import { type Internal, isTextVNode, TAG } from "./internal";
+import type { Gotei, RenderedElement } from "./types";
 import { effect } from "./state";
-
-type RenderedElement<T extends Internal.Tag> =
-	T extends keyof Internal.IntrinsicElements
-		? HTMLElementTagNameMap[T]
-		: Text | HTMLSpanElement;
+import { tagSymbol } from "./symbols";
 
 const EVENT_LISTENER_PREFIX = "on";
 
@@ -30,7 +26,7 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-function renderText(vnode: Internal.VNode<"text">) {
+function renderText(vnode: Gotei.VNode<"text">) {
 	if (vnode.children.length === 0) {
 		return document.createTextNode("");
 	}
@@ -54,12 +50,16 @@ function renderText(vnode: Internal.VNode<"text">) {
 	return span;
 }
 
-export function render<T extends Internal.Tag>(vnode: Internal.VNode<T>) {
+function isTextVNode(vnode: Gotei.VNode): vnode is Gotei.VNode<"text"> {
+	return vnode[tagSymbol] === "text";
+}
+
+export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
 	if (isTextVNode(vnode)) {
 		return renderText(vnode) as RenderedElement<T>;
 	}
 
-	const el = document.createElement(vnode[TAG]);
+	const el = document.createElement(vnode[tagSymbol]);
 
 	for (const [name, attr] of Object.entries(vnode.props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {

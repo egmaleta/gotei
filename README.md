@@ -1,5 +1,5 @@
 # gotei
 
 ```sh
-bun run build
+(npm|pnpm|bun) run build
 ```

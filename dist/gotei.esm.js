@@ -1,115 +1,115 @@
 var h = Object.defineProperty;
-var b = (n, e, t) => e in n ? h(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var i = (n, e, t) => (b(n, typeof e != "symbol" ? e + "" : e, t), t);
+var b = (n, t, e) => t in n ? h(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
+var c = (n, t, e) => (b(n, typeof t != "symbol" ? t + "" : t, e), e);
 let r = [];
 function y(n) {
-  const e = r;
+  const t = r;
   r = [];
-  const t = n();
-  return r = e, t;
+  const e = n();
+  return r = t, e;
 }
-class d {
-  constructor(e) {
-    i(this, "callback");
-    this.callback = e, this.run();
+class p {
+  constructor(t) {
+    c(this, "callback");
+    this.callback = t, this.run();
   }
   run() {
     r.push(this), this.callback(y), r.pop();
   }
 }
-class p {
-  constructor(e) {
-    i(this, "value");
-    i(this, "deps");
-    this.value = e, this.deps = [];
+class d {
+  constructor(t) {
+    c(this, "value");
+    c(this, "deps");
+    this.value = t, this.deps = [];
   }
-  sub(e) {
-    this.deps.includes(e) || this.deps.push(e);
+  sub(t) {
+    this.deps.includes(t) || this.deps.push(t);
   }
   pub() {
-    for (const e of this.deps)
-      e.run();
+    for (const t of this.deps)
+      t.run();
   }
   get() {
-    const e = r.at(-1);
-    return e && this.sub(e), this.value;
+    const t = r.at(-1);
+    return t && this.sub(t), this.value;
   }
-  set(e) {
-    e !== this.value && (this.value = e, this.pub());
+  set(t) {
+    t !== this.value && (this.value = t, this.pub());
   }
 }
 function g(n) {
-  const e = new p(n);
-  return Object.assign(e.get.bind(e), {
-    set: e.set.bind(e),
-    map: (t) => e.set(t(e.get()))
+  const t = new d(n);
+  return Object.assign(t.get.bind(t), {
+    set: t.set.bind(t),
+    map: (e) => t.set(e(t.get()))
   });
 }
 function a(n) {
-  new d(n);
+  new p(n);
 }
 function N(n) {
-  const e = new p(null);
-  return new d((t) => {
-    e.set(n(t));
-  }), e.get.bind(e);
+  const t = new d(null);
+  return new p((e) => {
+    t.set(n(e));
+  }), t.get.bind(t);
 }
-const c = Symbol();
+const i = Symbol();
 function E(n) {
-  return n[c] === "text";
+  return n[i] === "text";
 }
-function u(n, e, t) {
-  return { [c]: n, props: e, children: t };
+function u(n, t, e) {
+  return { [i]: n, props: t, children: e };
 }
 const j = new Proxy(Object.prototype, {
-  get(n, e) {
-    return (...t) => {
-      if (e !== "text" && t.length > 0) {
-        const s = t[0];
-        if (typeof s == "object" && s !== null && typeof s[c] > "u")
-          return u(e, s, t.slice(1));
+  get(n, t) {
+    return (...e) => {
+      if (t !== "text" && e.length > 0) {
+        const s = e[0];
+        if (typeof s == "object" && s !== null && typeof s[i] > "u")
+          return u(t, s, e.slice(1));
       }
-      return u(e, {}, t);
+      return u(t, {}, e);
     };
   }
 }), f = "on";
-function x(n, e, t) {
-  const s = Array.isArray(t) ? t : [t];
+function x(n, t, e) {
+  const s = Array.isArray(e) ? e : [e];
   for (const o of s)
-    typeof o == "function" ? n.addEventListener(e, o) : n.addEventListener(e, o.handler, o.options);
+    typeof o == "function" ? n.addEventListener(t, o) : n.addEventListener(t, o.handler, o.options);
 }
-function l(n, e, t) {
-  typeof t == "string" || typeof t == "number" ? n.setAttribute(e, `${t}`) : t === !0 ? n.setAttribute(e, "") : n.removeAttribute(e);
+function l(n, t, e) {
+  typeof e == "string" || typeof e == "number" ? n.setAttribute(t, `${e}`) : e === !0 ? n.setAttribute(t, "") : n.removeAttribute(t);
 }
 function T(n) {
   if (n.children.length === 0)
     return document.createTextNode("");
-  const e = n.children.map((s) => {
+  const t = n.children.map((s) => {
     if (typeof s != "function")
       return document.createTextNode(`${s}`);
     const o = document.createTextNode("");
     return a(() => o.replaceData(0, o.length, `${s()}`)), o;
   });
-  if (e.length === 1)
-    return e[0];
-  const t = document.createElement("span");
-  return t.append(...e), t;
+  if (t.length === 1)
+    return t[0];
+  const e = document.createElement("span");
+  return e.append(...t), e;
 }
 function m(n) {
   if (E(n))
     return T(n);
-  const e = document.createElement(n[c]);
-  for (const [t, s] of Object.entries(n.props))
-    t.startsWith(f) ? x(e, t.slice(f.length), s) : typeof s != "function" ? l(e, t, s) : a(() => {
-      l(e, t, s());
+  const t = document.createElement(n[i]);
+  for (const [e, s] of Object.entries(n.props))
+    e.startsWith(f) ? x(t, e.slice(f.length), s) : typeof s != "function" ? l(t, e, s) : a(() => {
+      l(t, e, s());
     });
-  for (const t of n.children)
-    typeof t == "object" ? t && e.appendChild(m(t)) : typeof t < "u" && typeof t != "boolean" && e.appendChild(document.createTextNode(`${t}`));
-  return e;
+  for (const e of n.children)
+    typeof e == "object" ? e && t.appendChild(m(e)) : typeof e < "u" && typeof e != "boolean" && t.appendChild(document.createTextNode(`${e}`));
+  return t;
 }
 export {
   j as TAGS,
-  N as derived,
+  N as computed,
   a as effect,
   u as h,
   m as render,

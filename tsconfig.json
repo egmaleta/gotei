@@ -17,5 +17,5 @@
 		"outDir": "./dist"
 	},
 	"include": ["./src"],
-	"exclude": ["./src/gotei.ts"]
+	"exclude": ["src/browser.ts"]
 }

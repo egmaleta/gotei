@@ -1,117 +1,122 @@
-var h = Object.defineProperty;
-var b = (n, t, e) => t in n ? h(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
-var c = (n, t, e) => (b(n, typeof t != "symbol" ? t + "" : t, e), e);
-let r = [];
-function y(n) {
-  const t = r;
-  r = [];
-  const e = n();
-  return r = t, e;
+var d = Object.defineProperty;
+var h = (n, e, t) => e in n ? d(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
+var r = (n, e, t) => (h(n, typeof e != "symbol" ? e + "" : e, t), t);
+let c = [];
+function b(n) {
+  const e = c;
+  c = [];
+  const t = n();
+  return c = e, t;
 }
-class p {
-  constructor(t) {
-    c(this, "callback");
-    this.callback = t, this.run();
+class i {
+  constructor(e, t) {
+    r(this, "callback");
+    r(this, "isUIEffect");
+    this.callback = e, this.isUIEffect = t, this.run();
   }
   run() {
-    r.push(this), this.callback(y), r.pop();
+    c.push(this), this.callback(b), c.pop();
   }
 }
-class d {
-  constructor(t) {
-    c(this, "value");
-    c(this, "deps");
-    this.value = t, this.deps = [];
+class a {
+  constructor(e) {
+    r(this, "value");
+    r(this, "uiDeps", []);
+    r(this, "deps", []);
+    this.value = e;
   }
-  sub(t) {
-    this.deps.includes(t) || this.deps.push(t);
+  sub(e) {
+    const t = e.isUIEffect ? this.uiDeps : this.deps;
+    !t.includes(e) && t.push(e);
   }
   pub() {
-    for (const t of this.deps)
-      t.run();
+    for (const e of this.uiDeps)
+      e.run();
+    for (const e of this.deps)
+      e.run();
   }
   get() {
-    const t = r.at(-1);
-    return t && this.sub(t), this.value;
+    const e = c.at(-1);
+    return e && this.sub(e), this.value;
   }
-  set(t) {
-    t !== this.value && (this.value = t, this.pub());
+  set(e) {
+    e !== this.value && (this.value = e, this.pub());
   }
 }
-function N(n) {
-  const t = new d(n);
-  return Object.assign(t.get.bind(t), {
-    set: t.set.bind(t),
-    map: (e) => t.set(e(t.get()))
+function T(n) {
+  const e = new a(n);
+  return Object.assign(e.get.bind(e), {
+    set: e.set.bind(e),
+    map: (t) => e.set(t(e.get()))
   });
 }
-function a(n) {
-  new p(n);
+function N(n) {
+  new i(n, !1);
 }
-function A(n) {
-  const t = new d(null);
-  return new p((e) => {
-    t.set(n(e));
-  }), t.get.bind(t);
+function w(n) {
+  const e = new a(null);
+  return new i((t) => {
+    e.set(n(t));
+  }, !1), e.get.bind(e);
 }
-const i = Symbol();
-function u(n, t, e) {
-  return { [i]: n, props: t, children: e };
+const u = Symbol();
+function f(n, e, t) {
+  return { [u]: n, props: e, children: t };
 }
-const j = new Proxy(Object.prototype, {
-  get(n, t) {
-    return (...e) => {
-      if (t !== "text" && e.length > 0) {
-        const s = e[0];
-        if (typeof s == "object" && s !== null && typeof s[i] > "u")
-          return u(t, s, e.slice(1));
+const A = new Proxy(Object.prototype, {
+  get(n, e) {
+    return (...t) => {
+      if (e !== "text" && t.length > 0) {
+        const s = t[0];
+        if (typeof s == "object" && s !== null && typeof s[u] > "u")
+          return f(e, s, t.slice(1));
       }
-      return u(t, {}, e);
+      return f(e, {}, t);
     };
   }
-}), f = "on";
-function E(n, t, e) {
-  const s = Array.isArray(e) ? e : [e];
+}), l = "on";
+function y(n, e, t) {
+  const s = Array.isArray(t) ? t : [t];
   for (const o of s)
-    typeof o == "function" ? n.addEventListener(t, o) : n.addEventListener(t, o.handler, o.options);
+    typeof o == "function" ? n.addEventListener(e, o) : n.addEventListener(e, o.handler, o.options);
 }
-function l(n, t, e) {
-  typeof e == "string" || typeof e == "number" ? n.setAttribute(t, `${e}`) : e === !0 ? n.setAttribute(t, "") : n.removeAttribute(t);
+function p(n, e, t) {
+  typeof t == "string" || typeof t == "number" ? n.setAttribute(e, `${t}`) : t === !0 ? n.setAttribute(e, "") : n.removeAttribute(e);
 }
-function m(n) {
+function E(n) {
   if (n.children.length === 0)
     return document.createTextNode("");
-  const t = n.children.map((s) => {
+  const e = n.children.map((s) => {
     if (typeof s != "function")
       return document.createTextNode(`${s}`);
     const o = document.createTextNode("");
-    return a(() => o.replaceData(0, o.length, `${s()}`)), o;
+    return new i(() => o.replaceData(0, o.length, `${s()}`), !0), o;
   });
-  if (t.length === 1)
-    return t[0];
-  const e = document.createElement("span");
-  return e.append(...t), e;
+  if (e.length === 1)
+    return e[0];
+  const t = document.createElement("span");
+  return t.append(...e), t;
+}
+function m(n) {
+  return n[u] === "text";
 }
 function x(n) {
-  return n[i] === "text";
-}
-function g(n) {
-  if (x(n))
-    return m(n);
-  const t = document.createElement(n[i]);
-  for (const [e, s] of Object.entries(n.props))
-    e.startsWith(f) ? E(t, e.slice(f.length), s) : typeof s != "function" ? l(t, e, s) : a(() => {
-      l(t, e, s());
-    });
-  for (const e of n.children)
-    typeof e == "object" ? e && t.appendChild(g(e)) : typeof e < "u" && typeof e != "boolean" && t.appendChild(document.createTextNode(`${e}`));
-  return t;
+  if (m(n))
+    return E(n);
+  const e = document.createElement(n[u]);
+  for (const [t, s] of Object.entries(n.props))
+    t.startsWith(l) ? y(e, t.slice(l.length), s) : typeof s != "function" ? p(e, t, s) : new i(() => {
+      p(e, t, s());
+    }, !0);
+  for (const t of n.children)
+    typeof t == "object" ? t && e.appendChild(x(t)) : typeof t < "u" && typeof t != "boolean" && e.appendChild(document.createTextNode(`${t}`));
+  return e;
 }
 export {
-  A as computed,
-  a as effect,
-  u as h,
-  g as render,
-  N as signal,
-  j as tags
+  w as computed,
+  N as effect,
+  f as h,
+  x as render,
+  T as signal,
+  A as tags
 };

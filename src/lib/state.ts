@@ -19,11 +19,13 @@ function untrack<T>(signalish: SignalGetter<T>) {
 	return value;
 }
 
-class Effect {
+export class Effect {
 	private callback: Callback;
+	readonly isUIEffect: boolean;
 
-	constructor(callback: Callback) {
+	constructor(callback: Callback, isUIEffect: boolean) {
 		this.callback = callback;
+		this.isUIEffect = isUIEffect;
 		this.run();
 	}
 
@@ -36,20 +38,22 @@ class Effect {
 
 class Signal<T = any> {
 	private value: T;
-	private deps: Effect[];
+	private uiDeps: Effect[] = [];
+	private deps: Effect[] = [];
 
 	constructor(value: T) {
 		this.value = value;
-		this.deps = [];
 	}
 
 	private sub(effect: Effect) {
-		if (!this.deps.includes(effect)) {
-			this.deps.push(effect);
-		}
+		const deps = effect.isUIEffect ? this.uiDeps : this.deps;
+		!deps.includes(effect) && deps.push(effect);
 	}
 
 	private pub() {
+		for (const effect of this.uiDeps) {
+			effect.run();
+		}
 		for (const effect of this.deps) {
 			effect.run();
 		}
@@ -80,7 +84,7 @@ export function signal<T>(value: T): SignalGetter<T> & SignalSetter<T> {
 }
 
 export function effect(callback: Callback) {
-	new Effect(callback);
+	new Effect(callback, false);
 }
 
 export function computed<T>(computation: Computation<T>): SignalGetter<T> {
@@ -88,7 +92,7 @@ export function computed<T>(computation: Computation<T>): SignalGetter<T> {
 
 	new Effect((untrack) => {
 		s.set(computation(untrack));
-	});
+	}, false);
 
 	return s.get.bind(s);
 }

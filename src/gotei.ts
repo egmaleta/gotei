@@ -1,3 +1,3 @@
-export * from "./lib/state";
+export { signal, computed, effect } from "./lib/state";
 export * from "./lib/h";
 export * from "./lib/render";

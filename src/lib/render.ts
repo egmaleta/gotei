@@ -1,5 +1,5 @@
 import type { Gotei, RenderedElement } from "./types";
-import { effect } from "./state";
+import { Effect } from "./state";
 import { tagSymbol } from "./symbols";
 
 const EVENT_LISTENER_PREFIX = "on";
@@ -37,7 +37,7 @@ function renderText(vnode: Gotei.VNode<"text">) {
 		}
 
 		const text = document.createTextNode("");
-		effect(() => text.replaceData(0, text.length, `${child()}`));
+		new Effect(() => text.replaceData(0, text.length, `${child()}`), true);
 		return text;
 	});
 
@@ -67,9 +67,9 @@ export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
 		} else if (typeof attr !== "function") {
 			setAttribute(el, name, attr);
 		} else {
-			effect(() => {
+			new Effect(() => {
 				setAttribute(el, name, attr());
-			});
+			}, true);
 		}
 	}
 

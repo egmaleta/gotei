@@ -1,17 +1,14 @@
 import { Gotei } from "gotei/runtime";
-import { effect, signal } from "gotei/state";
+import type { SignalGetter, SignalSetter } from "gotei/state";
 
 type ButtonProps = Gotei.IntrinsicElements["button"];
 
 interface CounterProps extends ButtonProps {
-	initialCount?: number;
+	count: SignalGetter<number> & SignalSetter<number>;
 }
 
-export default function ({ initialCount = 0, ...rest }: CounterProps) {
-	const count = signal(initialCount);
+export default function ({ count, ...rest }: CounterProps) {
 	const increaseCount = () => count.map((c) => c + 1);
-
-	effect(() => console.log(count()));
 
 	return (
 		<button {...rest} onclick={increaseCount} type="button">

@@ -1,11 +1,18 @@
-import { render } from "gotei";
-import type { Gotei } from "gotei/runtime";
+import { replace } from "gotei";
 import Counter from "./counter";
+import { effect, signal } from "gotei/state";
 
-const counterButton = render(
-	(
-		<Counter initialCount={0} class="btn btn-primary" />
-	) as Gotei.VNode<"button">,
+const shared = signal(0);
+effect(() => console.log(shared()));
+
+const appDiv = document.querySelector("div#app");
+
+const counters = (
+	<div style="display: flex; flex-wrap: wrap;">
+		{[...Array(1000)].map(() => (
+			<Counter count={shared} />
+		))}
+	</div>
 );
 
-document.querySelector("div#app")?.appendChild(counterButton);
+appDiv && replace(appDiv, counters);

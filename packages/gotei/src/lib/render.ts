@@ -2,11 +2,6 @@ import type { Gotei } from "./runtime";
 import { Effect } from "./state";
 import { tagSymbol } from "./symbols";
 
-type RenderedElement<T extends Gotei.Tag> =
-	T extends keyof Gotei.IntrinsicElements
-		? HTMLElementTagNameMap[T]
-		: Text | HTMLSpanElement;
-
 const EVENT_LISTENER_PREFIX = "on";
 
 function addEventListener(target: EventTarget, name: string, handler: any) {
@@ -31,39 +26,7 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-function renderText(vnode: Gotei.VNode<"text">) {
-	if (vnode.children.length === 0) {
-		return document.createTextNode("");
-	}
-
-	const textNodes = vnode.children.map((child) => {
-		if (typeof child !== "function") {
-			return document.createTextNode(`${child}`);
-		}
-
-		const text = document.createTextNode("");
-		new Effect(() => text.replaceData(0, text.length, `${child()}`), true);
-		return text;
-	});
-
-	if (textNodes.length === 1) {
-		return textNodes[0];
-	}
-
-	const span = document.createElement("span");
-	span.append(...textNodes);
-	return span;
-}
-
-function isTextVNode(vnode: Gotei.VNode): vnode is Gotei.VNode<"text"> {
-	return vnode[tagSymbol] === "text";
-}
-
 export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
-	if (isTextVNode(vnode)) {
-		return renderText(vnode) as RenderedElement<T>;
-	}
-
 	const el = document.createElement(vnode[tagSymbol]);
 
 	for (const [name, attr] of Object.entries(vnode.props)) {
@@ -86,7 +49,7 @@ export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
 		}
 	}
 
-	return el as RenderedElement<T>;
+	return el;
 }
 
 export function replace(node: Node, by: Gotei.VNode) {

@@ -5,17 +5,15 @@ import { tagSymbol } from "./symbols";
 
 type TagFunctions = {
 	[T in keyof Gotei.IntrinsicElements]: {
-		(props: Gotei.Props<T>, ...children: Gotei.Child<T>[]): Gotei.VNode<T>;
-		(...children: Gotei.Child<T>[]): Gotei.VNode<T>;
+		(props: Gotei.Props<T>, ...children: Gotei.VNodeChildren): Gotei.VNode<T>;
+		(...children: Gotei.VNodeChildren): Gotei.VNode<T>;
 	};
-} & {
-	text: (...children: Gotei.Child<"text">[]) => Gotei.VNode<"text">;
 };
 
 export function h<T extends Gotei.Tag>(
 	tag: T,
 	props: Gotei.Props<T>,
-	children: Gotei.Child<T>[],
+	children: Gotei.VNodeChildren,
 ): Gotei.VNode<T> {
 	return { [tagSymbol]: tag, props, children };
 }
@@ -23,7 +21,7 @@ export function h<T extends Gotei.Tag>(
 export const tags = new Proxy(Object.prototype, {
 	get(_, tag: any) {
 		return (...args: any[]) => {
-			if (tag !== "text" && args.length > 0) {
+			if (args.length > 0) {
 				const head = args[0];
 				if (
 					typeof head === "object" &&
@@ -986,20 +984,20 @@ export namespace Gotei {
 		wbr: Attributes<HTMLAttributes, HTMLElement>;
 	}
 
-	export type Tag = keyof IntrinsicElements | "text";
-
-	export type Props<T extends Tag> = T extends keyof IntrinsicElements
-		? IntrinsicElements[T]
-		: object;
-
-	type TextRenderizable = string | number | boolean;
-	export type Child<T extends Tag> = T extends keyof IntrinsicElements
-		? VNode | TextRenderizable | undefined | null
-		: OrComputed<TextRenderizable>;
+	export type Tag = keyof IntrinsicElements;
+	export type Props<T extends Tag> = IntrinsicElements[T];
+	export type VNodeChildren = (
+		| VNode
+		| string
+		| number
+		| boolean
+		| null
+		| undefined
+	)[];
 
 	export type VNode<T extends Tag = Tag> = {
 		[tagSymbol]: T;
 		props: Props<T>;
-		children: Child<T>[];
+		children: VNodeChildren;
 	};
 }

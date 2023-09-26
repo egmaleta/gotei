@@ -26,22 +26,12 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-export function render(element: Gotei.Element) {
-	if (
-		typeof element === "undefined" ||
-		typeof element === "boolean" ||
-		element === null
-	) {
-		return null;
-	}
+export function renderVNode<T extends Gotei.Tag>(
+	vnode: Gotei.VNode<T>,
+): HTMLElementTagNameMap[T] {
+	const domEl = document.createElement(vnode[tagSymbol]);
 
-	if (typeof element !== "object") {
-		return document.createTextNode(`${element}`);
-	}
-
-	const domElement = document.createElement(element[tagSymbol]);
-
-	const { text: textProp, ...props } = element.props;
+	const { text: textProp, ...props } = vnode.props;
 
 	// handle special "text" prop
 	if (typeof textProp !== "undefined") {
@@ -55,35 +45,45 @@ export function render(element: Gotei.Element) {
 			}, true);
 		}
 
-		domElement.appendChild(text);
+		domEl.appendChild(text);
 	}
 
 	for (const [name, prop] of Object.entries(props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
-			addEventListener(
-				domElement,
-				name.slice(EVENT_LISTENER_PREFIX.length),
-				prop,
-			);
+			addEventListener(domEl, name.slice(EVENT_LISTENER_PREFIX.length), prop);
 		} else if (typeof prop !== "function") {
-			setAttribute(domElement, name, prop);
+			setAttribute(domEl, name, prop);
 		} else {
 			new Effect(() => {
-				setAttribute(domElement, name, prop());
+				setAttribute(domEl, name, prop());
 			}, true);
 		}
 	}
 
-	for (const child of element.children) {
-		const childElement = render(child);
-		childElement && domElement.appendChild(childElement);
+	for (const child of vnode.children) {
+		const childEl = renderElement(child);
+		childEl && domEl.appendChild(childEl);
 	}
 
-	return domElement;
+	return domEl;
 }
 
-export function replace(node: Node, by: Gotei.Element) {
-	const parent = node.parentNode;
-	const domElement = render(by);
-	parent && domElement && parent.replaceChild(domElement, node);
+export function renderElement(el: Gotei.Element) {
+	if (typeof el === "undefined" || typeof el === "boolean" || el === null) {
+		return null;
+	}
+
+	if (typeof el !== "object") {
+		return document.createTextNode(`${el}`);
+	}
+
+	return renderVNode(el);
+}
+
+export function append(node: Node, element: Gotei.Element | Gotei.Element[]) {
+	const elements = Array.isArray(element) ? element : [element];
+
+	for (const domEl of elements.map((el) => renderElement(el))) {
+		domEl && node.appendChild(domEl);
+	}
 }

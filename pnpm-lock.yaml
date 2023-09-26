@@ -18,6 +18,12 @@ importers:
         specifier: 4.4.9
         version: 4.4.9
 
+  examples/counter:
+    devDependencies:
+      gotei:
+        specifier: workspace:^
+        version: link:../../packages/gotei
+
   packages/gotei: {}
 
 packages:

@@ -26,10 +26,22 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
-	const el = document.createElement(vnode[tagSymbol]);
+export function render(element: Gotei.Element) {
+	if (
+		typeof element === "undefined" ||
+		typeof element === "boolean" ||
+		element === null
+	) {
+		return null;
+	}
 
-	const { text: textProp, ...props } = vnode.props;
+	if (typeof element !== "object") {
+		return document.createTextNode(`${element}`);
+	}
+
+	const domElement = document.createElement(element[tagSymbol]);
+
+	const { text: textProp, ...props } = element.props;
 
 	// handle special "text" prop
 	if (typeof textProp !== "undefined") {
@@ -43,33 +55,35 @@ export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
 			}, true);
 		}
 
-		el.appendChild(text);
+		domElement.appendChild(text);
 	}
 
 	for (const [name, prop] of Object.entries(props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
-			addEventListener(el, name.slice(EVENT_LISTENER_PREFIX.length), prop);
+			addEventListener(
+				domElement,
+				name.slice(EVENT_LISTENER_PREFIX.length),
+				prop,
+			);
 		} else if (typeof prop !== "function") {
-			setAttribute(el, name, prop);
+			setAttribute(domElement, name, prop);
 		} else {
 			new Effect(() => {
-				setAttribute(el, name, prop());
+				setAttribute(domElement, name, prop());
 			}, true);
 		}
 	}
 
-	for (const child of vnode.children) {
-		if (typeof child === "object") {
-			child && el.appendChild(render(child));
-		} else if (typeof child !== "undefined" && typeof child !== "boolean") {
-			el.appendChild(document.createTextNode(`${child}`));
-		}
+	for (const child of element.children) {
+		const childElement = render(child);
+		childElement && domElement.appendChild(childElement);
 	}
 
-	return el;
+	return domElement;
 }
 
-export function replace(node: Node, by: Gotei.VNode) {
+export function replace(node: Node, by: Gotei.Element) {
 	const parent = node.parentNode;
-	parent?.replaceChild(node, render(by));
+	const domElement = render(by);
+	parent && domElement && parent.replaceChild(domElement, node);
 }

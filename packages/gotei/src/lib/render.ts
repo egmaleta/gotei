@@ -88,3 +88,8 @@ export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
 
 	return el as RenderedElement<T>;
 }
+
+export function replace(node: Node, by: Gotei.VNode) {
+	const parent = node.parentNode;
+	parent?.replaceChild(node, render(by));
+}

@@ -1,0 +1,11 @@
+{
+	"name": "gotei",
+	"version": "0.0.3",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"scripts": {
+		"build": "vite build"
+	}
+}

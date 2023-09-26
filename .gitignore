@@ -21,5 +21,4 @@ node_modules
 *.sln
 *.sw?
 
-dist/*
-!dist/gotei*.js
+dist

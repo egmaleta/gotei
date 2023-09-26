@@ -12,10 +12,6 @@
 		"skipLibCheck": true,
 		"strict": true,
 		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-
-		"outDir": "./dist"
-	},
-	"include": ["./src"],
-	"exclude": ["src/browser.ts"]
+		"noUnusedParameters": true
+	}
 }

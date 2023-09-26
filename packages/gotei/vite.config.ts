@@ -3,13 +3,11 @@ import { defineConfig } from "vite";
 export default defineConfig({
 	build: {
 		lib: {
-			entry: ["src/browser.ts"],
+			entry: ["src/index.ts"],
 			formats: ["es", "umd"],
 			name: "gotei",
-			fileName: (format, name) =>
-				`gotei.${format === "es" ? "esm" : format}.js`,
+			fileName: (format) => `gotei.${format === "es" ? "esm" : format}.js`,
 		},
 		minify: true,
-		emptyOutDir: false,
 	},
 });

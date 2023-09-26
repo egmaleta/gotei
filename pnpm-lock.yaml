@@ -20,6 +20,12 @@ importers:
 
   packages/core: {}
 
+  packages/gotei:
+    devDependencies:
+      '@goteijs/core':
+        specifier: workspace:^
+        version: link:../core
+
 packages:
 
   /@biomejs/biome@1.2.1:

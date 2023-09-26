@@ -8,8 +8,8 @@ type OrArray<T = any> = T | T[];
 
 type TagFunctions = {
 	[T in keyof Gotei.IntrinsicElements]: {
-		(props: Gotei.Props<T>, ...children: Gotei.VNodeChildren): Gotei.VNode<T>;
-		(...children: Gotei.VNodeChildren): Gotei.VNode<T>;
+		(props: Gotei.Props<T>, ...children: Gotei.Element[]): Gotei.VNode<T>;
+		(...children: Gotei.Element[]): Gotei.VNode<T>;
 	};
 } & {
 	text: {
@@ -20,7 +20,7 @@ type TagFunctions = {
 export function h<T extends Gotei.Tag>(
 	tag: T,
 	props: Gotei.Props<T>,
-	children: Gotei.VNodeChildren,
+	children: Gotei.Element[],
 ): Gotei.VNode<T> {
 	return { [tagSymbol]: tag, props, children };
 }
@@ -995,18 +995,19 @@ export namespace Gotei {
 
 	export type Tag = keyof IntrinsicElements;
 	export type Props<T extends Tag> = IntrinsicElements[T];
-	export type VNodeChildren = (
-		| VNode
-		| string
-		| number
-		| boolean
-		| null
-		| undefined
-	)[];
+
+	export type Element = VNode | string | number | boolean | null | undefined;
 
 	export type VNode<T extends Tag = Tag> = {
 		[tagSymbol]: T;
 		props: Props<T>;
-		children: VNodeChildren;
+		children: Element[];
+	};
+
+	export type Component<
+		P extends Record<string, any> = Record<string, any>,
+		C extends Element[] = Element[],
+	> = {
+		(props: P, children: C): OrArray<Element>;
 	};
 }

@@ -1,11 +1,12 @@
-import type {
-	Callback,
-	Computation,
-	SignalGetter,
-	SignalSetter,
-} from "./types";
+export type SignalGetter<T> = () => T;
+export type SignalSetter<T> = {
+	set(value: T): void;
+	map(func: (old: T) => T): void;
+};
 
-export type { SignalGetter, SignalSetter };
+type UntrackFunction = <T>(signalish: SignalGetter<T>) => T;
+type Computation<T> = (untrack: UntrackFunction) => T;
+type Callback = Computation<any>;
 
 let EFFECT_STACK: Effect[] = [];
 

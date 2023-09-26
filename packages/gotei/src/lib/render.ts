@@ -1,6 +1,11 @@
-import type { Gotei, RenderedElement } from "./types";
+import type { Gotei } from "./runtime";
 import { Effect } from "./state";
 import { tagSymbol } from "./symbols";
+
+type RenderedElement<T extends Gotei.Tag> =
+	T extends keyof Gotei.IntrinsicElements
+		? HTMLElementTagNameMap[T]
+		: Text | HTMLSpanElement;
 
 const EVENT_LISTENER_PREFIX = "on";
 

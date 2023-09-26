@@ -5,7 +5,25 @@
 	"files": ["dist"],
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		},
+		"./state": {
+			"import": "./dist/state.js",
+			"require": "./dist/state.cjs",
+			"types": "./dist/state.d.ts"
+		},
+		"./runtime": {
+			"import": "./dist/runtime.js",
+			"require": "./dist/runtime.cjs",
+			"types": "./dist/runtime.d.ts"
+		}
+	},
 	"scripts": {
-		"build": "vite build"
+		"build": "vite build && tsc && vite build --config vite.browser.config.ts"
 	}
 }

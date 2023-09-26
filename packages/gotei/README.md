@@ -1,1 +1,1 @@
-# gotei browser bundle
+# gotei

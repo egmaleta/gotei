@@ -1,1 +1,0 @@
-# gotei core lib

@@ -18,13 +18,7 @@ importers:
         specifier: 4.4.9
         version: 4.4.9
 
-  packages/core: {}
-
-  packages/gotei:
-    devDependencies:
-      '@goteijs/core':
-        specifier: workspace:^
-        version: link:../core
+  packages/gotei: {}
 
 packages:
 

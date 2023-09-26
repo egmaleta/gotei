@@ -3,10 +3,17 @@
 
 import { tagSymbol } from "./symbols";
 
+type OrComputed<T = any> = T | (() => T);
+type OrArray<T = any> = T | T[];
+
 type TagFunctions = {
 	[T in keyof Gotei.IntrinsicElements]: {
 		(props: Gotei.Props<T>, ...children: Gotei.VNodeChildren): Gotei.VNode<T>;
 		(...children: Gotei.VNodeChildren): Gotei.VNode<T>;
+	};
+} & {
+	text: {
+		(data: OrComputed<string | number | boolean>): Gotei.VNode<"span">;
 	};
 };
 
@@ -21,6 +28,10 @@ export function h<T extends Gotei.Tag>(
 export const tags = new Proxy(Object.prototype, {
 	get(_, tag: any) {
 		return (...args: any[]) => {
+			if (tag === "text") {
+				return h("span", { text: args.length > 0 ? args[0] : "" }, []);
+			}
+
 			if (args.length > 0) {
 				const head = args[0];
 				if (
@@ -38,9 +49,6 @@ export const tags = new Proxy(Object.prototype, {
 }) as TagFunctions;
 
 export namespace Gotei {
-	type OrComputed<T = any> = T | (() => T);
-	type OrArray<T = any> = T | T[];
-
 	type TypedEvent<
 		E extends Event = Event,
 		T extends EventTarget = EventTarget,
@@ -866,6 +874,7 @@ export namespace Gotei {
 		T extends EventTarget = EventTarget,
 	> = A &
 		EventHandlers<T> & {
+			text?: OrComputed<string | number | boolean>;
 			[customAttr: string]: any;
 		};
 

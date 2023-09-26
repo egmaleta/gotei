@@ -29,14 +29,31 @@ function setAttribute(element: Element, name: string, attr: any) {
 export function render<T extends Gotei.Tag>(vnode: Gotei.VNode<T>) {
 	const el = document.createElement(vnode[tagSymbol]);
 
-	for (const [name, attr] of Object.entries(vnode.props)) {
-		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
-			addEventListener(el, name.slice(EVENT_LISTENER_PREFIX.length), attr);
-		} else if (typeof attr !== "function") {
-			setAttribute(el, name, attr);
+	const { text: textProp, ...props } = vnode.props;
+
+	// handle special "text" prop
+	if (typeof textProp !== "undefined") {
+		const text = document.createTextNode("");
+
+		if (typeof textProp !== "function") {
+			text.data = `${textProp}`;
 		} else {
 			new Effect(() => {
-				setAttribute(el, name, attr());
+				text.data = `${textProp()}`;
+			}, true);
+		}
+
+		el.appendChild(text);
+	}
+
+	for (const [name, prop] of Object.entries(props)) {
+		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
+			addEventListener(el, name.slice(EVENT_LISTENER_PREFIX.length), prop);
+		} else if (typeof prop !== "function") {
+			setAttribute(el, name, prop);
+		} else {
+			new Effect(() => {
+				setAttribute(el, name, prop());
 			}, true);
 		}
 	}

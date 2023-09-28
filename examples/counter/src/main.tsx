@@ -1,18 +1,13 @@
-import { replace } from "gotei";
-import Counter from "./counter";
-import { effect, signal } from "gotei/state";
+import { append } from "gotei";
+import { signal } from "gotei/state";
+import counter from "./counter";
 
 const shared = signal(0);
-effect(() => console.log(shared()));
+const increase = () => shared.map((v) => v + 1);
 
-const appDiv = document.querySelector("div#app");
-
-const counters = (
-	<div style="display: flex; flex-wrap: wrap;">
-		{[...Array(1000)].map(() => (
-			<Counter count={shared} />
-		))}
-	</div>
+const counters = [...Array(10)].map((_) =>
+	counter({ count: shared, onclick: increase }),
 );
 
-appDiv && replace(appDiv, counters);
+const appDiv = document.querySelector("div#app");
+appDiv && append(appDiv, ...counters);

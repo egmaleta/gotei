@@ -3,6 +3,7 @@ export type SignalSetter<T> = {
 	set(value: T): void;
 	map(func: (old: T) => T): void;
 };
+export type Signal<T> = SignalGetter<T> & SignalSetter<T>;
 
 type UntrackFunction = <T>(signalish: SignalGetter<T>) => T;
 type Computation<T> = (untrack: UntrackFunction) => T;
@@ -37,7 +38,7 @@ export class Effect {
 	}
 }
 
-class Signal<T = any> {
+class _Signal<T = any> {
 	private value: T;
 	private uiDeps: Effect[] = [];
 	private deps: Effect[] = [];
@@ -75,8 +76,8 @@ class Signal<T = any> {
 	}
 }
 
-export function signal<T>(value: T): SignalGetter<T> & SignalSetter<T> {
-	const s = new Signal(value);
+export function signal<T>(value: T): Signal<T> {
+	const s = new _Signal(value);
 
 	return Object.assign(s.get.bind(s), {
 		set: s.set.bind(s),
@@ -89,7 +90,7 @@ export function effect(callback: Callback) {
 }
 
 export function computed<T>(computation: Computation<T>): SignalGetter<T> {
-	const s = new Signal<any>(null);
+	const s = new _Signal<any>(null);
 
 	new Effect((untrack) => {
 		s.set(computation(untrack));

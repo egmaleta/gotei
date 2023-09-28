@@ -8,16 +8,19 @@ type OrArray<T = any> = T | T[];
 
 type TagFunctions = {
 	[T in Gotei.Tag]: {
-		(props: Gotei.Props<T>, ...children: Gotei.VNodeChild[]): Gotei.VNode<T>;
-		(...children: Gotei.VNodeChild[]): Gotei.VNode<T>;
+		(
+			props: Gotei.Props<T>,
+			...children: Gotei.HtmlVNodeChild[]
+		): Gotei.HtmlVNode<T>;
+		(...children: Gotei.HtmlVNodeChild[]): Gotei.HtmlVNode<T>;
 	};
 };
 
 export function h<T extends Gotei.Tag>(
 	tag: T,
 	props: Gotei.Props<T>,
-	children: Gotei.VNodeChild[],
-): Gotei.VNode<T> {
+	children: Gotei.HtmlVNodeChild[],
+): Gotei.HtmlVNode<T> {
 	return { [tagSymbol]: tag, props, children };
 }
 
@@ -992,30 +995,27 @@ export namespace Gotei {
 
 	export type Tag = keyof IntrinsicElements;
 	export type Props<T extends Tag> = IntrinsicElements[T];
-
-	export type VNodeChild =
+	export type HtmlVNodeChild =
 		| VNode
-		| TextVNode
 		| string
 		| number
 		| boolean
 		| null
 		| undefined;
-
-	export type VNode<T extends Tag = Tag> = {
+	export type HtmlVNode<T extends Tag = Tag> = {
 		[tagSymbol]: T;
 		props: Props<T>;
-		children: VNodeChild[];
+		children: HtmlVNodeChild[];
 	};
 
 	export type TextVNode = {
 		[tagSymbol]: "text";
 		data: OrComputed<string | number | boolean>;
 	};
+
+	export type VNode = HtmlVNode | TextVNode;
 }
 
-export function isTextVNode(
-	child: Gotei.VNode | Gotei.TextVNode,
-): child is Gotei.TextVNode {
-	return child[tagSymbol] === "text";
+export function isTextVNode(vnode: Gotei.VNode): vnode is Gotei.TextVNode {
+	return vnode[tagSymbol] === "text";
 }

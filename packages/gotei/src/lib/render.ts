@@ -26,7 +26,7 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-function renderChild(child: Gotei.VNodeChild) {
+function renderChild(child: Gotei.HtmlVNodeChild) {
 	if (
 		typeof child === "undefined" ||
 		typeof child === "boolean" ||
@@ -58,7 +58,7 @@ function renderChild(child: Gotei.VNodeChild) {
 }
 
 export function render<T extends Gotei.Tag>(
-	vnode: Gotei.VNode<T>,
+	vnode: Gotei.HtmlVNode<T>,
 ): HTMLElementTagNameMap[T] {
 	const el = document.createElement(vnode[tagSymbol]);
 
@@ -82,7 +82,7 @@ export function render<T extends Gotei.Tag>(
 	return el;
 }
 
-export function append(node: Node, ...vnodes: Gotei.VNode[]) {
+export function append(node: Node, ...vnodes: Gotei.HtmlVNode[]) {
 	for (const el of vnodes.map((vnode) => render(vnode))) {
 		el && node.appendChild(el);
 	}

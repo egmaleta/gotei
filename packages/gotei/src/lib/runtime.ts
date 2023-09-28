@@ -11,10 +11,6 @@ type TagFunctions = {
 		(props: Gotei.Props<T>, ...children: Gotei.VNodeChild[]): Gotei.VNode<T>;
 		(...children: Gotei.VNodeChild[]): Gotei.VNode<T>;
 	};
-} & {
-	text: {
-		(data: OrComputed<string | number | boolean>): Gotei.VNode<"span">;
-	};
 };
 
 export function h<T extends Gotei.Tag>(
@@ -25,13 +21,13 @@ export function h<T extends Gotei.Tag>(
 	return { [tagSymbol]: tag, props, children };
 }
 
+export function text(data: OrComputed<string | number | boolean>) {
+	return h("span", { text: data }, []);
+}
+
 export const tags = new Proxy(Object.prototype, {
 	get(_, tag: any) {
 		return (...args: any[]) => {
-			if (tag === "text") {
-				return h("span", { text: args.length > 0 ? args[0] : "" }, []);
-			}
-
 			if (args.length > 0) {
 				const head = args[0];
 				if (

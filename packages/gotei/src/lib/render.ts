@@ -1,4 +1,4 @@
-import type { Gotei } from "./runtime";
+import { isTextVNode, type Gotei } from "./runtime";
 import { Effect } from "./state";
 import { tagSymbol } from "./symbols";
 
@@ -39,6 +39,21 @@ function renderChild(child: Gotei.VNodeChild) {
 		return document.createTextNode(`${child}`);
 	}
 
+	if (isTextVNode(child)) {
+		const text = document.createTextNode("");
+
+		const { data } = child;
+		if (typeof data !== "function") {
+			text.data = `${data}`;
+		} else {
+			new Effect(() => {
+				text.data = `${data()}`;
+			}, true);
+		}
+
+		return text;
+	}
+
 	return render(child);
 }
 
@@ -47,24 +62,7 @@ export function render<T extends Gotei.Tag>(
 ): HTMLElementTagNameMap[T] {
 	const el = document.createElement(vnode[tagSymbol]);
 
-	const { text: textProp, ...props } = vnode.props;
-
-	// handle special "text" prop
-	if (typeof textProp !== "undefined") {
-		const text = document.createTextNode("");
-
-		if (typeof textProp !== "function") {
-			text.data = `${textProp}`;
-		} else {
-			new Effect(() => {
-				text.data = `${textProp()}`;
-			}, true);
-		}
-
-		el.appendChild(text);
-	}
-
-	for (const [name, prop] of Object.entries(props)) {
+	for (const [name, prop] of Object.entries(vnode.props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
 			addEventListener(el, name.slice(EVENT_LISTENER_PREFIX.length), prop);
 		} else if (typeof prop !== "function") {

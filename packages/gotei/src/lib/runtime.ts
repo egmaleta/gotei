@@ -21,8 +21,10 @@ export function h<T extends Gotei.Tag>(
 	return { [tagSymbol]: tag, props, children };
 }
 
-export function text(data: OrComputed<string | number | boolean>) {
-	return h("span", { text: data }, []);
+export function text(
+	data: OrComputed<string | number | boolean>,
+): Gotei.TextVNode {
+	return { [tagSymbol]: "text", data };
 }
 
 export const tags = new Proxy(Object.prototype, {
@@ -870,7 +872,6 @@ export namespace Gotei {
 		T extends EventTarget = EventTarget,
 	> = A &
 		EventHandlers<T> & {
-			text?: OrComputed<string | number | boolean>;
 			[customAttr: string]: any;
 		};
 
@@ -992,11 +993,29 @@ export namespace Gotei {
 	export type Tag = keyof IntrinsicElements;
 	export type Props<T extends Tag> = IntrinsicElements[T];
 
-	export type VNodeChild = VNode | string | number | boolean | null | undefined;
+	export type VNodeChild =
+		| VNode
+		| TextVNode
+		| string
+		| number
+		| boolean
+		| null
+		| undefined;
 
 	export type VNode<T extends Tag = Tag> = {
 		[tagSymbol]: T;
 		props: Props<T>;
 		children: VNodeChild[];
 	};
+
+	export type TextVNode = {
+		[tagSymbol]: "text";
+		data: OrComputed<string | number | boolean>;
+	};
+}
+
+export function isTextVNode(
+	child: Gotei.VNode | Gotei.TextVNode,
+): child is Gotei.TextVNode {
+	return child[tagSymbol] === "text";
 }

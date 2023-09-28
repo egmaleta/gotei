@@ -26,10 +26,26 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-export function renderVNode<T extends Gotei.Tag>(
+function renderChild(child: Gotei.VNodeChild) {
+	if (
+		typeof child === "undefined" ||
+		typeof child === "boolean" ||
+		child === null
+	) {
+		return null;
+	}
+
+	if (typeof child !== "object") {
+		return document.createTextNode(`${child}`);
+	}
+
+	return render(child);
+}
+
+export function render<T extends Gotei.Tag>(
 	vnode: Gotei.VNode<T>,
 ): HTMLElementTagNameMap[T] {
-	const domEl = document.createElement(vnode[tagSymbol]);
+	const el = document.createElement(vnode[tagSymbol]);
 
 	const { text: textProp, ...props } = vnode.props;
 
@@ -45,45 +61,31 @@ export function renderVNode<T extends Gotei.Tag>(
 			}, true);
 		}
 
-		domEl.appendChild(text);
+		el.appendChild(text);
 	}
 
 	for (const [name, prop] of Object.entries(props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
-			addEventListener(domEl, name.slice(EVENT_LISTENER_PREFIX.length), prop);
+			addEventListener(el, name.slice(EVENT_LISTENER_PREFIX.length), prop);
 		} else if (typeof prop !== "function") {
-			setAttribute(domEl, name, prop);
+			setAttribute(el, name, prop);
 		} else {
 			new Effect(() => {
-				setAttribute(domEl, name, prop());
+				setAttribute(el, name, prop());
 			}, true);
 		}
 	}
 
 	for (const child of vnode.children) {
-		const childEl = renderElement(child);
-		childEl && domEl.appendChild(childEl);
+		const childEl = renderChild(child);
+		childEl && el.appendChild(childEl);
 	}
 
-	return domEl;
+	return el;
 }
 
-export function renderElement(el: Gotei.Element) {
-	if (typeof el === "undefined" || typeof el === "boolean" || el === null) {
-		return null;
-	}
-
-	if (typeof el !== "object") {
-		return document.createTextNode(`${el}`);
-	}
-
-	return renderVNode(el);
-}
-
-export function append(node: Node, element: Gotei.Element | Gotei.Element[]) {
-	const elements = Array.isArray(element) ? element : [element];
-
-	for (const domEl of elements.map((el) => renderElement(el))) {
-		domEl && node.appendChild(domEl);
+export function append(node: Node, ...vnodes: Gotei.VNode[]) {
+	for (const el of vnodes.map((vnode) => render(vnode))) {
+		el && node.appendChild(el);
 	}
 }

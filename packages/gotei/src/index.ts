@@ -1,2 +1,2 @@
-export { append, renderElement, renderVNode } from "./lib/render";
+export { render, append } from "./lib/render";
 export { tags } from "./lib/runtime";

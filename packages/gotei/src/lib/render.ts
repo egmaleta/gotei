@@ -26,35 +26,19 @@ function setAttribute(element: Element, name: string, attr: any) {
 	}
 }
 
-function renderChild(child: Gotei.HtmlVNodeChild) {
-	if (
-		typeof child === "undefined" ||
-		typeof child === "boolean" ||
-		child === null
-	) {
-		return null;
+function renderText(vnode: Gotei.TextVNode) {
+	const text = document.createTextNode("");
+	const { data } = vnode;
+
+	if (typeof data !== "function") {
+		text.data = `${data}`;
+	} else {
+		new Effect(() => {
+			text.data = `${data()}`;
+		}, true);
 	}
 
-	if (typeof child !== "object") {
-		return document.createTextNode(`${child}`);
-	}
-
-	if (isTextVNode(child)) {
-		const text = document.createTextNode("");
-
-		const { data } = child;
-		if (typeof data !== "function") {
-			text.data = `${data}`;
-		} else {
-			new Effect(() => {
-				text.data = `${data()}`;
-			}, true);
-		}
-
-		return text;
-	}
-
-	return render(child);
+	return text;
 }
 
 export function render<T extends Gotei.Tag>(
@@ -75,8 +59,25 @@ export function render<T extends Gotei.Tag>(
 	}
 
 	for (const child of vnode.children) {
-		const childEl = renderChild(child);
-		childEl && el.appendChild(childEl);
+		if (
+			typeof child === "undefined" ||
+			typeof child === "boolean" ||
+			child === null
+		) {
+			continue;
+		}
+
+		if (typeof child !== "object") {
+			el.appendChild(document.createTextNode(`${child}`));
+			continue;
+		}
+
+		if (isTextVNode(child)) {
+			el.appendChild(renderText(child));
+			continue;
+		}
+
+		el.appendChild(render(child));
 	}
 
 	return el;

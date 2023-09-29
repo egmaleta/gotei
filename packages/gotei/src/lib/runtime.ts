@@ -1,6 +1,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
+import { type SignalSetter } from "./state";
 import { tagSymbol } from "./symbols";
 
 type OrComputed<T = any> = T | (() => T);
@@ -875,6 +876,7 @@ export namespace Gotei {
 		T extends EventTarget = EventTarget,
 	> = A &
 		EventHandlers<T> & {
+			ref?: SignalSetter<HTMLElement | null>;
 			[customAttr: string]: any;
 		};
 

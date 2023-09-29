@@ -98,3 +98,11 @@ export function computed<T>(computation: Computation<T>): SignalGetter<T> {
 
 	return s.get.bind(s);
 }
+
+export function ref<T extends HTMLElement>() {
+	return signal<T | null>(null);
+}
+
+export function isNotNull<T>(signal: Signal<T | null>): signal is Signal<T> {
+	return signal() !== null;
+}

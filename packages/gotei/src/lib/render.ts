@@ -46,7 +46,7 @@ export function render<T extends Gotei.Tag>(
 ): HTMLElementTagNameMap[T] {
 	const el = document.createElement(vnode[tagSymbol]);
 
-	const { ref, ...props } = vnode.props;
+	const { ref, "bind:value": bindValue, ...props } = vnode.props;
 
 	for (const [name, prop] of Object.entries(props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
@@ -80,6 +80,18 @@ export function render<T extends Gotei.Tag>(
 		}
 
 		el.appendChild(render(child));
+	}
+
+	if (bindValue) {
+		const isNumber = typeof bindValue() === "number";
+
+		new Effect(() => {
+			setAttribute(el, "value", bindValue());
+		}, true);
+		addEventListener(el, "input", (ev: any) => {
+			const value = ev.currentTarget.value;
+			bindValue.set(isNumber ? Number.parseFloat(value) : value);
+		});
 	}
 
 	ref?.set(el);

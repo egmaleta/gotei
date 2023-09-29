@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { type SignalSetter } from "./state";
+import type { Signal, SignalSetter } from "./state";
 import { tagSymbol } from "./symbols";
 
 type OrComputed<T = any> = T | (() => T);
@@ -877,6 +877,7 @@ export namespace Gotei {
 	> = A &
 		EventHandlers<T> & {
 			ref?: SignalSetter<HTMLElement | null>;
+			"bind:value"?: "value" extends keyof A ? Signal<string | number> : never;
 			[customAttr: string]: any;
 		};
 

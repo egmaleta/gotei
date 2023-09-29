@@ -473,7 +473,7 @@ export namespace Gotei {
 		formtarget?: OrComputed<string | undefined | null>;
 		name?: OrComputed<string | undefined | null>;
 		type?: OrComputed<"submit" | "reset" | "button" | undefined | null>;
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 	}
 
 	interface CanvasHTMLAttributes extends HTMLAttributes {
@@ -491,7 +491,7 @@ export namespace Gotei {
 	}
 
 	interface DataHTMLAttributes extends HTMLAttributes {
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 	}
 
 	interface DetailsHTMLAttributes extends HTMLAttributes {
@@ -634,7 +634,7 @@ export namespace Gotei {
 		src?: OrComputed<string | undefined | null>;
 		step?: OrComputed<number | string | undefined | null>;
 		type?: OrComputed<HTMLInputTypeAttribute | undefined | null>;
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 		width?: OrComputed<number | string | undefined | null>;
 	}
 
@@ -700,7 +700,7 @@ export namespace Gotei {
 		max?: OrComputed<number | string | undefined | null>;
 		min?: OrComputed<number | string | undefined | null>;
 		optimum?: OrComputed<number | string | undefined | null>;
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 	}
 
 	interface QuoteHTMLAttributes extends HTMLAttributes {
@@ -734,7 +734,7 @@ export namespace Gotei {
 		disabled?: OrComputed<boolean | string | undefined | null>;
 		label?: OrComputed<string | undefined | null>;
 		selected?: OrComputed<boolean | string | undefined | null>;
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 	}
 
 	interface OutputHTMLAttributes extends HTMLAttributes {
@@ -745,7 +745,7 @@ export namespace Gotei {
 
 	interface ProgressHTMLAttributes extends HTMLAttributes {
 		max?: OrComputed<number | string | undefined | null>;
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 	}
 
 	interface SlotHTMLAttributes extends HTMLAttributes {
@@ -774,7 +774,7 @@ export namespace Gotei {
 		name?: OrComputed<string | undefined | null>;
 		required?: OrComputed<boolean | string | undefined | null>;
 		size?: OrComputed<number | string | undefined | null>;
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 	}
 
 	interface SourceHTMLAttributes extends HTMLAttributes {
@@ -822,7 +822,7 @@ export namespace Gotei {
 		readonly?: OrComputed<boolean | string | undefined | null>;
 		required?: OrComputed<boolean | string | undefined | null>;
 		rows?: OrComputed<number | string | undefined | null>;
-		value?: OrComputed<string | string[] | number | undefined | null>;
+		value?: OrComputed<string | number | undefined | null>;
 		wrap?: OrComputed<string | undefined | null>;
 	}
 

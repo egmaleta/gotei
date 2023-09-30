@@ -392,7 +392,7 @@ export namespace Gotei {
 		lang?: OrComputed<string | undefined | null>;
 		slot?: OrComputed<string | undefined | null>;
 		spellcheck?: OrComputed<"true" | "false" | boolean | undefined | null>;
-		style?: OrComputed<string | Record<string, any> | undefined | null>;
+		style?: string | undefined | null;
 		tabindex?: OrComputed<number | string | undefined | null>;
 		title?: OrComputed<string | undefined | null>;
 		translate?: OrComputed<"yes" | "no" | undefined | null>;
@@ -871,6 +871,19 @@ export namespace Gotei {
 		disablepictureinpicture?: OrComputed<boolean | string | undefined | null>;
 	}
 
+	type CSSProperties = Omit<
+		CSSStyleDeclaration,
+		| "getPropertyPriority"
+		| "getPropertyValue"
+		| "item"
+		| "removeProperty"
+		| "setProperty"
+		| "parentRule"
+		| "length"
+		| typeof Symbol.iterator
+		| number
+	>;
+
 	export type Attributes<
 		A extends HTMLAttributes = HTMLAttributes,
 		T extends EventTarget = EventTarget,
@@ -881,6 +894,9 @@ export namespace Gotei {
 			use?: OrArray<(element: T) => any>;
 			classList?: OrComputed<string>[];
 			classRecord?: Record<string, OrComputed<boolean | undefined | null>>;
+			styleRecord?: {
+				[K in keyof CSSProperties]?: OrComputed<CSSProperties[K]>;
+			};
 			[customAttr: string]: any;
 		};
 

@@ -3,7 +3,18 @@ import { Effect } from "./state";
 import { tagSymbol } from "./symbols";
 
 const EVENT_LISTENER_PREFIX = "on";
+
 const WHITESPACE = /\s+/;
+
+const CSS_VAR_PREFIX = "--";
+
+function setCSSVar(el: HTMLElement, prop: string, value: string) {
+	el.style.setProperty(prop, value);
+}
+
+function setCSSProp(el: HTMLElement, prop: any, value: string) {
+	el.style[prop] = value;
+}
 
 function cls2Tokens(cls: string) {
 	return cls.trim().split(WHITESPACE);
@@ -51,8 +62,15 @@ export function render<T extends Gotei.Tag>(
 ): HTMLElementTagNameMap[T] {
 	const el = document.createElement(vnode[tagSymbol]);
 
-	const { bindThis, bindValue, use, classList, classRecord, ...props } =
-		vnode.props;
+	const {
+		bindThis,
+		bindValue,
+		use,
+		classList,
+		classRecord,
+		styleRecord,
+		...props
+	} = vnode.props;
 
 	for (const [name, prop] of Object.entries(props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
@@ -140,6 +158,22 @@ export function render<T extends Gotei.Tag>(
 					} else {
 						el.classList.remove(...tokens);
 					}
+				}, true);
+			}
+		}
+	}
+
+	if (styleRecord) {
+		for (const [prop, value] of Object.entries(styleRecord)) {
+			const setFunction = prop.startsWith(CSS_VAR_PREFIX)
+				? setCSSVar
+				: setCSSProp;
+
+			if (typeof value !== "function") {
+				setFunction(el, prop, value);
+			} else {
+				new Effect(() => {
+					setFunction(el, prop, value());
 				}, true);
 			}
 		}

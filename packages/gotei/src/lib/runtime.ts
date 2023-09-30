@@ -351,7 +351,7 @@ export namespace Gotei {
 		accesskey?: OrComputed<string | undefined | null>;
 		autocapitalize?: OrComputed<string | undefined | null>;
 		autofocus?: OrComputed<boolean | string | undefined | null>;
-		class?: OrComputed<string | undefined | null>;
+		class?: string | undefined | null;
 		contenteditable?: OrComputed<
 			"true" | "false" | boolean | "inherit" | string | undefined | null
 		>;
@@ -879,6 +879,8 @@ export namespace Gotei {
 			bindThis?: SignalSetter<HTMLElement | null>;
 			bindValue?: "value" extends keyof A ? Signal<string | number> : never;
 			use?: OrArray<(element: T) => any>;
+			classList?: OrComputed<string>[];
+			classRecord?: Record<string, OrComputed<boolean | undefined | null>>;
 			[customAttr: string]: any;
 		};
 

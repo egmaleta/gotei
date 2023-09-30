@@ -46,7 +46,8 @@ export function render<T extends Gotei.Tag>(
 ): HTMLElementTagNameMap[T] {
 	const el = document.createElement(vnode[tagSymbol]);
 
-	const { bindThis, bindValue, use, ...props } = vnode.props;
+	const { bindThis, bindValue, use, classList, classRecord, ...props } =
+		vnode.props;
 
 	for (const [name, prop] of Object.entries(props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
@@ -101,6 +102,39 @@ export function render<T extends Gotei.Tag>(
 			for (const f of use) f(el as any);
 		} else {
 			use(el as any);
+		}
+	}
+
+	if (classList) {
+		for (const cls of classList) {
+			if (typeof cls !== "function") {
+				el.classList.add(cls);
+			} else {
+				let token = cls();
+				new Effect(() => {
+					const newToken = cls();
+					if (newToken !== token) {
+						el.classList.replace(token, newToken);
+						token = newToken;
+					}
+				}, true);
+			}
+		}
+	}
+
+	if (classRecord) {
+		for (const [cls, ok] of Object.entries(classRecord)) {
+			if (typeof ok !== "function") {
+				ok && el.classList.add(cls);
+			} else {
+				new Effect(() => {
+					if (ok()) {
+						el.classList.add(cls);
+					} else {
+						el.classList.remove(cls);
+					}
+				}, true);
+			}
 		}
 	}
 

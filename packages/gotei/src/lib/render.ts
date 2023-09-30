@@ -5,6 +5,10 @@ import { tagSymbol } from "./symbols";
 const EVENT_LISTENER_PREFIX = "on";
 const WHITESPACE = /\s+/;
 
+function cls2Tokens(cls: string) {
+	return cls.trim().split(WHITESPACE);
+}
+
 function addEventListener(target: EventTarget, name: string, handler: any) {
 	const handlers = Array.isArray(handler) ? handler : [handler];
 
@@ -109,15 +113,14 @@ export function render<T extends Gotei.Tag>(
 	if (classList) {
 		for (const cls of classList) {
 			if (typeof cls !== "function") {
-				el.classList.add(cls);
+				el.classList.add(...cls2Tokens(cls));
 			} else {
-				let token = cls();
+				let tokens: string[] = [];
+
 				new Effect(() => {
-					const newToken = cls();
-					if (newToken !== token) {
-						el.classList.replace(token, newToken);
-						token = newToken;
-					}
+					el.classList.remove(...tokens);
+					tokens = cls2Tokens(cls());
+					el.classList.add(...tokens);
 				}, true);
 			}
 		}
@@ -125,7 +128,7 @@ export function render<T extends Gotei.Tag>(
 
 	if (classRecord) {
 		for (const [cls, ok] of Object.entries(classRecord)) {
-			const tokens = cls.trim().split(WHITESPACE);
+			const tokens = cls2Tokens(cls);
 			if (tokens.length === 0) continue;
 
 			if (typeof ok !== "function") {

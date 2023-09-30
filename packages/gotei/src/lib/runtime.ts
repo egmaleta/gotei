@@ -878,6 +878,7 @@ export namespace Gotei {
 		EventHandlers<T> & {
 			bindThis?: SignalSetter<HTMLElement | null>;
 			bindValue?: "value" extends keyof A ? Signal<string | number> : never;
+			use?: OrArray<(element: T) => any>;
 			[customAttr: string]: any;
 		};
 

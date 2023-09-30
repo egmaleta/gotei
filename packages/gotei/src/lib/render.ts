@@ -46,7 +46,7 @@ export function render<T extends Gotei.Tag>(
 ): HTMLElementTagNameMap[T] {
 	const el = document.createElement(vnode[tagSymbol]);
 
-	const { bindThis, bindValue, ...props } = vnode.props;
+	const { bindThis, bindValue, use, ...props } = vnode.props;
 
 	for (const [name, prop] of Object.entries(props)) {
 		if (name.startsWith(EVENT_LISTENER_PREFIX)) {
@@ -95,6 +95,14 @@ export function render<T extends Gotei.Tag>(
 	}
 
 	bindThis?.set(el);
+
+	if (use) {
+		if (Array.isArray(use)) {
+			for (const f of use) f(el as any);
+		} else {
+			use(el as any);
+		}
+	}
 
 	return el;
 }

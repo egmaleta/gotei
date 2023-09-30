@@ -3,6 +3,7 @@ import { Effect } from "./state";
 import { tagSymbol } from "./symbols";
 
 const EVENT_LISTENER_PREFIX = "on";
+const WHITESPACE = /\s+/;
 
 function addEventListener(target: EventTarget, name: string, handler: any) {
 	const handlers = Array.isArray(handler) ? handler : [handler];
@@ -124,14 +125,17 @@ export function render<T extends Gotei.Tag>(
 
 	if (classRecord) {
 		for (const [cls, ok] of Object.entries(classRecord)) {
+			const tokens = cls.trim().split(WHITESPACE);
+			if (tokens.length === 0) continue;
+
 			if (typeof ok !== "function") {
-				ok && el.classList.add(cls);
+				ok && el.classList.add(...tokens);
 			} else {
 				new Effect(() => {
 					if (ok()) {
-						el.classList.add(cls);
+						el.classList.add(...tokens);
 					} else {
-						el.classList.remove(cls);
+						el.classList.remove(...tokens);
 					}
 				}, true);
 			}

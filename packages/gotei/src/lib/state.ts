@@ -99,7 +99,7 @@ export function computed<T>(computation: Computation<T>): SignalGetter<T> {
 	return s.get.bind(s);
 }
 
-export function ref<T extends HTMLElement>() {
+export function element<T extends HTMLElement>() {
 	return signal<T | null>(null);
 }
 

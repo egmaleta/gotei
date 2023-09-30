@@ -876,8 +876,8 @@ export namespace Gotei {
 		T extends EventTarget = EventTarget,
 	> = A &
 		EventHandlers<T> & {
-			ref?: SignalSetter<HTMLElement | null>;
-			"bind:value"?: "value" extends keyof A ? Signal<string | number> : never;
+			bindThis?: SignalSetter<HTMLElement | null>;
+			bindValue?: "value" extends keyof A ? Signal<string | number> : never;
 			[customAttr: string]: any;
 		};
 

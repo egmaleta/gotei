@@ -1,4 +1,4 @@
-import { append } from "gotei";
+import { mount } from "gotei";
 import { signal } from "gotei/state";
 import counter from "./counter";
 
@@ -6,8 +6,12 @@ const shared = signal(0);
 const increase = () => shared.map((v) => v + 1);
 
 const counters = [...Array(10)].map((_) =>
-	counter({ count: shared, onclick: increase }),
+	counter({
+		count: shared,
+		onclick: increase,
+		styleRecord: { opacity: () => `${100 - 5 * shared()}%` },
+	}),
 );
 
 const appDiv = document.querySelector("div#app");
-appDiv && append(appDiv, ...counters);
+appDiv && mount(appDiv, ...counters);

@@ -851,7 +851,7 @@ export namespace Gotei {
 			classRecord?: Record<string, OrComputed<boolean | undefined | null>>;
 			styleRecord?: {
 				[K in keyof CSSProperties]?: OrComputed<CSSProperties[K]>;
-			};
+			} & Record<string, OrComputed<string>>;
 			[customAttr: string]: any;
 		};
 

@@ -1,11 +1,9 @@
-import { isTextVNode, type Gotei } from "./runtime";
+import type { Gotei } from "./runtime-types";
 import { Effect } from "./state";
 import { tagSymbol } from "./symbols";
 
 const EVENT_LISTENER_PREFIX = "on";
-
 const WHITESPACE = /\s+/;
-
 const CSS_VAR_PREFIX = "--";
 
 function setCSSVar(el: HTMLElement, prop: string, value: string) {
@@ -18,6 +16,10 @@ function setCSSProp(el: HTMLElement, prop: any, value: string) {
 
 function cls2Tokens(cls: string) {
 	return cls.trim().split(WHITESPACE);
+}
+
+function isTextVNode(vnode: Gotei.VNode): vnode is Gotei.TextVNode {
+	return vnode[tagSymbol] === "text";
 }
 
 function addEventListener(target: EventTarget, name: string, handler: any) {

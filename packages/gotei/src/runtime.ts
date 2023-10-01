@@ -1,1 +1,2 @@
-export { type Gotei, h } from "./lib/runtime";
+export type { Gotei } from "./lib/runtime-types";
+export { h } from "./lib/runtime";

@@ -56,12 +56,23 @@ export class HTMLVNode<T extends Gotei.Tag> implements Gotei.VNode<T> {
 			}
 		}
 
+		const thisCtx = { parent: el, childIndex: 0 };
 		for (const child of this.children) {
-			if (typeof child === "object" && child) {
-				child.mount({ parent: el, childIndex: -1 });
-			} else if (typeof child === "number" || typeof child === "string") {
+			if (
+				typeof child === "boolean" ||
+				typeof child === "undefined" ||
+				!child
+			) {
+				continue;
+			}
+
+			if (typeof child === "object") {
+				child.mount(thisCtx);
+			} else {
 				el.appendChild(document.createTextNode(`${child}`));
 			}
+
+			thisCtx.childIndex++;
 		}
 
 		if (bindValue) {
@@ -206,6 +217,9 @@ export const tags = new Proxy(Object.prototype, {
 }) as Tags;
 
 export function mount(to: ParentNode, ...vnodes: Gotei.VNode[]) {
-	const ctx = { parent: to, childIndex: -1 };
-	for (const vnode of vnodes) vnode.mount(ctx);
+	const ctx = { parent: to, childIndex: to.childElementCount };
+	for (const vnode of vnodes) {
+		vnode.mount(ctx);
+		ctx.childIndex++;
+	}
 }

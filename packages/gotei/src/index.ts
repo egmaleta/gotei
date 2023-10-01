@@ -1,2 +1,1 @@
-export { render, append } from "./lib/render";
-export { tags, text } from "./lib/runtime";
+export { tags, text, mount } from "./lib/runtime";

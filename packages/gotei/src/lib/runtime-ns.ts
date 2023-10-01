@@ -1,21 +1,9 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
+import type { OrArray, OrComputed } from "./runtime-utils";
 import type { Signal, SignalSetter } from "./state";
 import { tagSymbol } from "./symbols";
-
-export type OrComputed<T = any> = T | (() => T);
-type OrArray<T = any> = T | T[];
-
-export type TagFunctions = {
-	[T in Gotei.Tag]: {
-		(
-			props: Gotei.Props<T>,
-			...children: Gotei.HtmlVNodeChild[]
-		): Gotei.HtmlVNode<T>;
-		(...children: Gotei.HtmlVNodeChild[]): Gotei.HtmlVNode<T>;
-	};
-};
 
 export namespace Gotei {
 	type TypedEvent<
@@ -984,23 +972,14 @@ export namespace Gotei {
 
 	export type Tag = keyof IntrinsicElements;
 	export type Props<T extends Tag> = IntrinsicElements[T];
-	export type HtmlVNodeChild =
-		| VNode
-		| string
-		| number
-		| boolean
-		| null
-		| undefined;
-	export type HtmlVNode<T extends Tag = Tag> = {
+
+	export interface RenderContext {
+		parent: ParentNode;
+		childIndex: number;
+	}
+
+	export interface VNode<T extends string = string> {
 		[tagSymbol]: T;
-		props: Props<T>;
-		children: HtmlVNodeChild[];
-	};
-
-	export type TextVNode = {
-		[tagSymbol]: "text";
-		data: OrComputed<string | number | boolean>;
-	};
-
-	export type VNode = HtmlVNode | TextVNode;
+		mount(ctx: RenderContext): void;
+	}
 }

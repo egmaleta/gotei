@@ -1,1 +1,1 @@
-export { tags, text, mount } from "./lib/runtime";
+export { tags, text, show, mount } from "./lib/runtime";

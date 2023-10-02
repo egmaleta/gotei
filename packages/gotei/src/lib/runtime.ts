@@ -178,6 +178,56 @@ export class TextVNode<T extends string | number | boolean>
 	}
 }
 
+export class ConditionalVNode<T extends Gotei.VNode>
+	implements Gotei.VNode<"maybe">
+{
+	[tagSymbol]: "maybe" = "maybe";
+	private vnode: T;
+	private condition: OrComputed<boolean | undefined | null>;
+
+	constructor(vnode: T, condition: OrComputed<boolean | undefined | null>) {
+		this.vnode = vnode;
+		this.condition = condition;
+	}
+
+	private renderNode() {
+		const fragment = document.createDocumentFragment();
+		this.vnode.mount({ parent: fragment, childIndex: -1 });
+
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		const node = fragment.lastChild!;
+		node.remove();
+		return node;
+	}
+
+	mount(ctx: Gotei.RenderContext) {
+		const { condition, vnode } = this;
+
+		if (typeof condition !== "function") {
+			condition && vnode.mount(ctx);
+			return;
+		}
+
+		const { parent, childIndex: index } = ctx;
+		let node: ChildNode | null = null;
+
+		new Effect(() => {
+			if (condition()) {
+				if (!node) {
+					node = this.renderNode();
+				}
+				if (index >= parent.childNodes.length) {
+					parent.appendChild(node);
+				} else {
+					parent.insertBefore(node, parent.childNodes.item(index));
+				}
+			} else {
+				node?.remove();
+			}
+		}, true);
+	}
+}
+
 export function h<T extends Gotei.Tag>(
 	tag: T,
 	props: Gotei.Props<T>,
@@ -188,6 +238,13 @@ export function h<T extends Gotei.Tag>(
 
 export function text<T extends string | number | boolean>(data: OrComputed<T>) {
 	return new TextVNode(data);
+}
+
+export function show<T extends Gotei.VNode>(
+	vnode: T,
+	condition: OrComputed<boolean | undefined | null>,
+) {
+	return new ConditionalVNode(vnode, condition);
 }
 
 type Tags = {

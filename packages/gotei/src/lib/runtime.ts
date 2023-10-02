@@ -228,51 +228,6 @@ export class ConditionalVNode<T extends Gotei.VNode>
 	}
 }
 
-export function h<T extends Gotei.Tag>(
-	tag: T,
-	props: Gotei.Props<T>,
-	children: HTMLVNodeChild[],
-) {
-	return new HTMLVNode(tag, props, children);
-}
-
-export function text<T extends string | number | boolean>(data: OrComputed<T>) {
-	return new TextVNode(data);
-}
-
-export function show<T extends Gotei.VNode>(
-	vnode: T,
-	condition: OrComputed<boolean | undefined | null>,
-) {
-	return new ConditionalVNode(vnode, condition);
-}
-
-type Tags = {
-	[T in Gotei.Tag]: {
-		(props: Gotei.Props<T>, ...children: HTMLVNodeChild[]): HTMLVNode<T>;
-		(...children: HTMLVNodeChild[]): HTMLVNode<T>;
-	};
-};
-
-export const tags = new Proxy(Object.prototype, {
-	get(_, tag: any) {
-		return (...args: any[]) => {
-			if (args.length > 0) {
-				const head = args[0];
-				if (
-					typeof head === "object" &&
-					head !== null &&
-					typeof head[tagSymbol] === "undefined"
-				) {
-					return new HTMLVNode(tag, head, args.slice(1));
-				}
-			}
-
-			return new HTMLVNode(tag, {}, args);
-		};
-	},
-}) as Tags;
-
 export function mount(to: ParentNode, ...vnodes: Gotei.VNode[]) {
 	const ctx = { parent: to, childIndex: to.childElementCount };
 	for (const vnode of vnodes) {

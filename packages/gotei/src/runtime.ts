@@ -1,6 +1,5 @@
 export type { Gotei } from "./lib/runtime-ns";
 export {
-	h,
 	HTMLVNode,
 	TextVNode,
 	ConditionalVNode,

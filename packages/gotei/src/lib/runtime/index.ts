@@ -89,16 +89,6 @@ export class HTMLVNode<T extends Gotei.Tag> implements Gotei.VNode<T> {
 			});
 		}
 
-		bindThis?.set(el);
-
-		if (use) {
-			if (Array.isArray(use)) {
-				for (const f of use) f(el as any);
-			} else {
-				use(el as any);
-			}
-		}
-
 		if (classList) {
 			for (const cls of classList) {
 				if (typeof cls !== "function") {
@@ -151,6 +141,16 @@ export class HTMLVNode<T extends Gotei.Tag> implements Gotei.VNode<T> {
 		}
 
 		ctx.parent.appendChild(el);
+
+		bindThis?.set(el);
+
+		if (use) {
+			if (Array.isArray(use)) {
+				for (const f of use) f(el as any);
+			} else {
+				use(el as any);
+			}
+		}
 	}
 }
 

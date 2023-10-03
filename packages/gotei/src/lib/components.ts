@@ -19,6 +19,17 @@ export function show<T extends Gotei.VNode>(
 	return new ConditionalVNode(vnode, condition);
 }
 
+export function ternary<T extends Gotei.VNode, Q extends Gotei.VNode>(
+	yes: T,
+	no: Q,
+	condition: OrComputed<boolean | undefined | null>,
+) {
+	return [
+		show(yes, condition),
+		show(no, typeof condition === "function" ? () => !condition() : !condition),
+	];
+}
+
 type Tags = {
 	[T in Gotei.Tag]: {
 		(

@@ -43,3 +43,15 @@ export function setAttribute(element: Element, name: string, attr: any) {
 		element.removeAttribute(name);
 	}
 }
+
+export function* flatten<T>(maybeArray: OrArray<T>): Generator<T> {
+	if (Array.isArray(maybeArray)) {
+		for (const maybeArrayItem of maybeArray) {
+			for (const item of flatten(maybeArrayItem)) {
+				yield item;
+			}
+		}
+	} else {
+		yield maybeArray;
+	}
+}

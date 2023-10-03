@@ -10,7 +10,7 @@ export type SignalSetter<T> = {
 export type Signal<T> = SignalGetter<T> & SignalSetter<T>;
 
 export function signal<T>(value: T): Signal<T> {
-	const s = new SignalClass(value);
+	const s: any = new SignalClass(value);
 
 	return Object.assign(s.get.bind(s), {
 		set: s.set.bind(s),
@@ -32,4 +32,6 @@ export function isRefReady<T extends Node>(
 	return ref() !== null;
 }
 
-export const untrack = CONTEXT.untrack.bind(CONTEXT);
+export const untrack = (CONTEXT as any).untrack.bind(CONTEXT) as <T>(
+	signalish: () => T,
+) => T;

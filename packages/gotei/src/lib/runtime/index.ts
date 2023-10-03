@@ -1,4 +1,4 @@
-import type { Gotei } from "./runtime-ns";
+import { Gotei } from "./ns";
 import {
 	EVENT_LISTENER_PREFIX,
 	addEventListener,
@@ -7,10 +7,12 @@ import {
 	CSS_VAR_PREFIX,
 	setCSSVar,
 	setCSSProp,
-	type OrComputed,
-} from "./runtime-utils";
-import { Effect } from "./state";
-import { tagSymbol } from "./symbols";
+	OrComputed,
+} from "./utils";
+import { Effect } from "../state/effect";
+import { tagSymbol } from "../symbols";
+
+export type { Gotei };
 
 export type HTMLVNodeChild =
 	| Gotei.VNode

@@ -1,7 +1,6 @@
-export type { Gotei } from "./lib/runtime-ns";
+export type { Gotei, HTMLVNodeChild } from "./lib/runtime";
 export {
 	HTMLVNode,
 	TextVNode,
 	ConditionalVNode,
-	type HTMLVNodeChild,
 } from "./lib/runtime";

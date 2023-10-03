@@ -4,8 +4,8 @@ import {
 	HTMLVNodeChild,
 	TextVNode,
 } from "./runtime";
-import type { Gotei } from "./runtime-ns";
-import { type OrComputed } from "./runtime-utils";
+import { Gotei } from "./runtime";
+import { OrComputed } from "./runtime/utils";
 import { tagSymbol } from "./symbols";
 
 export function text<T extends string | number | boolean>(data: OrComputed<T>) {

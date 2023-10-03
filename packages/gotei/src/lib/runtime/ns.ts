@@ -1,9 +1,9 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import type { OrArray, OrComputed } from "./runtime-utils";
-import type { Signal, SignalSetter } from "./state";
-import { tagSymbol } from "./symbols";
+import { OrArray, OrComputed } from "./utils";
+import { Signal, SignalSetter } from "../state";
+import { tagSymbol } from "../symbols";
 
 export namespace Gotei {
 	type TypedEvent<

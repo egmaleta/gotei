@@ -22,12 +22,14 @@ export function effect(callback: () => any) {
 	new Effect(callback, false);
 }
 
-export function element<T extends HTMLElement>() {
+export function ref<T extends Node>() {
 	return signal<T | null>(null);
 }
 
-export function isNotNull<T>(signal: Signal<T | null>): signal is Signal<T> {
-	return signal() !== null;
+export function isRefReady<T extends Node>(
+	ref: Signal<T | null>,
+): ref is Signal<T> {
+	return ref() !== null;
 }
 
 export const untrack = CONTEXT.untrack.bind(CONTEXT);

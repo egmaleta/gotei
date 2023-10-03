@@ -24,6 +24,6 @@
 		}
 	},
 	"scripts": {
-		"build": "vite build && tsc && vite build --config vite.browser.config.ts"
+		"build": "vite build && tsc && vite build --config vite.gotei.config.ts && vite build --config vite.gotei-minimal.config.ts"
 	}
 }

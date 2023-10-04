@@ -979,7 +979,7 @@ export namespace Gotei {
 	}
 
 	export interface VNode<T extends string = string> {
-		[tagSymbol]: T;
+		readonly [tagSymbol]: T;
 		mount(ctx: RenderContext): void;
 	}
 }

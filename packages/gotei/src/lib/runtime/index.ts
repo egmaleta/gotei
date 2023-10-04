@@ -23,7 +23,7 @@ export type HTMLVNodeChild =
 	| null;
 
 export class HTMLVNode<T extends Gotei.Tag> implements Gotei.VNode<T> {
-	[tagSymbol]: T;
+	readonly [tagSymbol]: T;
 	private props: Gotei.Props<T>;
 	private children: HTMLVNodeChild[];
 
@@ -155,9 +155,9 @@ export class HTMLVNode<T extends Gotei.Tag> implements Gotei.VNode<T> {
 }
 
 export class TextVNode<T extends string | number | boolean>
-	implements Gotei.VNode<"text">
+	implements Gotei.VNode
 {
-	[tagSymbol]: "text" = "text";
+	readonly [tagSymbol] = "text";
 	private data: OrComputed<T>;
 
 	constructor(data: OrComputed<T>) {
@@ -180,10 +180,8 @@ export class TextVNode<T extends string | number | boolean>
 	}
 }
 
-export class ConditionalVNode<T extends Gotei.VNode>
-	implements Gotei.VNode<"maybe">
-{
-	[tagSymbol]: "maybe" = "maybe";
+export class ConditionalVNode<T extends Gotei.VNode> implements Gotei.VNode {
+	readonly [tagSymbol] = "maybe";
 	private vnode: T;
 	private condition: OrComputed<boolean>;
 

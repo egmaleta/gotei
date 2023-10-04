@@ -1,1 +1,1 @@
-export const tagSymbol = Symbol();
+export const typeSymbol = Symbol();

@@ -1,9 +1,11 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { OrArray, OrComputed } from "./utils";
 import { Signal, SignalSetter } from "../state";
-import { tagSymbol } from "../symbols";
+import { typeSymbol } from "./symbols";
+
+export type OrComputed<T = any> = T | (() => T);
+export type OrArray<T = any> = T | T[];
 
 export namespace Gotei {
 	type TypedEvent<
@@ -852,7 +854,6 @@ export namespace Gotei {
 			styleRecord?: {
 				[K in keyof CSSProperties]?: OrComputed<CSSProperties[K]>;
 			} & Record<string, OrComputed<string>>;
-			[customAttr: string]: any;
 		};
 
 	export interface IntrinsicElements {
@@ -970,16 +971,42 @@ export namespace Gotei {
 		wbr: Attributes<HTMLAttributes, HTMLElement>;
 	}
 
+	interface Typed<T extends string = string> {
+		[typeSymbol]: T;
+	}
+
 	export type Tag = keyof IntrinsicElements;
+
 	export type Props<T extends Tag> = IntrinsicElements[T];
+	type AnyProps = Record<string | number | symbol, any>;
 
-	export interface RenderContext {
-		parent: ParentNode;
-		childIndex: number;
+	export type HTMLVNodeChild =
+		| Gotei.VNode
+		| string
+		| number
+		| boolean
+		| undefined
+		| null;
+
+	export interface HTMLVNode<T extends Tag = Tag, P extends AnyProps = AnyProps>
+		extends Typed<"html"> {
+		tag: T;
+		props: Props<T> & P;
+		children: HTMLVNodeChild[];
 	}
 
-	export interface VNode<T extends string = string> {
-		readonly [tagSymbol]: T;
-		mount(ctx: RenderContext): void;
+	export type TextRenderizable = string | number | boolean;
+
+	export interface TextVNode<T extends TextRenderizable = TextRenderizable>
+		extends Typed<"text"> {
+		data: OrComputed<T>;
 	}
+
+	export interface ConditionalVNode<T extends VNode = VNode>
+		extends Typed<"maybe"> {
+		vnode: T;
+		condition: OrComputed<boolean>;
+	}
+
+	export type VNode = HTMLVNode | TextVNode | ConditionalVNode;
 }

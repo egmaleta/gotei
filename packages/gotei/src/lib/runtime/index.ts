@@ -185,9 +185,9 @@ export class ConditionalVNode<T extends Gotei.VNode>
 {
 	[tagSymbol]: "maybe" = "maybe";
 	private vnode: T;
-	private condition: OrComputed<boolean | undefined | null>;
+	private condition: OrComputed<boolean>;
 
-	constructor(vnode: T, condition: OrComputed<boolean | undefined | null>) {
+	constructor(vnode: T, condition: OrComputed<boolean>) {
 		this.vnode = vnode;
 		this.condition = condition;
 	}
@@ -196,10 +196,8 @@ export class ConditionalVNode<T extends Gotei.VNode>
 		const fragment = document.createDocumentFragment();
 		this.vnode.mount({ parent: fragment, childIndex: -1 });
 
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
-		const node = fragment.lastChild!;
-		node.remove();
-		return node;
+		// biome-ignore lint/style/noNonNullAssertion: fragment has a child
+		return fragment.lastChild!;
 	}
 
 	mount(ctx: Gotei.RenderContext) {
@@ -224,7 +222,7 @@ export class ConditionalVNode<T extends Gotei.VNode>
 					parent.insertBefore(node, parent.childNodes.item(index));
 				}
 			} else {
-				node?.remove();
+				node && parent.removeChild(node);
 			}
 		}, true);
 	}

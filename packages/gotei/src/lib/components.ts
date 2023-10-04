@@ -14,7 +14,7 @@ export function text<T extends string | number | boolean>(data: OrComputed<T>) {
 
 export function show<T extends Gotei.VNode>(
 	vnode: T,
-	condition: OrComputed<boolean | undefined | null>,
+	condition: OrComputed<boolean>,
 ) {
 	return new ConditionalVNode(vnode, condition);
 }
@@ -22,7 +22,7 @@ export function show<T extends Gotei.VNode>(
 export function ternary<T extends Gotei.VNode, Q extends Gotei.VNode>(
 	yes: T,
 	no: Q,
-	condition: OrComputed<boolean | undefined | null>,
+	condition: OrComputed<boolean>,
 ) {
 	return [
 		show(yes, condition),

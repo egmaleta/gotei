@@ -10,6 +10,7 @@ export type SignalSetter<T> = {
 export type Signal<T> = SignalGetter<T> & SignalSetter<T>;
 
 export function signal<T>(value: T): Signal<T> {
+	// @ts-ignore
 	const s: any = new SignalClass(value);
 
 	return Object.assign(s.get.bind(s), {

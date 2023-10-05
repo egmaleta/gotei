@@ -29,12 +29,68 @@ export function Signal(value) {
 }
 
 inherits(Signal, ReadableSignal);
-
 define(Signal, {
 	set(value) {
 		if (this.value !== value) {
 			this.value = value;
 			this.triggerUpdate(null);
 		}
+	},
+});
+
+export function ArraySignal(value) {
+	ReadableSignal.call(this, value);
+	this.wrap(value);
+}
+
+inherits(ArraySignal, ReadableSignal);
+define(ArraySignal, {
+	wrap(value) {
+		const triggerUpdate = this.triggerUpdate.bind(this);
+		const proxied = new Proxy(value, {
+			set(target, prop, value) {
+				if (!isNaN(+prop)) {
+					const current = target[prop];
+					if (current !== value) {
+						target[prop] = value;
+						triggerUpdate({ op: "setat" });
+					}
+				} else {
+					target[prop] = value;
+				}
+
+				return true;
+			},
+			get(target, prop) {
+				if (prop === "pop" || prop === "shift") {
+					return () => {
+						const item = target[prop]();
+						typeof item !== "undefined" && triggerUpdate({ op: prop });
+						return item;
+					};
+				} else if (prop === "push" || prop === "unshift") {
+					return (...items) => {
+						const l = target[prop](...items);
+						items.length > 0 && triggerUpdate({ op: prop, n: items.length });
+						return l;
+					};
+				} else if (prop === "sort" || prop === "reverse") {
+					return (...args) => {
+						const array = target[prop](...args);
+						array.length > 1 && triggerUpdate({ op: prop });
+						return array;
+					};
+				} else {
+					// TODO: handle "splice" prop
+					return target[prop];
+				}
+			},
+		});
+
+		this.value = proxied;
+	},
+	set(value) {
+		this.wrap(value);
+		this.triggerUpdate({ op: "set" });
 	},
 });

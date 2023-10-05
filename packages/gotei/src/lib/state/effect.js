@@ -4,13 +4,13 @@ import { CONTEXT } from "./context";
 export function Effect(callback, isUIEffect) {
 	this.callback = callback;
 	this.isUIEffect = isUIEffect;
-	this.update();
+	this.update(null);
 }
 
 define(Effect, {
-	update() {
+	update(ctx) {
 		CONTEXT.push(this);
-		this.callback();
+		this.callback(ctx);
 		CONTEXT.pop();
 	},
 });

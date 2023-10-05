@@ -11,9 +11,9 @@ define(Observable, {
 		const deps = effect.isUIEffect ? this.uiDeps : this.deps;
 		!deps.includes(effect) && deps.push(effect);
 	},
-	triggerUpdate() {
-		for (const effect of this.uiDeps) effect.update();
-		for (const effect of this.deps) effect.update();
+	triggerUpdate(ctx) {
+		for (const effect of this.uiDeps) effect.update(ctx);
+		for (const effect of this.deps) effect.update(ctx);
 	},
 });
 
@@ -34,7 +34,7 @@ define(Signal, {
 	set(value) {
 		if (this.value !== value) {
 			this.value = value;
-			this.triggerUpdate();
+			this.triggerUpdate(null);
 		}
 	},
 });

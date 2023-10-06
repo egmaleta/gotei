@@ -3,10 +3,14 @@ import { Effect } from "./effect";
 import { Signal as SignalClass, ArraySignal } from "./signal";
 
 export type SignalGetter<T> = () => T;
-export type SignalSetter<T> = {
-	set(value: T): void;
-	map(func: (old: T) => T): void;
-};
+export type SignalSetter<T> = T extends Array<any>
+	? {
+			set(value: T): void;
+	  }
+	: {
+			set(value: T): void;
+			set(f: (old: T) => T): void;
+	  };
 export type Signal<T> = SignalGetter<T> & SignalSetter<T>;
 
 export function signal<T>(value: T): Signal<T> {
@@ -18,7 +22,6 @@ export function signal<T>(value: T): Signal<T> {
 
 	return Object.assign(s.get.bind(s), {
 		set: s.set.bind(s),
-		map: (func: (old: T) => T) => s.set(func(s.get())),
 	});
 }
 

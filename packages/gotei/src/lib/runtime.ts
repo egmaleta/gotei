@@ -116,6 +116,7 @@ function renderHTML<T extends Gotei.Tag>(
 		}, true);
 		addEventListener(el, "input", (ev: any) => {
 			const value = ev.currentTarget.value;
+			// @ts-ignore
 			bindValue.set(isNumber ? Number.parseFloat(value) : value);
 		});
 	}
@@ -173,6 +174,7 @@ function renderHTML<T extends Gotei.Tag>(
 
 	ctx.parent.appendChild(el);
 
+	// @ts-ignore
 	bindThis?.set(el);
 
 	if (use) {

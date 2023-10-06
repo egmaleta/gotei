@@ -31,8 +31,10 @@ export function Signal(value) {
 inherits(Signal, ReadableSignal);
 define(Signal, {
 	set(value) {
-		if (this.value !== value) {
-			this.value = value;
+		const v = typeof value === "function" ? value(this.value) : value;
+
+		if (this.value !== v) {
+			this.value = v;
 			this.triggerUpdate(null);
 		}
 	},

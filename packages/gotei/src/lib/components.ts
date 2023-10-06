@@ -1,4 +1,4 @@
-import { Gotei, OrArray, OrComputed } from "./ns";
+import { Gotei, Keyed, OrArray, OrComputed } from "./ns";
 import { typeSymbol } from "./symbols";
 
 type Tags = {
@@ -27,7 +27,7 @@ export function h<T extends Gotei.Tag>(
 	tag: T,
 	props: Gotei.Props<T>,
 	children: Gotei.HTMLVNodeChild[],
-): Gotei.HTMLVNode {
+): Gotei.HTMLVNode<T> {
 	return { [typeSymbol]: "html", tag, props, children };
 }
 
@@ -52,14 +52,14 @@ export const tags = new Proxy(Object.prototype, {
 
 export function text<T extends Gotei.TextRenderizable>(
 	data: OrComputed<T>,
-): Gotei.TextVNode {
+): Gotei.TextVNode<T> {
 	return { [typeSymbol]: "text", data };
 }
 
 export function show<T extends Gotei.VNode>(
 	vnode: T,
 	condition: OrComputed<boolean>,
-): Gotei.ConditionalVNode {
+): Gotei.ConditionalVNode<T> {
 	return { [typeSymbol]: "maybe", vnode, condition };
 }
 
@@ -72,4 +72,11 @@ export function ternary<T extends Gotei.VNode, Q extends Gotei.VNode>(
 		show(yes, condition),
 		show(no, typeof condition === "function" ? () => !condition() : !condition),
 	];
+}
+
+export function map<T>(
+	f: (item: T) => Keyed<Gotei.HTMLVNode>,
+	over: () => T[],
+): Gotei.ArrayVNode<T> {
+	return { [typeSymbol]: "array", f, items: over };
 }

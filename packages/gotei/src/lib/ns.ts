@@ -7,6 +7,10 @@ import { typeSymbol } from "./symbols";
 export type OrComputed<T = any> = T | (() => T);
 export type OrArray<T = any> = T | T[];
 
+export type Keyed<V> = V extends Gotei.HTMLVNode<infer T, infer P>
+	? Gotei.HTMLVNode<T, P & { key: string | number }>
+	: never;
+
 export namespace Gotei {
 	type TypedEvent<
 		E extends Event = Event,
@@ -1008,5 +1012,10 @@ export namespace Gotei {
 		condition: OrComputed<boolean>;
 	}
 
-	export type VNode = HTMLVNode | TextVNode | ConditionalVNode;
+	export interface ArrayVNode<T = any> extends Typed<"array"> {
+		f: (item: T) => Keyed<HTMLVNode>;
+		items: () => T[];
+	}
+
+	export type VNode = HTMLVNode | TextVNode | ConditionalVNode | ArrayVNode;
 }

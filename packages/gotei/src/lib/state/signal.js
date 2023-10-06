@@ -49,11 +49,12 @@ define(ArraySignal, {
 		const triggerUpdate = this.triggerUpdate.bind(this);
 		const proxied = new Proxy(value, {
 			set(target, prop, value) {
-				if (!isNaN(+prop)) {
-					const current = target[prop];
+				const index = +prop;
+				if (!isNaN(index)) {
+					const current = target[index];
 					if (current !== value) {
-						target[prop] = value;
-						triggerUpdate({ op: "setat" });
+						target[index] = value;
+						triggerUpdate({ op: "setat", index });
 					}
 				} else {
 					target[prop] = value;

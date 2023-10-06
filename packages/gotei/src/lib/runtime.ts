@@ -61,6 +61,10 @@ function isConditional(vnode: Gotei.VNode): vnode is Gotei.ConditionalVNode {
 	return vnode[typeSymbol] === "maybe";
 }
 
+function isArray(vnode: Gotei.VNode): vnode is Gotei.ArrayVNode {
+	return vnode[typeSymbol] === "array";
+}
+
 function renderHTML<T extends Gotei.Tag>(
 	vnode: Gotei.HTMLVNode<T>,
 	ctx: RenderContext,
@@ -225,11 +229,95 @@ function renderConditional(
 	}, true);
 }
 
+function renderArray(vnode: Gotei.ArrayVNode, ctx: RenderContext) {
+	const { parent } = ctx;
+	const { f, items } = vnode;
+
+	const cache = new Map<string | number, ChildNode>();
+	let positions: (string | number)[] = [];
+
+	new Effect((ctx: { op: string; [arg: string]: any } | null) => {
+		if (!ctx) {
+			for (const item of items()) {
+				const vn = f(item);
+				const node = renderOrphanNode(vn);
+				cache.set(vn.props.key, node);
+				positions.push(vn.props.key);
+				parent.appendChild(node);
+			}
+		} else {
+			const { op, args } = ctx;
+			if (op === "setat") {
+				const vn = f(items()[args.index]);
+
+				const key = vn.props.key;
+				const node = renderOrphanNode(vn);
+
+				const oldKey = positions[args.index];
+				const oldNode = cache.get(oldKey);
+
+				cache.delete(oldKey);
+				cache.set(key, node);
+				positions[args.index] = vn.props.key;
+				oldNode && parent.replaceChild(node, oldNode);
+			} else if (op === "pop" || op === "shift") {
+				items();
+
+				const key = positions[op === "pop" ? -1 : 0];
+				const node = cache.get(key);
+
+				positions[op]();
+				cache.delete(key);
+				node && parent.removeChild(node);
+			} else if (op === "push" || op === "unshift") {
+				const slice =
+					op === "push" ? items().slice(-args.n) : items().slice(0, args.n);
+				const vns = slice.map((item) => f(item));
+
+				const keys = vns.map((vn) => vn.props.key);
+				const nodes = vns.map((vn) => renderOrphanNode(vn));
+
+				positions[op](...keys);
+				for (let i = 0; i < keys.length; i++) cache.set(keys[i], nodes[i]);
+
+				const parentOp = op === "push" ? "append" : "prepend";
+				parent[parentOp](...nodes);
+			} else if (op === "sort" || op === "reverse") {
+				const vns = items().map((item) => f(item));
+
+				const keys = vns.map((vn) => vn.props.key);
+				positions = keys;
+				for (const key of keys) {
+					const node = cache.get(key);
+					node && parent.appendChild(node);
+				}
+			} else if (op === "set") {
+				const vns = items().map((item) => f(item));
+
+				const keys = vns.map((vn) => vn.props.key);
+				const nodes = vns.map(
+					(vn) => cache.get(vn.props.key) ?? renderOrphanNode(vn),
+				);
+
+				for (const node of cache.values()) parent.removeChild(node);
+				cache.clear();
+
+				parent.append(...nodes);
+				positions = keys;
+				for (let i = 0; i < keys.length; i++) cache.set(keys[i], nodes[i]);
+			}
+			// TODO: handle "splice" prop
+		}
+	}, true);
+}
+
 function render(vnode: Gotei.VNode, ctx: RenderContext) {
 	if (isText(vnode)) {
 		renderText(vnode, ctx);
 	} else if (isConditional(vnode)) {
 		renderConditional(vnode, ctx);
+	} else if (isArray(vnode)) {
+		renderArray(vnode, ctx);
 	} else {
 		renderHTML(vnode, ctx);
 	}

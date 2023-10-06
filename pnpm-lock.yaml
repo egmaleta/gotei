@@ -26,6 +26,12 @@ importers:
 
   packages/gotei: {}
 
+  packages/ssr:
+    devDependencies:
+      gotei:
+        specifier: workspace:^
+        version: link:../gotei
+
 packages:
 
   /@biomejs/biome@1.2.1:

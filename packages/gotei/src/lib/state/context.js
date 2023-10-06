@@ -1,4 +1,4 @@
-import { define } from "./oop";
+import { define } from "../oop";
 
 function Context() {
 	this.stack = [];

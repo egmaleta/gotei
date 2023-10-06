@@ -1,17 +1,15 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { Signal, SignalSetter } from "../state";
-import { typeSymbol } from "./symbols";
+import { OrArray, OrComputed, typeSymbol } from "./common";
+import { Signal, SignalSetter } from "./state";
 
-export type OrComputed<T = any> = T | (() => T);
-export type OrArray<T = any> = T | T[];
+interface RenderContext {
+	parent: ParentNode;
+	childIndex: number;
+}
 
-export type Keyed<V> = V extends Gotei.HTMLVNode<infer T, infer P>
-	? Gotei.HTMLVNode<T, P & { key: string | number }>
-	: never;
-
-export namespace Gotei {
+export declare namespace Gotei {
 	type TypedEvent<
 		E extends Event = Event,
 		T extends EventTarget = EventTarget,
@@ -980,42 +978,17 @@ export namespace Gotei {
 	}
 
 	export type Tag = keyof IntrinsicElements;
-
 	export type Props<T extends Tag> = IntrinsicElements[T];
-	type AnyProps = Record<string | number | symbol, any>;
+	export type Child = VNode | string | number | boolean | undefined | null;
 
-	export type HTMLVNodeChild =
-		| Gotei.VNode
-		| string
-		| number
-		| boolean
-		| undefined
-		| null;
-
-	export interface HTMLVNode<T extends Tag = Tag, P extends AnyProps = AnyProps>
-		extends Typed<"html"> {
-		tag: T;
-		props: Props<T> & P;
-		children: HTMLVNodeChild[];
+	export interface VNode<T extends string = string> {
+		[typeSymbol]: T;
+		mount(ctx: RenderContext): void;
 	}
-
-	export type TextRenderizable = string | number | boolean;
-
-	export interface TextVNode<T extends TextRenderizable = TextRenderizable>
-		extends Typed<"text"> {
-		data: OrComputed<T>;
-	}
-
-	export interface ConditionalVNode<T extends VNode = VNode>
-		extends Typed<"maybe"> {
-		vnode: T;
-		condition: OrComputed<boolean>;
-	}
-
-	export interface ArrayVNode<T = any> extends Typed<"array"> {
-		f: (item: T) => Keyed<HTMLVNode>;
-		items: () => T[];
-	}
-
-	export type VNode = HTMLVNode | TextVNode | ConditionalVNode | ArrayVNode;
 }
+
+export declare function h<T extends Gotei.Tag>(
+	tag: T,
+	props: Gotei.Props<T>,
+	children: Gotei.Child[],
+): Gotei.VNode<"html">;

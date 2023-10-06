@@ -1,4 +1,4 @@
-import { define } from "./oop";
+import { define } from "../oop";
 import { CONTEXT } from "./context";
 
 export function Effect(callback, isUIEffect) {

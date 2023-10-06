@@ -93,6 +93,6 @@ define(ArrayVNode, {
 	},
 });
 
-export function map(f, over) {
-	return new ArrayVNode(f, over);
+export function map(items, withF) {
+	return new ArrayVNode(withF, items);
 }

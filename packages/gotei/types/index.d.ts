@@ -44,8 +44,8 @@ export declare function ternary<
 ): (ConditionalVNode<T> | ConditionalVNode<Q>)[];
 
 export declare function map<T>(
-	f: (item: T) => Keyed<HtmlVNode>,
-	over: () => T[],
+	items: () => T[],
+	withF: (item: T) => Keyed<HtmlVNode>,
 ): ArrayVNode<T>;
 
 export declare function mount(to: ParentNode, ...vnodes: Gotei.VNode[]): void;

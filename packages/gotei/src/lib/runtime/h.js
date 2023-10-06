@@ -166,3 +166,7 @@ export const tags = new Proxy(
 		},
 	},
 );
+
+export function isHtmlVNode(vnode) {
+	vnode[typeSymbol] === "html";
+}

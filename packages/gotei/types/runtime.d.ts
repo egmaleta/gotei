@@ -1009,7 +1009,7 @@ export declare const HtmlVNode: {
 
 export declare function h<T extends Tag, P extends AnyProps = AnyProps>(
 	tag: T,
-	props: Gotei.Props<T> & P,
+	props: Props<T> & P,
 	children: HtmlVNodeChild[],
 ): HtmlVNode<T, P>;
 
@@ -1056,3 +1056,11 @@ export declare const ArrayVNode: {
 	prototype: ArrayVNode;
 	new <T>(f: (item: T) => Keyed<HtmlVNode>, items: () => T[]): ArrayVNode<T>;
 };
+
+// type guards
+export declare function isHtmlVNode(vnode: Gotei.VNode): vnode is HtmlVNode;
+export declare function isTextVNode(vnode: Gotei.VNode): vnode is TextVNode;
+export declare function isConditionalVNode(
+	vnode: Gotei.VNode,
+): vnode is ConditionalVNode;
+export declare function isArrayVNode(vnode: Gotei.VNode): vnode is ArrayVNode;

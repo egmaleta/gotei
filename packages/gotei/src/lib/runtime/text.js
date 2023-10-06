@@ -27,3 +27,7 @@ define(TextVNode, {
 export function text(data) {
 	return new TextVNode(data);
 }
+
+export function isTextVNode(vnode) {
+	vnode[typeSymbol] === "text";
+}

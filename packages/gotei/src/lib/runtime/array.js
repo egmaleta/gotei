@@ -96,3 +96,7 @@ define(ArrayVNode, {
 export function map(items, withF) {
 	return new ArrayVNode(withF, items);
 }
+
+export function isArrayVNode(vnode) {
+	vnode[typeSymbol] === "array";
+}

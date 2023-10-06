@@ -48,3 +48,7 @@ export function ternary(yes, no, condition) {
 		show(no, typeof condition === "function" ? () => !condition() : !condition),
 	];
 }
+
+export function isConditionalVNode(vnode) {
+	vnode[typeSymbol] === "maybe";
+}

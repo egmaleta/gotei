@@ -3,7 +3,7 @@ import { Effect } from "../state/effect";
 import { typeSymbol } from "../symbols";
 import { renderOrphanNode } from "./utils";
 
-function ArrayVNode(f, items) {
+export function ArrayVNode(f, items) {
 	this[typeSymbol] = "array";
 	this.f = f;
 	this.items = items;

@@ -1,1 +1,7 @@
-export { h } from "./lib/runtime";
+export {
+	HtmlVNode,
+	TextVNode,
+	ConditionalVNode,
+	ArrayVNode,
+	h,
+} from "./lib/runtime";

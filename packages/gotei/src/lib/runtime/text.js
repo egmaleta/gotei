@@ -2,7 +2,7 @@ import { define } from "../oop";
 import { Effect } from "../state/effect";
 import { typeSymbol } from "../symbols";
 
-function TextVNode(data) {
+export function TextVNode(data) {
 	this[typeSymbol] = "text";
 	this.data = data;
 }

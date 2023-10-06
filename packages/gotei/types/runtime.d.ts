@@ -4,11 +4,6 @@
 import { OrArray, OrComputed, typeSymbol } from "./common";
 import { Signal, SignalSetter } from "./state";
 
-interface RenderContext {
-	parent: ParentNode;
-	childIndex: number;
-}
-
 export declare namespace Gotei {
 	type TypedEvent<
 		E extends Event = Event,
@@ -973,13 +968,10 @@ export declare namespace Gotei {
 		wbr: Attributes<HTMLAttributes, HTMLElement>;
 	}
 
-	interface Typed<T extends string = string> {
-		[typeSymbol]: T;
+	interface RenderContext {
+		parent: ParentNode;
+		childIndex: number;
 	}
-
-	export type Tag = keyof IntrinsicElements;
-	export type Props<T extends Tag> = IntrinsicElements[T];
-	export type Child = VNode | string | number | boolean | undefined | null;
 
 	export interface VNode<T extends string = string> {
 		[typeSymbol]: T;
@@ -987,8 +979,80 @@ export declare namespace Gotei {
 	}
 }
 
-export declare function h<T extends Gotei.Tag>(
+// html vnode
+export type Tag = keyof Gotei.IntrinsicElements;
+export type Props<T extends Tag> = Gotei.IntrinsicElements[T];
+export type AnyProps = Record<string | symbol | number, any>;
+export type HtmlVNodeChild =
+	| Gotei.VNode
+	| string
+	| number
+	| boolean
+	| undefined
+	| null;
+
+export interface HtmlVNode<T extends Tag = Tag, P extends AnyProps = AnyProps>
+	extends Gotei.VNode<"html"> {
+	tag: T;
+	props: Props<T> & P;
+	children: HtmlVNodeChild[];
+}
+
+export declare const HtmlVNode: {
+	prototype: HtmlVNode;
+	new <T extends Tag, P extends AnyProps = AnyProps>(
+		tag: T,
+		props: Props<T> & P,
+		children: HtmlVNodeChild[],
+	): HtmlVNode<T, P>;
+};
+
+export declare function h<T extends Tag, P extends AnyProps = AnyProps>(
 	tag: T,
-	props: Gotei.Props<T>,
-	children: Gotei.Child[],
-): Gotei.VNode<"html">;
+	props: Gotei.Props<T> & P,
+	children: HtmlVNodeChild[],
+): HtmlVNode<T, P>;
+
+// text vnode
+export type TextRenderizable = string | number | boolean;
+
+export interface TextVNode<T extends TextRenderizable = TextRenderizable>
+	extends Gotei.VNode<"text"> {
+	data: OrComputed<T>;
+}
+
+export declare const TextVNode: {
+	prototype: TextVNode;
+	new <T extends TextRenderizable>(data: OrComputed<T>): TextVNode<T>;
+};
+
+// conditional vnode
+export interface ConditionalVNode<
+	T extends HtmlVNode | TextVNode = HtmlVNode | TextVNode,
+> extends Gotei.VNode<"maybe"> {
+	vnode: T;
+	condition: OrComputed<boolean>;
+}
+
+export declare const ConditionalVNode: {
+	prototype: ConditionalVNode;
+	new <T extends HtmlVNode | TextVNode>(
+		vnode: T,
+		condition: OrComputed<boolean>,
+	): ConditionalVNode<T>;
+};
+
+// array vnode
+export type Keyed<T> = T extends HtmlVNode<infer T, infer P>
+	? HtmlVNode<T, P & { key: string | number }>
+	: never;
+
+export interface ArrayVNode<T = any> extends Gotei.VNode<"array"> {
+	f: (item: T) => Keyed<HtmlVNode>;
+	items: () => T[];
+}
+
+export declare const ArrayVNode: {
+	prototype: ArrayVNode;
+	new <T>(f: (item: T) => Keyed<HtmlVNode>, items: () => T[]): ArrayVNode<T>;
+};

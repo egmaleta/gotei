@@ -1,36 +1,51 @@
 import { OrArray, OrComputed } from "./common";
-import { Gotei } from "./runtime";
+import {
+	Gotei,
+	Tag,
+	Props,
+	AnyProps,
+	HtmlVNodeChild,
+	HtmlVNode,
+	TextRenderizable,
+	TextVNode,
+	ConditionalVNode,
+	Keyed,
+	ArrayVNode,
+} from "./runtime";
 
 type Tags = {
-	[T in Gotei.Tag]: {
-		(
-			props: Gotei.Props<T>,
-			...children: OrArray<Gotei.Child>[]
-		): Gotei.VNode<T>;
-		(...children: OrArray<Gotei.Child>[]): Gotei.VNode<T>;
+	[T in Tag]: {
+		<P extends AnyProps = AnyProps>(
+			props: Props<T> & P,
+			...children: OrArray<HtmlVNodeChild>[]
+		): HtmlVNode<T, P>;
+		(...children: OrArray<HtmlVNodeChild>[]): HtmlVNode<T>;
 	};
 };
 
 export declare const tags: Tags;
 
-export declare function text<T extends string | number | boolean>(
+export declare function text<T extends TextRenderizable>(
 	data: OrComputed<T>,
-): Gotei.VNode<"text">;
+): TextVNode<T>;
 
-export declare function map<T>(
-	f: (item: T) => Gotei.VNode<"html">,
-	over: () => T[],
-): Gotei.VNode<"array">;
-
-export declare function show<T extends Gotei.VNode>(
+export declare function show<T extends HtmlVNode | TextVNode>(
 	vnode: T,
 	condition: OrComputed<boolean>,
-): Gotei.VNode<"maybe">;
+): ConditionalVNode<T>;
 
-export declare function ternary<T extends Gotei.VNode, Q extends Gotei.VNode>(
+export declare function ternary<
+	T extends HtmlVNode | TextVNode,
+	Q extends HtmlVNode | TextVNode,
+>(
 	yes: T,
 	no: Q,
 	condition: OrComputed<boolean>,
-): (T | Q)[];
+): (ConditionalVNode<T> | ConditionalVNode<Q>)[];
+
+export declare function map<T>(
+	f: (item: T) => Keyed<HtmlVNode>,
+	over: () => T[],
+): ArrayVNode<T>;
 
 export declare function mount(to: ParentNode, ...vnodes: Gotei.VNode[]): void;

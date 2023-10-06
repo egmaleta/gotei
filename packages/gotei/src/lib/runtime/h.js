@@ -12,7 +12,7 @@ import {
 	flatten,
 } from "./utils";
 
-function HtmlVNode(tag, props, children) {
+export function HtmlVNode(tag, props, children) {
 	this[typeSymbol] = "html";
 	this.tag = tag;
 	this.props = props;

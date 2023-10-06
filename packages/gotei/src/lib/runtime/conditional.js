@@ -3,7 +3,7 @@ import { Effect } from "../state/effect";
 import { typeSymbol } from "../symbols";
 import { renderOrphanNode } from "./utils";
 
-function ConditionalVNode(vnode, condition) {
+export function ConditionalVNode(vnode, condition) {
 	this[typeSymbol] = "maybe";
 	this.vnode = vnode;
 	this.condition = condition;

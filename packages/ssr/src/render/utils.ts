@@ -5,11 +5,11 @@ const CLASS_SEPARATOR = /\s+/;
 const STYLE_RULE_SEPARATOR = /;\s*/;
 
 const ESCAPE_LIST: (readonly [string, string])[] = [
-	[`&`, `&amp`],
-	[`<`, `&lt`],
-	[`>`, `&gt`],
-	[`"`, `&quot`],
-	[`'`, `&#39`],
+	[`&`, `&amp;`],
+	[`<`, `&lt;`],
+	[`>`, `&gt;`],
+	[`"`, `&quot;`],
+	[`'`, `&#39;`],
 ];
 
 const EMPTY_TAGS = new Set<Tag>([

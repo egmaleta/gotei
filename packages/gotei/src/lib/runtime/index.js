@@ -1,3 +1,5 @@
+import { renderOrphanNode } from "./utils";
+
 export * from "./h";
 export * from "./text";
 export * from "./conditional";
@@ -9,4 +11,8 @@ export function mount(to, ...vnodes) {
 		vnode.mount(ctx);
 		ctx.childIndex++;
 	}
+}
+
+export function replace(node, vnode) {
+	node.replaceWith(renderOrphanNode(vnode));
 }

@@ -49,3 +49,4 @@ export declare function map<T>(
 ): ArrayVNode<T>;
 
 export declare function mount(to: ParentNode, ...vnodes: Gotei.VNode[]): void;
+export declare function replace(node: ChildNode, vnode: Gotei.VNode): void;

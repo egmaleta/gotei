@@ -10,6 +10,9 @@
 			"suspicious": {
 				"noExplicitAny": "off",
 				"noEmptyInterface": "off"
+			},
+			"style": {
+				"noUnusedTemplateLiteral": "off"
 			}
 		},
 		"ignore": ["dist"]

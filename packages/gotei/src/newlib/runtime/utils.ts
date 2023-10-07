@@ -1,6 +1,10 @@
 export type OrComputed<T = any> = T | (() => T);
 export type OrArray<T = any> = T | T[];
 
+export type MountFunction<R = any> = {
+	(parent: ParentNode, index: number): R;
+};
+
 export const EVENT_LISTENER_PREFIX = "on";
 export const CSS_VAR_PREFIX = "--";
 const WHITESPACE = /\s+/;
@@ -52,5 +56,13 @@ export function* flatten<T>(maybeArray: OrArray<T>): Generator<T> {
 		}
 	} else {
 		yield maybeArray;
+	}
+}
+
+export function mount(node: ChildNode, to: ParentNode, at?: number) {
+	if (typeof at === "undefined" || at >= to.childNodes.length) {
+		to.appendChild(node);
+	} else {
+		to.insertBefore(node, to.childNodes.item(at));
 	}
 }

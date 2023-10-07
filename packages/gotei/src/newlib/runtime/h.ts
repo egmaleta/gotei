@@ -10,15 +10,12 @@ import {
 	setCSSVar,
 	flatten,
 	OrArray,
+	MountFunction,
+	mount,
 } from "./utils";
 
-type MountFunction = {
-	(parent: ParentNode, ...args: any[]): any;
-};
-
-type HTMLElementMountFunction<T extends Gotei.Tag> = {
-	(parent: ParentNode): HTMLElementTagNameMap[T];
-};
+export type HTMLElementMountFunction<T extends Gotei.Tag = Gotei.Tag> =
+	MountFunction<HTMLElementTagNameMap[T]>;
 
 type Child =
 	| MountFunction
@@ -133,8 +130,8 @@ export function h<T extends Gotei.Tag, P extends AnyProps>(
 		}
 	}
 
-	return (parent: ParentNode) => {
-		parent.appendChild(el);
+	return (parent, index) => {
+		mount(el, parent, index);
 
 		// @ts-ignore
 		bindThis?.set(el);

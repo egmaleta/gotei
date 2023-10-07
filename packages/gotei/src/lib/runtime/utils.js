@@ -38,7 +38,7 @@ export function setAttribute(element, name, attr) {
 
 export function renderOrphanNode(vnode) {
 	const fragment = document.createDocumentFragment();
-	render(vnode, { parent: fragment, childIndex: -1 });
+	vnode.mount({ parent: fragment, childIndex: -1 });
 
 	return fragment.lastChild;
 }

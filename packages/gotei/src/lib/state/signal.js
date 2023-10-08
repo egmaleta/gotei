@@ -1,4 +1,4 @@
-import { define, inherits } from "../oop";
+import { define, inherits } from "./oop";
 import { CONTEXT } from "./context";
 
 function ReadableSignal(value) {

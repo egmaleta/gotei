@@ -1,7 +1,7 @@
 import { Effect } from "../state/effect";
 import { OrComputed } from "./utils";
 
-export type TextRenderizable = string | number | boolean;
+type TextRenderizable = string | number | boolean;
 
 export function text<T extends TextRenderizable>(data: OrComputed<T>) {
 	const text = document.createTextNode("");

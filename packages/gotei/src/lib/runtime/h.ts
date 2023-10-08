@@ -54,13 +54,24 @@ export function h<T extends Gotei.Tag, P extends AnyProps>(
 		}
 	}
 
+	let index = 0;
 	for (const child of children) {
+		if (
+			typeof child === "boolean" ||
+			typeof child === "undefined" ||
+			child === null
+		) {
+			continue;
+		}
+
 		if (child instanceof Node) {
 			el.appendChild(child);
 		} else if (typeof child === "string" || typeof child === "number") {
 			el.appendChild(document.createTextNode(`${child}`));
+		} else {
+			child(el, index);
 		}
-		// TODO: handle mountfunction children
+		index++;
 	}
 
 	if (bindValue) {

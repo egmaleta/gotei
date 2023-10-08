@@ -1,8 +1,8 @@
 import { MountFunction } from "./utils";
-import { CONTEXT } from "./context";
+import { CONTEXT, IWindow } from "./context";
 
-export { type MountFunction };
-export { type Gotei } from "./ns";
+export type { MountFunction, IWindow };
+export type { Gotei } from "./ns";
 
 export * from "./h";
 export * from "./text";

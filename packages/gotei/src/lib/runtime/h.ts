@@ -1,5 +1,5 @@
 import { Effect } from "../state/effect";
-import { document } from "./context";
+import { CONTEXT } from "./context";
 import { Gotei } from "./ns";
 import {
 	CSS_VAR_PREFIX,
@@ -31,8 +31,9 @@ export function h<T extends Gotei.Tag, P extends AnyProps>(
 	props: Gotei.Attrs<T> & P,
 	children: Child[],
 ): MountFunction<HTMLElementTagNameMap[T]> {
-	const doc = document();
-	const el = doc.createElement(tag);
+	const window = CONTEXT.window();
+
+	const el = window.document.createElement(tag);
 
 	const {
 		bindThis,
@@ -66,10 +67,10 @@ export function h<T extends Gotei.Tag, P extends AnyProps>(
 			continue;
 		}
 
-		if (child instanceof Node) {
+		if (child instanceof window.Node) {
 			el.appendChild(child);
 		} else if (typeof child === "string" || typeof child === "number") {
-			el.appendChild(doc.createTextNode(`${child}`));
+			el.appendChild(window.document.createTextNode(`${child}`));
 		} else {
 			child(el, index);
 		}
@@ -179,7 +180,7 @@ export const tags = new Proxy(
 						typeof head === "object" &&
 						head &&
 						!Array.isArray(head) &&
-						!(head instanceof Node)
+						!(head instanceof CONTEXT.window().Node)
 					) {
 						return h(tag, head, [...flatten(args.slice(1))]);
 					}

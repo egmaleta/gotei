@@ -1,22 +1,19 @@
-interface GoteiDocument
-	extends Pick<Document, "createElement" | "createTextNode"> {}
+export interface IWindow extends Pick<typeof globalThis, "document" | "Node"> {}
 
 class Context {
-	private doc: GoteiDocument | null = null;
+	private w: IWindow | null = null;
 
-	config(document: GoteiDocument) {
-		this.doc = document;
+	config(window: IWindow) {
+		this.w = window;
 	}
 
-	document(): GoteiDocument {
-		if (!this.doc) {
-			this.doc = globalThis.document;
+	window() {
+		if (!this.w) {
+			this.w = globalThis;
 		}
-		return this.doc;
+
+		return this.w;
 	}
 }
 
-const CONTEXT = new Context();
-
-export const config = CONTEXT.config.bind(CONTEXT);
-export const document = CONTEXT.document.bind(CONTEXT);
+export const CONTEXT = new Context();

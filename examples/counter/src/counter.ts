@@ -1,11 +1,9 @@
 import { tags, text } from "gotei";
 import { type Gotei } from "gotei/runtime";
-import { type Signal } from "gotei/state";
+import { type SignalGetter } from "gotei/state";
 
-type ButtonProps = Gotei.IntrinsicElements["button"];
-
-interface CounterProps extends ButtonProps {
-	count: Signal<number>;
+interface CounterProps extends Gotei.Attrs<"button"> {
+	count: SignalGetter<number>;
 }
 
 export default function ({ count, ...props }: CounterProps) {

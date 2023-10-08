@@ -851,6 +851,7 @@ export declare namespace Gotei {
 			styleRecord?: {
 				[K in keyof CSSProperties]?: OrComputed<CSSProperties[K]>;
 			} & Record<string, OrComputed<string>>;
+			[customAttr: string]: any;
 		};
 
 	export interface IntrinsicElements {

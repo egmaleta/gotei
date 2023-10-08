@@ -24,11 +24,9 @@ type Child =
 	| undefined
 	| null;
 
-type AnyProps = Record<string, any>;
-
-export function h<T extends Gotei.Tag, P extends AnyProps>(
+export function h<T extends Gotei.Tag>(
 	tag: T,
-	props: Gotei.Attrs<T> & P,
+	props: Gotei.Attrs<T>,
 	children: Child[],
 ): MountFunction<HTMLElementTagNameMap[T]> {
 	const window = CONTEXT.window();
@@ -163,10 +161,9 @@ export function h<T extends Gotei.Tag, P extends AnyProps>(
 
 type Tags = {
 	[T in Gotei.Tag]: {
-		<P extends AnyProps>(
-			props: Gotei.Attrs<T> & P,
-			...children: OrArray<Child>[]
-		): MountFunction<HTMLElementTagNameMap[T]>;
+		(props: Gotei.Attrs<T>, ...children: OrArray<Child>[]): MountFunction<
+			HTMLElementTagNameMap[T]
+		>;
 		(...children: OrArray<Child>[]): MountFunction<HTMLElementTagNameMap[T]>;
 	};
 };

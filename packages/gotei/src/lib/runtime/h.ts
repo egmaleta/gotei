@@ -142,16 +142,18 @@ export function h<T extends Gotei.Tag, P extends AnyProps>(
 	}
 
 	return (parent, index) => {
-		mount(el, parent, index);
+		if (parent) {
+			mount(el, parent, index);
 
-		// @ts-ignore
-		bindThis?.set(el);
+			// @ts-ignore
+			bindThis?.set(el);
 
-		if (use) {
-			if (Array.isArray(use)) {
-				for (const f of use) f(el as any);
-			} else {
-				use(el as any);
+			if (use) {
+				if (Array.isArray(use)) {
+					for (const f of use) f(el as any);
+				} else {
+					use(el as any);
+				}
 			}
 		}
 

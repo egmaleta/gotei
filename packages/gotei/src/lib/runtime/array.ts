@@ -6,7 +6,9 @@ export function map<T extends object, K extends keyof T>(
 	key: K,
 	f: (item: T) => MountFunction<Node>,
 ): MountFunction<Node[]> {
-	return (parent: ParentNode) => {
+	return (parent?: ParentNode) => {
+		if (!parent) return [];
+
 		const cache = new Map<T[K], Node>();
 		let currentIds: T[K][] = [];
 

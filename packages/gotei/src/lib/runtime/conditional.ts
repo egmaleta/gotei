@@ -13,7 +13,9 @@ export function show<T extends Gotei.Tag>(
 ): MountFunction<HTMLElementTagNameMap[T] | null>;
 
 export function show(x: Node | MountFunction, condition: OrComputed<boolean>) {
-	return (parent: ParentNode, index?: number) => {
+	return (parent?: ParentNode, index?: number) => {
+		if (!parent) return null;
+
 		if (typeof condition !== "function") {
 			if (condition) {
 				return typeof x === "function"

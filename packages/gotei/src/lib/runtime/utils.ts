@@ -2,7 +2,7 @@ export type OrComputed<T = any> = T | (() => T);
 export type OrArray<T = any> = T | T[];
 
 export type MountFunction<R = any> = {
-	(parent: ParentNode, index?: number): R;
+	(parent?: ParentNode, index?: number): R;
 };
 
 export const EVENT_LISTENER_PREFIX = "on";

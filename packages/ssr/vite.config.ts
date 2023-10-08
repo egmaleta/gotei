@@ -8,5 +8,8 @@ export default defineConfig({
 			fileName: (format, name) => `${name}.${format === "cjs" ? format : "js"}`,
 		},
 		minify: false,
+		rollupOptions: {
+			external: ["happy-dom", "gotei"],
+		},
 	},
 });

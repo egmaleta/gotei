@@ -7,6 +7,7 @@ export * from "./h";
 export * from "./text";
 export * from "./array";
 export * from "./conditional";
+export { config } from "./context";
 
 export function mount(nodeOrMF: Node | MountFunction, parent: ParentNode) {
 	typeof nodeOrMF === "function"

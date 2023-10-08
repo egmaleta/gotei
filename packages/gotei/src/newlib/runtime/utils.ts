@@ -47,15 +47,15 @@ export function setAttribute(el: Element, name: string, attr: any) {
 	}
 }
 
-export function* flatten<T>(maybeArray: OrArray<T>): Generator<T> {
-	if (Array.isArray(maybeArray)) {
-		for (const maybeArrayItem of maybeArray) {
-			for (const item of flatten(maybeArrayItem)) {
+export function* flatten<T>(array: OrArray<T>[]): Generator<T> {
+	for (const maybeArray of array) {
+		if (!Array.isArray(maybeArray)) {
+			yield maybeArray;
+		} else {
+			for (const item of flatten(maybeArray)) {
 				yield item;
 			}
 		}
-	} else {
-		yield maybeArray;
 	}
 }
 

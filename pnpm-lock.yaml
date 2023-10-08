@@ -24,7 +24,14 @@ importers:
         specifier: 4.4.9
         version: 4.4.9
 
-  examples/astro-gotei-ssr: {}
+  examples/astro-gotei-ssr:
+    dependencies:
+      '@goteijs/ssr':
+        specifier: workspace:^
+        version: link:../../packages/ssr
+      gotei:
+        specifier: workspace:^
+        version: link:../../packages/gotei
 
   examples/counter:
     devDependencies:

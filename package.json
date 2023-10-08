@@ -2,6 +2,7 @@
 	"name": "gotei-monorepo",
 	"devDependencies": {
 		"@biomejs/biome": "1.2.1",
+		"astro": "3.2.3",
 		"happy-dom": "12.9.0",
 		"typescript": "5.2.2",
 		"vite": "4.4.9"

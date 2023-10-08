@@ -7,10 +7,10 @@ export function show<T extends Node>(
 	condition: OrComputed<boolean>,
 ): MountFunction<T | null>;
 
-export function show<T extends Gotei.Tag, H extends HTMLElementTagNameMap[T]>(
-	mf: MountFunction<H>,
+export function show<T extends Gotei.Tag>(
+	mf: MountFunction<HTMLElementTagNameMap[T]>,
 	condition: OrComputed<boolean>,
-): MountFunction<H | null>;
+): MountFunction<HTMLElementTagNameMap[T] | null>;
 
 export function show(x: Node | MountFunction, condition: OrComputed<boolean>) {
 	return (parent: ParentNode, index: number) => {

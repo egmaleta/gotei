@@ -14,9 +14,6 @@ import {
 	mount,
 } from "./utils";
 
-export type HTMLElementMountFunction<T extends Gotei.Tag = Gotei.Tag> =
-	MountFunction<HTMLElementTagNameMap[T]>;
-
 type Child =
 	| MountFunction
 	| Node
@@ -32,7 +29,7 @@ export function h<T extends Gotei.Tag, P extends AnyProps>(
 	tag: T,
 	props: Gotei.Attrs<T> & P,
 	children: Child[],
-): HTMLElementMountFunction<T> {
+): MountFunction<HTMLElementTagNameMap[T]> {
 	const el = document.createElement(tag);
 
 	const {
@@ -153,8 +150,8 @@ type Tags = {
 		<P extends AnyProps>(
 			props: Gotei.Attrs<T> & P,
 			...children: OrArray<Child>[]
-		): HTMLElementMountFunction<T>;
-		(...children: OrArray<Child>[]): HTMLElementMountFunction<T>;
+		): MountFunction<HTMLElementTagNameMap[T]>;
+		(...children: OrArray<Child>[]): MountFunction<HTMLElementTagNameMap[T]>;
 	};
 };
 

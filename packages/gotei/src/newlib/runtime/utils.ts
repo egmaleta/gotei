@@ -59,7 +59,7 @@ export function* flatten<T>(maybeArray: OrArray<T>): Generator<T> {
 	}
 }
 
-export function mount(node: ChildNode, to: ParentNode, at?: number) {
+export function mount(node: Node, to: ParentNode, at?: number) {
 	if (typeof at === "undefined" || at >= to.childNodes.length) {
 		to.appendChild(node);
 	} else {

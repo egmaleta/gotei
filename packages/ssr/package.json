@@ -9,7 +9,8 @@
 	"scripts": {
 		"build": "vite build && tsc"
 	},
-	"devDependencies": {
-		"gotei": "workspace:^"
+	"dependencies": {
+		"gotei": "workspace:^",
+		"happy-dom": "12.9.0"
 	}
 }

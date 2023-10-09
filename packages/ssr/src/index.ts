@@ -1,14 +1,14 @@
-import { config, IWindow, MountFunction } from "gotei/runtime";
+import { render } from "gotei";
+import type { IDocument, RenderFunction } from "gotei/runtime";
 import { Window } from "happy-dom";
 
-function register(window?: IWindow) {
-	config(window ?? (new Window() as any));
-}
+const defaultDocument: IDocument = new Window().document as any;
 
-function renderToString(element: HTMLElement): string;
-function renderToString(mf: MountFunction<HTMLElement>): string;
-function renderToString(x: HTMLElement | MountFunction<HTMLElement>) {
-	return (typeof x === "function" ? x() : x).outerHTML;
-}
+export function renderToString<T extends HTMLElement | Text>(
+	rf: RenderFunction<T>,
+	document?: IDocument,
+) {
+	const node = render(rf, document ?? defaultDocument);
 
-export { register, renderToString };
+	return "outerHTML" in node ? node.outerHTML : node.data;
+}

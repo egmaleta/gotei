@@ -1,26 +1,29 @@
 import { Effect } from "../state/effect";
-import { MountFunction, OrComputed, mount } from "./utils";
+import { RenderFunction, OrComputed, mount } from "./utils";
 import { Gotei } from "./ns";
 
 export function show<T extends Node>(
 	node: T,
 	condition: OrComputed<boolean>,
-): MountFunction<T | null>;
+): RenderFunction<T | null>;
 
 export function show<T extends Gotei.Tag>(
-	mf: MountFunction<HTMLElementTagNameMap[T]>,
+	rf: RenderFunction<HTMLElementTagNameMap[T]>,
 	condition: OrComputed<boolean>,
-): MountFunction<HTMLElementTagNameMap[T] | null>;
+): RenderFunction<HTMLElementTagNameMap[T] | null>;
 
-export function show(x: Node | MountFunction, condition: OrComputed<boolean>) {
-	return (parent?: ParentNode, index?: number) => {
+export function show(
+	x: Node | RenderFunction,
+	condition: OrComputed<boolean>,
+): RenderFunction<Node | null> {
+	return (ctx) => {
+		const { parent, childIndex } = ctx;
+
 		if (!parent) return null;
 
 		if (typeof condition !== "function") {
 			if (condition) {
-				return typeof x === "function"
-					? x(parent, index)
-					: parent.appendChild(x);
+				return typeof x === "function" ? x(ctx) : parent.appendChild(x);
 			}
 			return null;
 		}
@@ -31,12 +34,12 @@ export function show(x: Node | MountFunction, condition: OrComputed<boolean>) {
 			if (condition()) {
 				if (!node) {
 					if (typeof x === "function") {
-						node = x(parent, index);
+						node = x(ctx);
 						return;
 					}
 					node = x;
 				}
-				node && mount(node, parent, index);
+				node && mount(node, parent, childIndex);
 			} else {
 				node && parent.removeChild(node);
 			}

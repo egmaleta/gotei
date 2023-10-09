@@ -1,32 +1,34 @@
 import { Effect } from "../state/effect";
-import { MountFunction } from "./utils";
+import { RenderFunction } from "./utils";
 
 export function map<T extends object, K extends keyof T>(
 	items: () => T[],
 	key: K,
-	f: (item: T) => MountFunction<Node>,
-): MountFunction<Node[]> {
-	return (parent?: ParentNode) => {
+	f: (item: T) => RenderFunction<Node>,
+): RenderFunction<Node[]> {
+	return (ctx) => {
+		const { parent, document } = ctx;
+
 		if (!parent) return [];
 
 		const cache = new Map<T[K], Node>();
 		let currentIds: T[K][] = [];
 
-		new Effect((ctx: { op: string; [arg: string]: any } | null) => {
-			if (!ctx) {
+		new Effect((effectCtx: { op: string; [arg: string]: any } | null) => {
+			if (!effectCtx) {
 				// first render
 				for (const item of items()) {
 					const id = item[key];
-					const mf = f(item);
-					const node = mf(parent);
+					const rf = f(item);
+					const node = rf({ parent, document });
 
 					cache.set(id, node);
 					currentIds.push(id);
 				}
 			} else {
-				const { op } = ctx;
+				const { op } = effectCtx;
 				if (op === "setat") {
-					const { index } = ctx;
+					const { index } = effectCtx;
 
 					// remove old node
 					const oldId = currentIds[index];
@@ -37,8 +39,8 @@ export function map<T extends object, K extends keyof T>(
 					// insert new node
 					const item = items()[index];
 					const id = item[key];
-					const mf = f(item);
-					const node = mf(parent, index);
+					const rf = f(item);
+					const node = rf({ parent, document, childIndex: index });
 					cache.set(id, node);
 					currentIds[index] = id;
 				} else if (op === "pop" || op === "shift") {
@@ -51,14 +53,16 @@ export function map<T extends object, K extends keyof T>(
 					currentIds[op]();
 				} else if (op === "push" || op === "unshift") {
 					const slice =
-						op === "push" ? items().slice(-ctx.n) : items().slice(0, ctx.n);
+						op === "push"
+							? items().slice(-effectCtx.n)
+							: items().slice(0, effectCtx.n);
 
 					const ids = slice.map((item) => item[key]);
-					const mfs = slice.map((item) => f(item));
+					const rfs = slice.map((item) => f(item));
 					const nodes =
 						op === "push"
-							? mfs.map((mf) => mf(parent))
-							: mfs.map((mf, i) => mf(parent, i));
+							? rfs.map((rf) => rf({ parent, document }))
+							: rfs.map((rf, i) => rf({ parent, document, childIndex: i }));
 					currentIds[op](...ids);
 					for (let i = 0; i < ids.length; i++) cache.set(ids[i], nodes[i]);
 				} else if (op === "sort" || op === "reverse") {
@@ -83,8 +87,8 @@ export function map<T extends object, K extends keyof T>(
 							return parent.appendChild(oldNode);
 						}
 
-						const mf = f(item);
-						return mf(parent);
+						const rf = f(item);
+						return rf({ parent, document });
 					});
 
 					cache.clear();

@@ -1,8 +1,17 @@
 export type OrComputed<T = any> = T | (() => T);
 export type OrArray<T = any> = T | T[];
 
-export type MountFunction<R = any> = {
-	(parent?: ParentNode, index?: number): R;
+export interface IDocument
+	extends Pick<Document, "createElement" | "createTextNode"> {}
+
+export type RenderContext = {
+	parent?: ParentNode;
+	childIndex?: number;
+	document: IDocument;
+};
+
+export type RenderFunction<R = any> = {
+	(ctx: RenderContext): R;
 };
 
 export const EVENT_LISTENER_PREFIX = "on";

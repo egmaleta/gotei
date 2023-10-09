@@ -1,7 +1,7 @@
-export {
-	h,
-	config,
-	type Gotei,
-	type MountFunction,
-	type IWindow,
+export { h } from "./lib/runtime";
+export type {
+	Gotei,
+	RenderFunction,
+	RenderContext,
+	IDocument,
 } from "./lib/runtime";

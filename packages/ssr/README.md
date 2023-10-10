@@ -1,1 +1,0 @@
-# gotei ssr utilities

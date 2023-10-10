@@ -1,12 +1,13 @@
-import { render } from "gotei";
-import type { IDocument, RenderFunction } from "gotei/runtime";
 import { Window } from "happy-dom";
+
+import { render } from "./lib/runtime";
+import type { IDocument, RenderFunction } from "./lib/runtime";
 
 const defaultDocument: IDocument = new Window().document as any;
 
 export function renderToString<T extends HTMLElement | Text>(
   rf: RenderFunction<T>,
-  document?: IDocument,
+  document?: IDocument
 ) {
   const node = render(rf, document ?? defaultDocument);
 

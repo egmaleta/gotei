@@ -23,9 +23,20 @@
       "import": "./dist/runtime.js",
       "require": "./dist/runtime.cjs",
       "types": "./dist/runtime.d.ts"
+    },
+    "./ssr": {
+      "import": "./dist/ssr.js",
+      "require": "./dist/ssr.cjs",
+      "types": "./dist/ssr.d.ts"
     }
   },
   "scripts": {
     "build": "vite build && tsc && vite build --config vite.browser.config.ts"
+  },
+  "devDependencies": {
+    "happy-dom": "12.9.0"
+  },
+  "peerDependencies": {
+    "happy-dom": "12.9.0"
   }
 }

@@ -39,13 +39,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/gotei
 
-  packages/gotei: {}
-
-  packages/ssr:
-    dependencies:
-      gotei:
-        specifier: workspace:^
-        version: link:../gotei
+  packages/gotei:
+    devDependencies:
       happy-dom:
         specifier: 12.9.0
         version: 12.9.0

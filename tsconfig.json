@@ -1,18 +1,18 @@
 {
-	"compilerOptions": {
-		"lib": ["esnext"],
-		"module": "esnext",
-		"target": "esnext",
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "module": "esnext",
+    "target": "esnext",
 
-		"moduleResolution": "bundler",
-		"isolatedModules": true,
-		"declaration": true,
-		"emitDeclarationOnly": true,
-		"useDefineForClassFields": true,
-		"allowJs": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true
-	}
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "useDefineForClassFields": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  }
 }

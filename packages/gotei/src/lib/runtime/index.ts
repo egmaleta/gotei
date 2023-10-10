@@ -9,8 +9,8 @@ export * from "./array";
 export * from "./conditional";
 
 export function render<T extends Node>(
-	rf: RenderFunction<T>,
-	document?: IDocument,
+  rf: RenderFunction<T>,
+  document?: IDocument,
 ) {
-	return rf({ document: document ?? globalThis.document });
+  return rf({ document: document ?? globalThis.document });
 }

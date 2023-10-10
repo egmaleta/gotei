@@ -1,0 +1,24 @@
+---
+import { renderToString } from "gotei/ssr"
+import counter from "./counter";
+
+interface Props {
+  start: number
+}
+
+const { start } = Astro.props;
+const renderedCounter = renderToString(counter({ start }));
+---
+
+<Fragment set:html={renderedCounter} />
+
+<script>
+  import { render } from "gotei";
+  import counter from "./counter";
+
+  for (const button of document.querySelectorAll("button")) {
+    const parent = button.parentNode;
+    parent?.removeChild(button);
+    parent?.appendChild(render(counter()))
+  }
+</script>

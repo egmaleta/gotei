@@ -1,20 +1,58 @@
 import { Effect } from "../state/effect";
 import { Gotei } from "./ns";
-import {
-  CSS_VAR_PREFIX,
-  EVENT_LISTENER_PREFIX,
-  addEventListener,
-  cls2Tokens,
-  setAttribute,
-  setCSSProp,
-  setCSSVar,
-  flatten,
-  OrArray,
-  RenderFunction,
-  mount,
-} from "./utils";
+import { OrArray, RenderFunction, mount } from "./utils";
 
 type Child = RenderFunction | string | number | boolean | undefined | null;
+
+const EVENT_LISTENER_PREFIX = "on:";
+const CSS_VAR_PREFIX = "--";
+const WHITESPACE = /\s+/;
+
+function setCSSVar(el: HTMLElement, prop: string, value: string) {
+  el.style.setProperty(prop, value);
+}
+
+function setCSSProp(el: HTMLElement, prop: any, value: string) {
+  el.style[prop] = value;
+}
+
+function cls2Tokens(cls: string) {
+  return cls.trim().split(WHITESPACE);
+}
+
+function addEventListener(target: EventTarget, name: string, handler: any) {
+  const handlers = Array.isArray(handler) ? handler : [handler];
+
+  for (const handler of handlers) {
+    if (typeof handler === "function") {
+      target.addEventListener(name, handler);
+    } else {
+      target.addEventListener(name, handler.handler, handler.options);
+    }
+  }
+}
+
+function setAttribute(el: Element, name: string, attr: any) {
+  if (typeof attr === "string" || typeof attr === "number") {
+    el.setAttribute(name, `${attr}`);
+  } else if (attr === true) {
+    el.setAttribute(name, "");
+  } else {
+    el.removeAttribute(name);
+  }
+}
+
+function* flatten<T>(array: OrArray<T>[]): Generator<T> {
+  for (const maybeArray of array) {
+    if (!Array.isArray(maybeArray)) {
+      yield maybeArray;
+    } else {
+      for (const item of flatten(maybeArray)) {
+        yield item;
+      }
+    }
+  }
+}
 
 export function h<T extends Gotei.Tag>(
   tag: T,

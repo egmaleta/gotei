@@ -5,127 +5,6 @@ import { OrArray, OrComputed } from "./utils";
 import { Signal, SignalSetter } from "../state";
 
 export declare namespace Gotei {
-  type TypedEvent<
-    E extends Event = Event,
-    T extends EventTarget = EventTarget,
-  > = Omit<E, "currentTarget"> & { readonly currentTarget: T };
-
-  export type EventHandler<
-    E extends Event = Event,
-    T extends EventTarget = EventTarget,
-  > =
-    | ((ev: TypedEvent<E, T>) => any)
-    | {
-        handler: (ev: TypedEvent<E, T>) => any;
-        options?: AddEventListenerOptions;
-      };
-
-  interface EventHandlers<T extends EventTarget = EventTarget> {
-    onabort?: OrArray<EventHandler<UIEvent, T>>;
-    onanimationcancel?: OrArray<EventHandler<AnimationEvent, T>>;
-    onanimationend?: OrArray<EventHandler<AnimationEvent, T>>;
-    onanimationiteration?: OrArray<EventHandler<AnimationEvent, T>>;
-    onanimationstart?: OrArray<EventHandler<AnimationEvent, T>>;
-    onauxclick?: OrArray<EventHandler<MouseEvent, T>>;
-    onbeforeinput?: OrArray<EventHandler<InputEvent, T>>;
-    onblur?: OrArray<EventHandler<FocusEvent, T>>;
-    oncancel?: OrArray<EventHandler<Event, T>>;
-    oncanplay?: OrArray<EventHandler<Event, T>>;
-    oncanplaythrough?: OrArray<EventHandler<Event, T>>;
-    onchange?: OrArray<EventHandler<Event, T>>;
-    onclick?: OrArray<EventHandler<MouseEvent, T>>;
-    onclose?: OrArray<EventHandler<Event, T>>;
-    oncompositionend?: OrArray<EventHandler<CompositionEvent, T>>;
-    oncompositionstart?: OrArray<EventHandler<CompositionEvent, T>>;
-    oncompositionupdate?: OrArray<EventHandler<CompositionEvent, T>>;
-    oncontextmenu?: OrArray<EventHandler<MouseEvent, T>>;
-    oncopy?: OrArray<EventHandler<ClipboardEvent, T>>;
-    oncuechange?: OrArray<EventHandler<Event, T>>;
-    oncut?: OrArray<EventHandler<ClipboardEvent, T>>;
-    ondblclick?: OrArray<EventHandler<MouseEvent, T>>;
-    ondrag?: OrArray<EventHandler<DragEvent, T>>;
-    ondragend?: OrArray<EventHandler<DragEvent, T>>;
-    ondragenter?: OrArray<EventHandler<DragEvent, T>>;
-    ondragleave?: OrArray<EventHandler<DragEvent, T>>;
-    ondragover?: OrArray<EventHandler<DragEvent, T>>;
-    ondragstart?: OrArray<EventHandler<DragEvent, T>>;
-    ondrop?: OrArray<EventHandler<DragEvent, T>>;
-    ondurationchange?: OrArray<EventHandler<Event, T>>;
-    onemptied?: OrArray<EventHandler<Event, T>>;
-    onended?: OrArray<EventHandler<Event, T>>;
-    onerror?: OrArray<EventHandler<ErrorEvent, T>>;
-    onfocus?: OrArray<EventHandler<FocusEvent, T>>;
-    onfocusin?: OrArray<EventHandler<FocusEvent, T>>;
-    onfocusout?: OrArray<EventHandler<FocusEvent, T>>;
-    onformdata?: OrArray<EventHandler<FormDataEvent, T>>;
-    onfullscreenchange?: OrArray<EventHandler<Event, T>>;
-    onfullscreenerror?: OrArray<EventHandler<Event, T>>;
-    ongotpointercapture?: OrArray<EventHandler<PointerEvent, T>>;
-    oninput?: OrArray<EventHandler<Event, T>>;
-    oninvalid?: OrArray<EventHandler<Event, T>>;
-    onkeydown?: OrArray<EventHandler<KeyboardEvent, T>>;
-    onkeypress?: OrArray<EventHandler<KeyboardEvent, T>>;
-    onkeyup?: OrArray<EventHandler<KeyboardEvent, T>>;
-    onload?: OrArray<EventHandler<Event, T>>;
-    onloadeddata?: OrArray<EventHandler<Event, T>>;
-    onloadedmetadata?: OrArray<EventHandler<Event, T>>;
-    onloadstart?: OrArray<EventHandler<Event, T>>;
-    onlostpointercapture?: OrArray<EventHandler<PointerEvent, T>>;
-    onmousedown?: OrArray<EventHandler<MouseEvent, T>>;
-    onmouseenter?: OrArray<EventHandler<MouseEvent, T>>;
-    onmouseleave?: OrArray<EventHandler<MouseEvent, T>>;
-    onmousemove?: OrArray<EventHandler<MouseEvent, T>>;
-    onmouseout?: OrArray<EventHandler<MouseEvent, T>>;
-    onmouseover?: OrArray<EventHandler<MouseEvent, T>>;
-    onmouseup?: OrArray<EventHandler<MouseEvent, T>>;
-    onpaste?: OrArray<EventHandler<ClipboardEvent, T>>;
-    onpause?: OrArray<EventHandler<Event, T>>;
-    onplay?: OrArray<EventHandler<Event, T>>;
-    onplaying?: OrArray<EventHandler<Event, T>>;
-    onpointercancel?: OrArray<EventHandler<PointerEvent, T>>;
-    onpointerdown?: OrArray<EventHandler<PointerEvent, T>>;
-    onpointerenter?: OrArray<EventHandler<PointerEvent, T>>;
-    onpointerleave?: OrArray<EventHandler<PointerEvent, T>>;
-    onpointermove?: OrArray<EventHandler<PointerEvent, T>>;
-    onpointerout?: OrArray<EventHandler<PointerEvent, T>>;
-    onpointerover?: OrArray<EventHandler<PointerEvent, T>>;
-    onpointerup?: OrArray<EventHandler<PointerEvent, T>>;
-    onprogress?: OrArray<EventHandler<ProgressEvent, T>>;
-    onratechange?: OrArray<EventHandler<Event, T>>;
-    onreset?: OrArray<EventHandler<Event, T>>;
-    onresize?: OrArray<EventHandler<UIEvent, T>>;
-    onscroll?: OrArray<EventHandler<Event, T>>;
-    onsecuritypolicyviolation?: OrArray<
-      EventHandler<SecurityPolicyViolationEvent, T>
-    >;
-    onseeked?: OrArray<EventHandler<Event, T>>;
-    onseeking?: OrArray<EventHandler<Event, T>>;
-    onselect?: OrArray<EventHandler<Event, T>>;
-    onselectionchange?: OrArray<EventHandler<Event, T>>;
-    onselectstart?: OrArray<EventHandler<Event, T>>;
-    onslotchange?: OrArray<EventHandler<Event, T>>;
-    onstalled?: OrArray<EventHandler<Event, T>>;
-    onsubmit?: OrArray<EventHandler<SubmitEvent, T>>;
-    onsuspend?: OrArray<EventHandler<Event, T>>;
-    ontimeupdate?: OrArray<EventHandler<Event, T>>;
-    ontoggle?: OrArray<EventHandler<Event, T>>;
-    ontouchcancel?: OrArray<EventHandler<TouchEvent, T>>;
-    ontouchend?: OrArray<EventHandler<TouchEvent, T>>;
-    ontouchmove?: OrArray<EventHandler<TouchEvent, T>>;
-    ontouchstart?: OrArray<EventHandler<TouchEvent, T>>;
-    ontransitioncancel?: OrArray<EventHandler<TransitionEvent, T>>;
-    ontransitionend?: OrArray<EventHandler<TransitionEvent, T>>;
-    ontransitionrun?: OrArray<EventHandler<TransitionEvent, T>>;
-    ontransitionstart?: OrArray<EventHandler<TransitionEvent, T>>;
-    onvolumechange?: OrArray<EventHandler<Event, T>>;
-    onwaiting?: OrArray<EventHandler<Event, T>>;
-    onwebkitanimationend?: OrArray<EventHandler<Event, T>>;
-    onwebkitanimationiteration?: OrArray<EventHandler<Event, T>>;
-    onwebkitanimationstart?: OrArray<EventHandler<Event, T>>;
-    onwebkittransitionend?: OrArray<EventHandler<Event, T>>;
-    onwheel?: OrArray<EventHandler<WheelEvent, T>>;
-  }
-
   interface AriaAttributes {
     "aria-activedescendant"?: OrComputed<string | undefined | null>;
     "aria-atomic"?: OrComputed<boolean | "false" | "true" | undefined | null>;
@@ -838,23 +717,40 @@ export declare namespace Gotei {
     | number
   >;
 
-  export type Attributes<
-    A extends HTMLAttributes = HTMLAttributes,
-    T extends EventTarget = EventTarget,
-  > = A &
+  type TypedEvent<E extends Event, T extends EventTarget> = Omit<
+    E,
+    "currentTarget"
+  > & { readonly currentTarget: T };
+
+  export type EventHandler<E extends Event, T extends EventTarget> =
+    | ((ev: TypedEvent<E, T>) => any)
+    | {
+        handler: (ev: TypedEvent<E, T>) => any;
+        options?: AddEventListenerOptions;
+      };
+
+  type EventHandlers<T extends EventTarget> = {
+    [K in keyof GlobalEventHandlersEventMap as `on:${K}`]?: OrArray<
+      EventHandler<GlobalEventHandlersEventMap[K], T>
+    >;
+  };
+
+  export type Attributes<A extends HTMLAttributes, T extends EventTarget> = A &
     EventHandlers<T> & {
-      bindThis?: SignalSetter<Node | null>;
-      bindValue?: "value" extends keyof A ? Signal<string | number> : never;
+      "bind:this"?: SignalSetter<Node | null>;
+      "bind:value"?: "value" extends keyof A ? Signal<string | number> : never;
       use?: OrArray<(element: T) => any>;
-      classList?: OrComputed<string>[];
-      classRecord?: Record<string, OrComputed<boolean | undefined | null>>;
-      styleRecord?: {
+      "class:list"?: OrComputed<string>[];
+      "class:record"?: Record<string, OrComputed<boolean>>;
+      "style:record"?: {
         [K in keyof CSSProperties]?: OrComputed<CSSProperties[K]>;
-      } & Record<string, OrComputed<string>>;
+      } & {
+        [K in string as `--${K}`]: OrComputed<string>;
+      };
       [customAttr: string]: any;
     };
 
-  export interface IntrinsicElements {
+  export type ElementAttrMap = {
     a: Attributes<AnchorHTMLAttributes, HTMLAnchorElement>;
     abbr: Attributes<HTMLAttributes, HTMLElement>;
     address: Attributes<HTMLAttributes, HTMLElement>;
@@ -967,8 +863,8 @@ export declare namespace Gotei {
     var: Attributes<HTMLAttributes, HTMLElement>;
     video: Attributes<VideoHTMLAttributes, HTMLVideoElement>;
     wbr: Attributes<HTMLAttributes, HTMLElement>;
-  }
+  };
 
-  export type Tag = keyof IntrinsicElements;
-  export type Attrs<T extends Tag> = IntrinsicElements[T];
+  export type Tag = keyof ElementAttrMap;
+  export type Attrs<T extends Tag> = ElementAttrMap[T];
 }

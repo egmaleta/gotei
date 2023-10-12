@@ -19,7 +19,7 @@ type Child = RenderFunction | string | number | boolean | undefined | null;
 export function h<T extends Gotei.Tag>(
   tag: T,
   props: Gotei.Attrs<T>,
-  children: Child[],
+  children: Child[]
 ): RenderFunction<HTMLElementTagNameMap[T]> {
   return (ctx) => {
     const { parent, document, childIndex } = ctx;
@@ -27,12 +27,12 @@ export function h<T extends Gotei.Tag>(
     const el = document.createElement(tag);
 
     const {
-      bindThis,
-      bindValue,
+      "bind:this": bindThis,
+      "bind:value": bindValue,
       use,
-      classList,
-      classRecord,
-      styleRecord,
+      "class:list": classList,
+      "class:record": classRecord,
+      "style:record": styleRecord,
       ...rest
     } = props;
 
@@ -176,5 +176,5 @@ export const tags = new Proxy(
         return h(tag, {}, [...flatten(args)]);
       };
     },
-  },
+  }
 ) as Tags;

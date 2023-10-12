@@ -14,7 +14,7 @@ export type RenderFunction<R = any> = {
   (ctx: RenderContext): R;
 };
 
-export const EVENT_LISTENER_PREFIX = "on";
+export const EVENT_LISTENER_PREFIX = "on:";
 export const CSS_VAR_PREFIX = "--";
 const WHITESPACE = /\s+/;
 
@@ -33,7 +33,7 @@ export function cls2Tokens(cls: string) {
 export function addEventListener(
   target: EventTarget,
   name: string,
-  handler: any,
+  handler: any
 ) {
   const handlers = Array.isArray(handler) ? handler : [handler];
 

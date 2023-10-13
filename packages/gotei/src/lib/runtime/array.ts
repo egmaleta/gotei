@@ -1,11 +1,11 @@
 import { Effect } from "../state/effect";
-import { RenderFunction } from "./utils";
+import { MountFunction } from "./utils";
 
 export function map<T extends object, K extends keyof T>(
   items: () => T[],
   key: K,
-  f: (item: T) => RenderFunction<Node>
-): RenderFunction<Node[]> {
+  f: (item: T) => MountFunction<Node>
+): MountFunction<Node[]> {
   return (ctx) => {
     const { parent, document } = ctx;
 
@@ -19,8 +19,8 @@ export function map<T extends object, K extends keyof T>(
         // first render
         for (const item of items()) {
           const id = item[key];
-          const rf = f(item);
-          const node = rf({ parent, document });
+          const mf = f(item);
+          const node = mf({ parent, document });
 
           cache.set(id, node);
           currentIds.push(id);
@@ -39,8 +39,8 @@ export function map<T extends object, K extends keyof T>(
           // insert new node
           const item = items()[index];
           const id = item[key];
-          const rf = f(item);
-          const node = rf({ parent, document, childIndex: index });
+          const mf = f(item);
+          const node = mf({ parent, document, childIndex: index });
           cache.set(id, node);
           currentIds[index] = id;
         } else if (op === "pop" || op === "shift") {
@@ -58,11 +58,11 @@ export function map<T extends object, K extends keyof T>(
               : items().slice(0, effectCtx.n);
 
           const ids = slice.map((item) => item[key]);
-          const rfs = slice.map((item) => f(item));
+          const mfs = slice.map((item) => f(item));
           const nodes =
             op === "push"
-              ? rfs.map((rf) => rf({ parent, document }))
-              : rfs.map((rf, i) => rf({ parent, document, childIndex: i }));
+              ? mfs.map((mf) => mf({ parent, document }))
+              : mfs.map((mf, i) => mf({ parent, document, childIndex: i }));
           currentIds[op](...ids);
           for (let i = 0; i < ids.length; i++) cache.set(ids[i], nodes[i]);
         } else if (op === "sort" || op === "reverse") {
@@ -87,8 +87,8 @@ export function map<T extends object, K extends keyof T>(
               return parent.appendChild(oldNode);
             }
 
-            const rf = f(item);
-            return rf({ parent, document });
+            const mf = f(item);
+            return mf({ parent, document });
           });
 
           cache.clear();

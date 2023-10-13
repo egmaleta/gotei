@@ -1,7 +1,7 @@
 export { h, render, replace } from "./lib/runtime";
 export type {
   Gotei,
-  RenderFunction,
-  RenderContext,
+  MountFunction,
+  MountContext,
   IDocument,
 } from "./lib/runtime";

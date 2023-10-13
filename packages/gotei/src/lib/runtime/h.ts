@@ -1,8 +1,8 @@
 import { Effect } from "../state/effect";
 import { Gotei } from "./ns";
-import { OrArray, RenderFunction, mount } from "./utils";
+import { OrArray, MountFunction, mount } from "./utils";
 
-type Child = RenderFunction | string | number | boolean | undefined | null;
+type Child = MountFunction | string | number | boolean | undefined | null;
 
 const EVENT_LISTENER_PREFIX = "on:";
 const CSS_VAR_PREFIX = "--";
@@ -54,7 +54,7 @@ export function h<T extends Gotei.Tag>(
   tag: T,
   props: Gotei.Attrs<T>,
   children: Child[]
-): RenderFunction<HTMLElementTagNameMap[T]> {
+): MountFunction<HTMLElementTagNameMap[T]> {
   return (ctx) => {
     const { parent, document, childIndex } = ctx;
 
@@ -190,8 +190,8 @@ type Tags = {
     (
       props: Gotei.Attrs<T>,
       ...children: OrArray<Child>[]
-    ): RenderFunction<HTMLElementTagNameMap[T]>;
-    (...children: OrArray<Child>[]): RenderFunction<HTMLElementTagNameMap[T]>;
+    ): MountFunction<HTMLElementTagNameMap[T]>;
+    (...children: OrArray<Child>[]): MountFunction<HTMLElementTagNameMap[T]>;
   };
 };
 

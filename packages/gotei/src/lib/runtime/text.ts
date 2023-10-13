@@ -1,11 +1,11 @@
 import { Effect } from "../state/effect";
-import { OrComputed, RenderFunction } from "./utils";
+import { OrComputed, MountFunction } from "./utils";
 
 type TextRenderizable = string | number | boolean;
 
 export function text<T extends TextRenderizable>(
-  data: OrComputed<T>,
-): RenderFunction<Text> {
+  data: OrComputed<T>
+): MountFunction<Text> {
   return (ctx) => {
     const text = ctx.document.createTextNode("");
 

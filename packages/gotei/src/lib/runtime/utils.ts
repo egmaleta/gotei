@@ -4,14 +4,14 @@ export type OrArray<T = any> = T | T[];
 export interface IDocument
   extends Pick<Document, "createElement" | "createTextNode"> {}
 
-export type RenderContext = {
+export type MountContext = {
   parent?: ParentNode;
   childIndex?: number;
   document: IDocument;
 };
 
-export type RenderFunction<R = any> = {
-  (ctx: RenderContext): R;
+export type MountFunction<R = any> = {
+  (ctx: MountContext): R;
 };
 
 export function mount(node: Node, to: ParentNode, at?: number) {

@@ -1,6 +1,6 @@
-import { RenderFunction, RenderContext, IDocument } from "./utils";
+import { MountFunction, MountContext, IDocument } from "./utils";
 
-export type { RenderFunction, RenderContext, IDocument };
+export type { MountFunction, MountContext, IDocument };
 export type { Gotei } from "./ns";
 
 export * from "./h";
@@ -9,23 +9,23 @@ export * from "./array";
 export * from "./conditional";
 
 export function render<T extends Node>(
-  rf: RenderFunction<T>,
+  mf: MountFunction<T>,
   document?: IDocument
 ) {
-  return rf({ document: document ?? globalThis.document });
+  return mf({ document: document ?? globalThis.document });
 }
 
 export function mount<T extends Node>(
-  rf: RenderFunction<T>,
+  mf: MountFunction<T>,
   to: ParentNode,
   document?: IDocument
 ) {
-  return rf({ parent: to, document: document ?? globalThis.document });
+  return mf({ parent: to, document: document ?? globalThis.document });
 }
 
 export function replace<T extends Node>(
   node: Node,
-  rf: RenderFunction<T>,
+  mf: MountFunction<T>,
   document?: IDocument
 ) {
   const parent = node.parentNode;
@@ -38,7 +38,7 @@ export function replace<T extends Node>(
   }
 
   parent.removeChild(node);
-  return rf({
+  return mf({
     parent,
     document: document ?? globalThis.document,
     childIndex: index,

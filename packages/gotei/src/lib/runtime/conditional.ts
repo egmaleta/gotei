@@ -1,21 +1,21 @@
 import { Effect } from "../state/effect";
-import { RenderFunction, OrComputed, mount } from "./utils";
+import { MountFunction, OrComputed, mount } from "./utils";
 import { Gotei } from "./ns";
 
 export function show<T extends Node>(
   node: T,
-  condition: OrComputed<boolean>,
-): RenderFunction<T | null>;
+  condition: OrComputed<boolean>
+): MountFunction<T | null>;
 
 export function show<T extends Gotei.Tag>(
-  rf: RenderFunction<HTMLElementTagNameMap[T]>,
-  condition: OrComputed<boolean>,
-): RenderFunction<HTMLElementTagNameMap[T] | null>;
+  mf: MountFunction<HTMLElementTagNameMap[T]>,
+  condition: OrComputed<boolean>
+): MountFunction<HTMLElementTagNameMap[T] | null>;
 
 export function show(
-  x: Node | RenderFunction,
-  condition: OrComputed<boolean>,
-): RenderFunction<Node | null> {
+  x: Node | MountFunction,
+  condition: OrComputed<boolean>
+): MountFunction<Node | null> {
   return (ctx) => {
     const { parent, childIndex } = ctx;
 

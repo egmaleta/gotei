@@ -86,24 +86,6 @@ export function h<T extends Gotei.Tag>(
       }
     }
 
-    let index = 0;
-    for (const child of children) {
-      if (
-        typeof child === "boolean" ||
-        typeof child === "undefined" ||
-        child === null
-      ) {
-        continue;
-      }
-
-      if (typeof child === "string" || typeof child === "number") {
-        el.appendChild(document.createTextNode(`${child}`));
-      } else {
-        child({ document, parent: el, childIndex: index });
-      }
-      index++;
-    }
-
     if (bindValue) {
       const isNumber = typeof bindValue() === "number";
 
@@ -183,6 +165,24 @@ export function h<T extends Gotei.Tag>(
           use(el);
         }
       }
+    }
+
+    let index = 0;
+    for (const child of children) {
+      if (
+        typeof child === "boolean" ||
+        typeof child === "undefined" ||
+        child === null
+      ) {
+        continue;
+      }
+
+      if (typeof child === "string" || typeof child === "number") {
+        el.appendChild(document.createTextNode(`${child}`));
+      } else {
+        child({ document, parent: el, childIndex: index });
+      }
+      index++;
     }
 
     return el;

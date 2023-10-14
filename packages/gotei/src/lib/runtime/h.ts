@@ -217,7 +217,8 @@ export function h<T extends Gotei.Tag | Gotei.Component>(
 ) {
   if (isComponent(x)) {
     return (ctx: MountContext) => {
-      return mountChildren(ctx, [...flatten(x(props, children))]);
+      const nodes = mountChildren(ctx, [...flatten(x(props, children))]);
+      return nodes.length === 1 ? nodes[0] : nodes;
     };
   }
   return html(x, props, children);

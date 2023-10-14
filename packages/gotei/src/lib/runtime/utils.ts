@@ -13,7 +13,9 @@ export type MountContext = {
   childIndex: number;
 };
 
-export type MountFunction<R = any> = {
+export type MountFunction<
+  R extends OrArray<Node> | null = OrArray<Node> | null,
+> = {
   (ctx: MountContext): R;
 };
 

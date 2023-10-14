@@ -1,6 +1,6 @@
 import { Effect } from "../state/effect";
 import { Gotei } from "./ns";
-import { OrArray, MountFunction, mount } from "./utils";
+import { OrArray, MountFunction, mount, MountContext } from "./utils";
 
 type Child = MountFunction | string | number | boolean | undefined | null;
 
@@ -50,15 +50,36 @@ function* flatten<T>(maybeArray: OrArray<T>): Generator<T> {
   }
 }
 
+function mountChildren(ctx: MountContext, children: Child[]) {
+  const nodes: Node[] = [];
+
+  for (const child of children) {
+    if (typeof child === "function") {
+      const mounted = child(ctx);
+
+      if (Array.isArray(mounted)) {
+        nodes.push(...mounted);
+      } else if (mounted) {
+        nodes.push(mounted);
+      }
+    } else if (typeof child === "string" || typeof child === "number") {
+      nodes.push(
+        ctx.parent.appendChild(ctx.document.createTextNode(`${child}`))
+      );
+      ctx.childIndex++;
+    }
+  }
+
+  return nodes;
+}
+
 export function h<T extends Gotei.Tag>(
   tag: T,
   props: Gotei.Attrs<T>,
   children: Child[]
 ): MountFunction<HTMLElementTagNameMap[T]> {
   return (ctx) => {
-    const { parent, document, childIndex } = ctx;
-
-    const el = document.createElement(tag);
+    const el = ctx.document.createElement(tag);
 
     const {
       "bind:this": bindThis,
@@ -146,30 +167,22 @@ export function h<T extends Gotei.Tag>(
       }
     }
 
-    if (parent) {
-      mount(el, parent, childIndex);
+    mount(el, ctx.parent, ctx.childIndex);
+    ctx.childIndex++;
 
-      // @ts-ignore
-      bindThis?.set(el);
+    const thisCtx = { document: ctx.document, parent: el, childIndex: 0 };
+    mountChildren(thisCtx, children);
 
-      if (use) {
-        if (Array.isArray(use)) {
-          // @ts-ignore
-          for (const f of use) f(el);
-        } else {
-          // @ts-ignore
-          use(el);
-        }
-      }
-    }
+    // @ts-ignore
+    bindThis?.set(el);
 
-    const thisCtx = { document, parent: el, childIndex: 0 };
-    for (const child of children) {
-      if (typeof child === "string" || typeof child === "number") {
-        el.appendChild(document.createTextNode(`${child}`));
-        thisCtx.childIndex++;
-      } else if (typeof child === "function") {
-        child(thisCtx);
+    if (use) {
+      if (Array.isArray(use)) {
+        // @ts-ignore
+        for (const f of use) f(el);
+      } else {
+        // @ts-ignore
+        use(el);
       }
     }
 

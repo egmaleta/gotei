@@ -2,8 +2,6 @@ import { Effect } from "../state/effect";
 import { Gotei } from "./ns";
 import { OrArray, MountFunction, mount, MountContext } from "./utils";
 
-type Child = MountFunction | string | number | boolean | undefined | null;
-
 const EVENT_LISTENER_PREFIX = "on:";
 const CSS_VAR_PREFIX = "--";
 const WHITESPACE = /\s+/;
@@ -50,7 +48,7 @@ function* flatten<T>(maybeArray: OrArray<T>): Generator<T> {
   }
 }
 
-function mountChildren(ctx: MountContext, children: Child[]) {
+function mountChildren(ctx: MountContext, children: Gotei.Child[]) {
   const nodes: Node[] = [];
 
   for (const child of children) {
@@ -73,10 +71,10 @@ function mountChildren(ctx: MountContext, children: Child[]) {
   return nodes;
 }
 
-export function h<T extends Gotei.Tag>(
+function html<T extends Gotei.Tag>(
   tag: T,
   props: Gotei.Attrs<T>,
-  children: Child[]
+  children: Gotei.Child[]
 ): MountFunction<HTMLElementTagNameMap[T]> {
   return (ctx) => {
     const el = ctx.document.createElement(tag);
@@ -190,13 +188,58 @@ export function h<T extends Gotei.Tag>(
   };
 }
 
+export type Component<
+  P extends any = any,
+  C extends Gotei.Child = Gotei.Child,
+  R extends Gotei.Child = Gotei.Child,
+> = {
+  (props: P, children: C[]): OrArray<R>;
+};
+
+type GetProps<T extends Gotei.Tag | Component> = T extends Gotei.Tag
+  ? Gotei.Attrs<T>
+  : T extends Component<infer P>
+  ? P
+  : never;
+
+function isComponent(x: Gotei.Tag | Component): x is Component {
+  return typeof x === "function";
+}
+
+export function h<P extends any, C extends Gotei.Child>(
+  fc: Component<P, C>,
+  props: P,
+  children: C[]
+): MountFunction<OrArray<Node>>;
+
+export function h<T extends Gotei.Tag>(
+  tag: T,
+  props: Gotei.Attrs<T>,
+  children: Gotei.Child[]
+): MountFunction<HTMLElementTagNameMap[T]>;
+
+export function h<T extends Gotei.Tag | Component>(
+  x: T,
+  props: GetProps<T>,
+  children: Gotei.Child[]
+) {
+  if (isComponent(x)) {
+    return (ctx: MountContext) => {
+      return mountChildren(ctx, [...flatten(x(props, children))]);
+    };
+  }
+  return html(x, props, children);
+}
+
 type Tags = {
   [T in Gotei.Tag]: {
     (
       props: Gotei.Attrs<T>,
-      ...children: OrArray<Child>[]
+      ...children: OrArray<Gotei.Child>[]
     ): MountFunction<HTMLElementTagNameMap[T]>;
-    (...children: OrArray<Child>[]): MountFunction<HTMLElementTagNameMap[T]>;
+    (
+      ...children: OrArray<Gotei.Child>[]
+    ): MountFunction<HTMLElementTagNameMap[T]>;
   };
 };
 
@@ -208,11 +251,11 @@ export const tags = new Proxy(
         if (args.length > 0) {
           const head = args[0];
           if (typeof head === "object" && head && !Array.isArray(head)) {
-            return h(tag, head, [...flatten(args.slice(1))]);
+            return html(tag, head, [...flatten(args.slice(1))]);
           }
         }
 
-        return h(tag, {}, [...flatten(args)]);
+        return html(tag, {}, [...flatten(args)]);
       };
     },
   }

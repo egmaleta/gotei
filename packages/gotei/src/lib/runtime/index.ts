@@ -5,8 +5,8 @@ export type { Gotei } from "./ns";
 
 export * from "./h";
 export * from "./text";
-export * from "./array";
-export * from "./conditional";
+export * from "./map";
+export * from "./show";
 
 export function render<T extends Node>(
   mf: MountFunction<T>,

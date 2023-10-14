@@ -12,7 +12,12 @@ export function render<T extends Node>(
   mf: MountFunction<T>,
   document?: IDocument
 ) {
-  return mf({ document: document ?? globalThis.document });
+  const doc = document ?? globalThis.document;
+  return mf({
+    document: doc,
+    parent: doc.createDocumentFragment(),
+    childIndex: 0,
+  });
 }
 
 export function mount<T extends Node>(
@@ -20,7 +25,11 @@ export function mount<T extends Node>(
   to: ParentNode,
   document?: IDocument
 ) {
-  return mf({ parent: to, document: document ?? globalThis.document });
+  return mf({
+    document: document ?? globalThis.document,
+    parent: to,
+    childIndex: to.childNodes.length,
+  });
 }
 
 export function replace<T extends Node>(
@@ -29,18 +38,19 @@ export function replace<T extends Node>(
   document?: IDocument
 ) {
   const parent = node.parentNode;
-  if (!parent) return;
+  if (!parent)
+    throw new Error("Couldn't replace 'node'! 'node' has no parent node.");
 
   let index = 0;
-  for (const child of parent?.childNodes) {
+  for (const child of parent.childNodes) {
     if (node.isSameNode(child)) break;
     index++;
   }
 
   parent.removeChild(node);
   return mf({
-    parent,
     document: document ?? globalThis.document,
+    parent,
     childIndex: index,
   });
 }

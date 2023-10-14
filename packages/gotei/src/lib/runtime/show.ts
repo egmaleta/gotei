@@ -1,47 +1,27 @@
 import { Effect } from "../state/effect";
 import { MountFunction, OrComputed, mount } from "./utils";
-import { Gotei } from "./ns";
 
 export function show<T extends Node>(
-  node: T,
+  mf: MountFunction<T>,
   condition: OrComputed<boolean>
-): MountFunction<T | null>;
-
-export function show<T extends Gotei.Tag>(
-  mf: MountFunction<HTMLElementTagNameMap[T]>,
-  condition: OrComputed<boolean>
-): MountFunction<HTMLElementTagNameMap[T] | null>;
-
-export function show(
-  x: Node | MountFunction,
-  condition: OrComputed<boolean>
-): MountFunction<Node | null> {
+): MountFunction<T | null> {
   return (ctx) => {
-    const { parent, childIndex } = ctx;
-
-    if (!parent) return null;
-
     if (typeof condition !== "function") {
-      if (condition) {
-        return typeof x === "function" ? x(ctx) : parent.appendChild(x);
-      }
-      return null;
+      return condition ? mf(ctx) : null;
     }
 
-    let node: Node | null = null;
+    const { parent, childIndex } = ctx;
 
+    let node: Node | null = null;
     new Effect(() => {
       if (condition()) {
         if (!node) {
-          if (typeof x === "function") {
-            node = x(ctx);
-            return;
-          }
-          node = x;
+          node = mf(ctx);
+        } else {
+          parent && mount(node, parent, childIndex);
         }
-        node && mount(node, parent, childIndex);
       } else {
-        node && parent.removeChild(node);
+        node && parent?.removeChild(node);
       }
     }, true);
 

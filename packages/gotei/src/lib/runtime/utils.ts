@@ -2,12 +2,15 @@ export type OrComputed<T = any> = T | (() => T);
 export type OrArray<T = any> = T | T[];
 
 export interface IDocument
-  extends Pick<Document, "createElement" | "createTextNode"> {}
+  extends Pick<
+    Document,
+    "createElement" | "createTextNode" | "createDocumentFragment"
+  > {}
 
 export type MountContext = {
-  parent?: ParentNode;
-  childIndex?: number;
   document: IDocument;
+  parent: ParentNode;
+  childIndex: number;
 };
 
 export type MountFunction<R = any> = {

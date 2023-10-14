@@ -10,20 +10,22 @@ export function show<T extends Node>(
       return condition ? mf(ctx) : null;
     }
 
-    const { parent, childIndex } = ctx;
+    const { document, parent, childIndex } = ctx;
 
     let node: Node | null = null;
     new Effect(() => {
       if (condition()) {
         if (!node) {
-          node = mf(ctx);
+          node = mf({ document, parent, childIndex });
         } else {
-          parent && mount(node, parent, childIndex);
+          mount(node, parent, childIndex);
         }
       } else {
-        node && parent?.removeChild(node);
+        node && parent.removeChild(node);
       }
     }, true);
+
+    ctx.childIndex++;
 
     return node;
   };

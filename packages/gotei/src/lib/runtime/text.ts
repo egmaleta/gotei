@@ -17,7 +17,8 @@ export function text<T extends TextRenderizable>(
       }, true);
     }
 
-    ctx.parent?.appendChild(text);
+    ctx.parent.appendChild(text);
+    ctx.childIndex++;
 
     return text;
   };

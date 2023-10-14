@@ -163,22 +163,14 @@ export function h<T extends Gotei.Tag>(
       }
     }
 
-    let index = 0;
+    const thisCtx = { document, parent: el, childIndex: 0 };
     for (const child of children) {
-      if (
-        typeof child === "boolean" ||
-        typeof child === "undefined" ||
-        child === null
-      ) {
-        continue;
-      }
-
       if (typeof child === "string" || typeof child === "number") {
         el.appendChild(document.createTextNode(`${child}`));
-      } else {
-        child({ document, parent: el, childIndex: index });
+        thisCtx.childIndex++;
+      } else if (typeof child === "function") {
+        child(thisCtx);
       }
-      index++;
     }
 
     return el;

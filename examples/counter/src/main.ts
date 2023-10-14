@@ -11,10 +11,10 @@ const counters = tags.div(
   [...Array(10)].map((_) =>
     counter({
       count: shared,
-      onclick: increase,
-      styleRecord: { opacity },
-    }),
-  ),
+      "on:click": increase,
+      "style:record": { opacity },
+    })
+  )
 );
 
 const appDiv = document.querySelector("div#app");

@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { MountFunction, OrArray, OrComputed } from "./utils";
+import { AnyProps, MountFunction, OrArray, OrComputed } from "./utils";
 import { Signal, SignalSetter } from "../state";
 
 export declare namespace Gotei {
@@ -866,7 +866,9 @@ export declare namespace Gotei {
   };
 
   export type Tag = keyof ElementAttrMap;
+
   export type Attrs<T extends Tag> = ElementAttrMap[T];
+
   export type Child =
     | MountFunction
     | string
@@ -874,4 +876,12 @@ export declare namespace Gotei {
     | boolean
     | undefined
     | null;
+
+  export type Component<
+    P extends AnyProps = AnyProps,
+    C extends Child = Child,
+    R extends Child = Child,
+  > = {
+    (props: P, children: C[]): OrArray<R>;
+  };
 }

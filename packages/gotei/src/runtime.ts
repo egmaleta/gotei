@@ -4,5 +4,4 @@ export type {
   MountFunction,
   MountContext,
   IDocument,
-  Component,
 } from "./lib/runtime";

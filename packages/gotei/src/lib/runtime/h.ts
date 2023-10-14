@@ -1,6 +1,6 @@
 import { Effect } from "../state/effect";
 import { Gotei } from "./ns";
-import { OrArray, MountFunction, mount, MountContext } from "./utils";
+import { OrArray, MountFunction, mount, MountContext, AnyProps } from "./utils";
 
 const EVENT_LISTENER_PREFIX = "on:";
 const CSS_VAR_PREFIX = "--";
@@ -188,26 +188,18 @@ function html<T extends Gotei.Tag>(
   };
 }
 
-export type Component<
-  P extends any = any,
-  C extends Gotei.Child = Gotei.Child,
-  R extends Gotei.Child = Gotei.Child,
-> = {
-  (props: P, children: C[]): OrArray<R>;
-};
-
-type GetProps<T extends Gotei.Tag | Component> = T extends Gotei.Tag
+type GetProps<T extends Gotei.Tag | Gotei.Component> = T extends Gotei.Tag
   ? Gotei.Attrs<T>
-  : T extends Component<infer P>
+  : T extends Gotei.Component<infer P>
   ? P
   : never;
 
-function isComponent(x: Gotei.Tag | Component): x is Component {
+function isComponent(x: Gotei.Tag | Gotei.Component): x is Gotei.Component {
   return typeof x === "function";
 }
 
-export function h<P extends any, C extends Gotei.Child>(
-  fc: Component<P, C>,
+export function h<P extends AnyProps, C extends Gotei.Child>(
+  fc: Gotei.Component<P, C>,
   props: P,
   children: C[]
 ): MountFunction<OrArray<Node>>;
@@ -218,7 +210,7 @@ export function h<T extends Gotei.Tag>(
   children: Gotei.Child[]
 ): MountFunction<HTMLElementTagNameMap[T]>;
 
-export function h<T extends Gotei.Tag | Component>(
+export function h<T extends Gotei.Tag | Gotei.Component>(
   x: T,
   props: GetProps<T>,
   children: Gotei.Child[]

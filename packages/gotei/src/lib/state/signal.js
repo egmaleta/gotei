@@ -12,9 +12,9 @@ define(ReadableSignal, {
     const deps = effect.isUIEffect ? this.uiDeps : this.deps;
     !deps.includes(effect) && deps.push(effect);
   },
-  triggerUpdate(ctx) {
-    for (const effect of this.uiDeps) effect.update(ctx);
-    for (const effect of this.deps) effect.update(ctx);
+  triggerUpdate() {
+    for (const effect of this.uiDeps) effect.update();
+    for (const effect of this.deps) effect.update();
   },
   get() {
     const effect = CONTEXT.current();
@@ -35,7 +35,7 @@ define(Signal, {
 
     if (this.value !== v) {
       this.value = v;
-      this.triggerUpdate(null);
+      this.triggerUpdate();
     }
   },
 });
@@ -56,7 +56,7 @@ define(ArraySignal, {
           const current = target[index];
           if (current !== value) {
             target[index] = value;
-            triggerUpdate({ op: "setat", index });
+            triggerUpdate();
           }
         } else {
           target[prop] = value;
@@ -68,23 +68,29 @@ define(ArraySignal, {
         if (prop === "pop" || prop === "shift") {
           return () => {
             const item = target[prop]();
-            typeof item !== "undefined" && triggerUpdate({ op: prop });
+            typeof item !== "undefined" && triggerUpdate();
             return item;
           };
         } else if (prop === "push" || prop === "unshift") {
           return (...items) => {
             const l = target[prop](...items);
-            items.length > 0 && triggerUpdate({ op: prop, n: items.length });
+            items.length > 0 && triggerUpdate();
             return l;
           };
         } else if (prop === "sort" || prop === "reverse") {
           return (...args) => {
             const array = target[prop](...args);
-            array.length > 1 && triggerUpdate({ op: prop });
+            array.length > 1 && triggerUpdate();
             return array;
           };
+        } else if (prop === "splice") {
+          return (...args) => {
+            const l = target.length;
+            const deleted = target[prop](...args);
+            (deleted.length > 0 || l !== target.length) && triggerUpdate();
+            return deleted;
+          };
         } else {
-          // TODO: handle "splice" prop
           return target[prop];
         }
       },
@@ -94,6 +100,6 @@ define(ArraySignal, {
   },
   set(value) {
     this.wrap(value);
-    this.triggerUpdate({ op: "set" });
+    this.triggerUpdate();
   },
 });

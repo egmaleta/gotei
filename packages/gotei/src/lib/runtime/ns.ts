@@ -880,8 +880,8 @@ export declare namespace Gotei {
   export type Component<
     P extends AnyProps = AnyProps,
     C extends Child = Child,
-    R extends Child = Child,
+    R extends OrArray<Child> = OrArray<Child>,
   > = {
-    (props: P, children: C[]): OrArray<R>;
+    (props: P, children: C[]): R;
   };
 }

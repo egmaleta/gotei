@@ -12,7 +12,7 @@ export function show<T extends Node>(
 
     const { document, parent, childIndex } = ctx;
 
-    let node: Node | null = null;
+    let node: T | null = null;
     new Effect(() => {
       if (condition()) {
         if (!node) {

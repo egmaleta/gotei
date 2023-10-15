@@ -40,11 +40,10 @@ function setAttribute(el: Element, name: string, attr: any) {
   }
 }
 
-function* flatten<T>(maybeArray: OrArray<T>): Generator<T> {
-  if (!Array.isArray(maybeArray)) {
-    yield maybeArray;
-  } else {
-    for (const x of maybeArray) for (const y of flatten(x)) yield y;
+function* flatten(possibleArray: any): Generator<any> {
+  if (!Array.isArray(possibleArray)) yield possibleArray;
+  else {
+    for (const x of possibleArray) for (const y of flatten(x)) yield y;
   }
 }
 
@@ -201,27 +200,32 @@ function isComponent(x: Gotei.Tag | Gotei.Component): x is Gotei.Component {
 export function h<P extends AnyProps, C extends Gotei.Child>(
   fc: Gotei.Component<P, C>,
   props: P,
-  children: C[]
+  ...children: OrArray<C>[]
 ): MountFunction<OrArray<Node>>;
 
 export function h<T extends Gotei.Tag>(
   tag: T,
   props: Gotei.Attrs<T>,
-  children: Gotei.Child[]
+  ...children: OrArray<Gotei.Child>[]
 ): MountFunction<HTMLElementTagNameMap[T]>;
 
 export function h<T extends Gotei.Tag | Gotei.Component>(
   x: T,
   props: GetProps<T>,
-  children: Gotei.Child[]
+  ...children: OrArray<Gotei.Child>[]
 ) {
+  const flattenedChildren = [...flatten(children)];
+
   if (isComponent(x)) {
     return (ctx: MountContext) => {
-      const nodes = mountChildren(ctx, [...flatten(x(props, children))]);
+      const nodes = mountChildren(ctx, [
+        ...flatten(x(props, flattenedChildren)),
+      ]);
+
       return nodes.length === 1 ? nodes[0] : nodes;
     };
   }
-  return html(x, props, children);
+  return html(x, props, flattenedChildren);
 }
 
 type Tags = {

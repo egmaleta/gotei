@@ -30,10 +30,12 @@ export function ref<T extends Node>() {
   return signal<T | null>(null);
 }
 
-export function isRefReady<T extends Node>(ref: Signal<T | null>) {
+export function isRefReady<T extends Node>(
+  ref: Signal<T | null>
+): ref is Signal<T> {
   return ref() !== null;
 }
 
 export const untrack = (CONTEXT as any).untrack.bind(CONTEXT) as <T>(
-  signalish: () => T,
+  signalish: () => T
 ) => T;

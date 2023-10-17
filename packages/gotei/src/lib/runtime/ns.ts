@@ -1,6 +1,3 @@
-/// <reference lib="dom" />
-/// <reference lib="dom.iterable" />
-
 import { AnyProps, MountFunction, OrArray, OrComputed } from "./utils";
 import { Signal, SignalSetter } from "../state";
 

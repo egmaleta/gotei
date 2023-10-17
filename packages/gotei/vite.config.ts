@@ -12,6 +12,7 @@ export default defineConfig({
     rollupOptions: {
       external: ["happy-dom"],
     },
+    target: "ES2015",
   },
   plugins: [dts()],
 });

@@ -88,7 +88,9 @@ function html<T extends Gotei.Tag>(
       ...rest
     } = props;
 
-    for (const [name, prop] of Object.entries(rest)) {
+    for (const name in rest) {
+      const prop = rest[name];
+
       if (name.startsWith(EVENT_LISTENER_PREFIX)) {
         addEventListener(el, name.slice(EVENT_LISTENER_PREFIX.length), prop);
       } else if (typeof prop !== "function") {
@@ -130,7 +132,9 @@ function html<T extends Gotei.Tag>(
     }
 
     if (classRecord) {
-      for (const [cls, ok] of Object.entries(classRecord)) {
+      for (const cls in classRecord) {
+        const ok = classRecord[cls];
+
         const tokens = cls2Tokens(cls);
         if (tokens.length === 0) continue;
 
@@ -149,7 +153,9 @@ function html<T extends Gotei.Tag>(
     }
 
     if (styleRecord) {
-      for (const [prop, value] of Object.entries(styleRecord)) {
+      for (const prop in styleRecord) {
+        const value = styleRecord[prop];
+
         const setFunction = prop.startsWith(CSS_VAR_PREFIX)
           ? setCSSVar
           : setCSSProp;

@@ -21,7 +21,11 @@ export function map<T extends object, K extends keyof T>(
         if (node) {
           ctx.parent.appendChild(node);
         } else {
-          node = f(item)({ ...ctx, childIndex: index });
+          node = f(item)({
+            document: ctx.document,
+            parent: ctx.parent,
+            childIndex: index,
+          });
         }
 
         pairs.push([id, node]);

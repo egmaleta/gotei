@@ -10,5 +10,6 @@ export default defineConfig({
     },
     minify: true,
     emptyOutDir: false,
+    target: "ES2015",
   },
 });

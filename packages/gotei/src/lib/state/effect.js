@@ -8,7 +8,7 @@ export function Effect(callback, isUIEffect) {
 }
 
 define(Effect, {
-  update(ctx) {
+  update() {
     CONTEXT.push(this);
     this.callback();
     CONTEXT.pop();

@@ -1,4 +1,4 @@
-import { Effect } from "../state/effect";
+import { Effect } from "../state/core";
 import { Gotei } from "./ns";
 import { OrArray, MountFunction, mount, MountContext, AnyProps } from "./utils";
 

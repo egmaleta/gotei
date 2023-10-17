@@ -1,4 +1,4 @@
-import { Effect } from "../state/effect";
+import { Effect } from "../state/core";
 import { OrComputed, MountFunction } from "./utils";
 
 type TextRenderizable = string | number | boolean;

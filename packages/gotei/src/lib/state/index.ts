@@ -1,6 +1,9 @@
-import { CONTEXT } from "./context";
-import { Effect } from "./effect";
-import { Signal as _Signal, ArraySignal } from "./signal";
+import {
+  Signal as _Signal,
+  Effect,
+  ArraySignal,
+  untrack as _untrack,
+} from "./core";
 
 export type SignalGetter<T> = () => T;
 export type SignalSetter<T> = T extends Array<any>
@@ -36,6 +39,4 @@ export function isRefReady<T extends Node>(
   return ref() !== null;
 }
 
-export const untrack = (CONTEXT as any).untrack.bind(CONTEXT) as <T>(
-  signalish: () => T
-) => T;
+export const untrack = _untrack as <T>(signalish: () => T) => T;

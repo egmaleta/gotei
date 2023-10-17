@@ -1,4 +1,4 @@
-import { Effect } from "../state/effect";
+import { Effect } from "../state/core";
 import { MountFunction } from "./utils";
 
 export function map<T extends object, K extends keyof T>(

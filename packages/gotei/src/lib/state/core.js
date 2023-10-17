@@ -1,5 +1,44 @@
-import { define, inherits } from "./oop";
-import { CONTEXT } from "./context";
+function inherits(Child, Parent) {
+  Child.prototype = Object.create(Parent.prototype);
+}
+
+function define(Class, methods) {
+  Object.assign(Class.prototype, methods);
+}
+
+const CONTEXT = {
+  stack: [],
+  push(obs) {
+    this.stack.push(obs);
+  },
+  pop() {
+    this.stack.pop();
+  },
+  current() {
+    return this.stack.at(-1);
+  },
+  untrack(signalish) {
+    const temp = this.stack;
+    this.stack = [];
+    const value = signalish();
+    this.stack = temp;
+    return value;
+  },
+};
+
+export function Effect(callback, isUIEffect) {
+  this.callback = callback;
+  this.isUIEffect = isUIEffect;
+  this.update();
+}
+
+define(Effect, {
+  update() {
+    CONTEXT.push(this);
+    this.callback();
+    CONTEXT.pop();
+  },
+});
 
 function ReadableSignal(value) {
   this.uiDeps = [];
@@ -103,3 +142,5 @@ define(ArraySignal, {
     this.triggerUpdate();
   },
 });
+
+export const untrack = CONTEXT.untrack.bind(CONTEXT);

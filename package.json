@@ -5,6 +5,7 @@
     "happy-dom": "12.9.0",
     "prettier": "3.0.3",
     "typescript": "5.2.2",
-    "vite": "4.4.9"
+    "vite": "4.4.9",
+    "vite-plugin-dts": "3.6.0"
   }
 }

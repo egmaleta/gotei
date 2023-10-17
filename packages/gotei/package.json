@@ -31,7 +31,7 @@
     }
   },
   "scripts": {
-    "build": "vite build && tsc && vite build --config vite.browser.config.ts"
+    "build": "vite build && vite build --config vite.browser.config.ts"
   },
   "devDependencies": {
     "happy-dom": "12.9.0"

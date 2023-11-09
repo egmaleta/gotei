@@ -15,7 +15,7 @@ const CONTEXT = {
     this.stack.pop();
   },
   current() {
-    return this.stack.at(-1);
+    return this.stack[this.stack.length - 1];
   },
   untrack(signalish) {
     const temp = this.stack;

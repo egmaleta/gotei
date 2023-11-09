@@ -29,8 +29,8 @@ export function effect(callback: () => any) {
   new Effect(callback, false);
 }
 
-export function ref<T extends Node>() {
-  return signal<T | null>(null);
+export function ref<T extends Node>(): Signal<T | null> {
+  return signal<T>(null);
 }
 
 export function isRefReady<T extends Node>(

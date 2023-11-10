@@ -1,4 +1,4 @@
-import { Effect } from "../state/core";
+import { effect } from "../state";
 import { MountFunction, OrComputed, mount } from "./utils";
 
 export function show<T extends Node>(
@@ -13,7 +13,7 @@ export function show<T extends Node>(
     const { document, parent, childIndex } = ctx;
 
     let node: T | null = null;
-    new Effect(() => {
+    effect(() => {
       if (condition()) {
         if (!node) {
           node = mf({ document, parent, childIndex });

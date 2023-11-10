@@ -1,4 +1,4 @@
-import { Effect } from "../state/core";
+import { effect } from "../state";
 import { OrComputed, MountFunction } from "./utils";
 
 type TextRenderizable = string | number | boolean;
@@ -12,7 +12,7 @@ export function text<T extends TextRenderizable>(
     if (typeof data !== "function") {
       text.data = `${data}`;
     } else {
-      new Effect(() => {
+      effect(() => {
         text.data = `${data()}`;
       }, true);
     }

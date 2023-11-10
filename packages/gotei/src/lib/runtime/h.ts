@@ -1,4 +1,4 @@
-import { Effect } from "../state/core";
+import { effect } from "../state";
 import { Gotei } from "./ns";
 import { OrArray, MountFunction, mount, MountContext, AnyProps } from "./utils";
 
@@ -96,7 +96,7 @@ function html<T extends Gotei.Tag>(
       } else if (typeof prop !== "function") {
         setAttribute(el, name, prop);
       } else {
-        new Effect(() => {
+        effect(() => {
           setAttribute(el, name, prop());
         }, true);
       }
@@ -105,7 +105,7 @@ function html<T extends Gotei.Tag>(
     if (bindValue) {
       const isNumber = typeof bindValue() === "number";
 
-      new Effect(() => {
+      effect(() => {
         setAttribute(el, "value", bindValue());
       }, true);
       addEventListener(el, "input", (ev: any) => {
@@ -122,7 +122,7 @@ function html<T extends Gotei.Tag>(
         } else {
           let tokens: string[] = [];
 
-          new Effect(() => {
+          effect(() => {
             el.classList.remove(...tokens);
             tokens = cls2Tokens(cls());
             el.classList.add(...tokens);
@@ -141,7 +141,7 @@ function html<T extends Gotei.Tag>(
         if (typeof ok !== "function") {
           ok && el.classList.add(...tokens);
         } else {
-          new Effect(() => {
+          effect(() => {
             if (ok()) {
               el.classList.add(...tokens);
             } else {
@@ -163,7 +163,7 @@ function html<T extends Gotei.Tag>(
         if (typeof value !== "function") {
           setFunction(el, prop, value);
         } else {
-          new Effect(() => {
+          effect(() => {
             setFunction(el, prop, value());
           }, true);
         }

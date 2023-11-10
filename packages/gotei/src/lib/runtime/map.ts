@@ -1,4 +1,4 @@
-import { Effect } from "../state/core";
+import { effect } from "../state";
 import { MountFunction } from "./utils";
 
 export function map<T extends object, K extends keyof T>(
@@ -9,7 +9,7 @@ export function map<T extends object, K extends keyof T>(
   return (ctx) => {
     const cache = new Map<T[K], Node>();
 
-    new Effect(() => {
+    effect(() => {
       for (const node of cache.values()) ctx.parent.removeChild(node);
 
       const pairs: (readonly [T[K], Node])[] = [];

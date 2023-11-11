@@ -57,8 +57,8 @@ export function signal<T>(value: T): Signal<T> {
   });
 }
 
-export function ref<T extends Node>() {
-  return signal<T | null>(null);
+export function ref<T extends Node>(): Signal<T | null> {
+  return signal(null);
 }
 
 export function untrack<T>(signalish: () => T) {

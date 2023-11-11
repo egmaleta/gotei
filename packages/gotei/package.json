@@ -5,28 +5,23 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     },
     "./state": {
       "import": "./dist/state.js",
-      "require": "./dist/state.cjs",
       "types": "./dist/state.d.ts"
     },
     "./runtime": {
       "import": "./dist/runtime.js",
-      "require": "./dist/runtime.cjs",
       "types": "./dist/runtime.d.ts"
     },
     "./ssr": {
       "import": "./dist/ssr.js",
-      "require": "./dist/ssr.cjs",
       "types": "./dist/ssr.d.ts"
     }
   },

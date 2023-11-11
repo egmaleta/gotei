@@ -1,93 +1,71 @@
-export type SignalGetter<T> = () => T;
-export type SignalSetter<T> = {
-  set: (x: T | ((v: T) => T)) => void;
+const $prioritized = Symbol();
+
+type Callback = {
+  (): any;
+  [$prioritized]: boolean;
 };
-export type Signal<T> = SignalGetter<T> & SignalSetter<T>;
 
-let context: Effect[] = [];
+let stack: Callback[] = [];
 
-class Effect {
-  private callback: () => any;
-  readonly prioritized: boolean;
-
-  constructor(callback: () => any, prioritized: boolean) {
-    this.callback = callback;
-    this.prioritized = prioritized;
-
-    this.run();
-  }
-
-  run() {
-    context.push(this);
-    this.callback();
-    context.pop();
-  }
-}
-
-class _Signal<T> {
-  private value: T;
-  private deps: Effect[] = [];
-
-  constructor(value: T) {
-    this.value = value;
-  }
-
-  subscribe(effect: Effect) {
-    if (this.deps.indexOf(effect) === -1) {
-      const method = effect.prioritized ? "unshift" : "push";
-      this.deps[method](effect);
-    }
-  }
-  runEffects() {
-    for (const effect of this.deps) effect.run();
-  }
-
-  get() {
-    if (context.length > 0) {
-      const effect = context[context.length - 1];
-      this.subscribe(effect);
-    }
-
-    return this.value;
-  }
-  set(x: T | ((v: T) => T)) {
-    // @ts-ignore
-    const value: T = typeof x === "function" ? x(this.value) : x;
-
-    if (this.value !== value) {
-      this.value = value;
-      this.runEffects();
-    }
-  }
-}
-
-export function signal<T>(value: T): Signal<T> {
-  const s = new _Signal(value);
-  const getter = s.get.bind(s);
-  const setter = s.set.bind(s);
-
-  return Object.assign(getter, { set: setter });
+function run(cb: Callback) {
+  stack.push(cb);
+  cb();
+  stack.pop();
 }
 
 export function effect(callback: () => any, prioritize = false) {
-  new Effect(callback, prioritize);
+  const cb = Object.assign(callback, { [$prioritized]: prioritize });
+  run(cb);
 }
 
-export function ref<T extends Node>(): Signal<T | null> {
-  return signal(null);
+type Container<T> = {
+  value: T;
+};
+
+function get<T>(this: Container<T>, deps: Callback[]) {
+  if (stack.length > 0) {
+    const cb = stack[stack.length - 1];
+    !cb[$prioritized] ? deps.push(cb) : deps.unshift(cb);
+  }
+
+  return this.value;
 }
 
-export function isRefReady<T extends Node>(
-  ref: Signal<T | null>
-): ref is Signal<T> {
-  return ref() !== null;
+function set<T>(this: Container<T>, deps: Callback[], x: T | ((v: T) => T)) {
+  // @ts-ignore
+  const value: T = typeof x === "function" ? x(this.value) : x;
+
+  if (this.value !== value) {
+    this.value = value;
+
+    for (const cb of deps) {
+      run(cb);
+    }
+  }
+}
+
+export type SignalSetter<T> = { set: (x: T | ((v: T) => T)) => void };
+export type Signal<T> = (() => T) & SignalSetter<T>;
+
+export function signal<T>(value: T): Signal<T> {
+  const ct = { value };
+  const deps = [];
+
+  // @ts-ignore
+  return Object.assign(get.bind(ct, deps), {
+    set: set.bind(ct, deps),
+  });
+}
+
+export function ref<T extends Node>() {
+  return signal<T | null>(null);
 }
 
 export function untrack<T>(signalish: () => T) {
-  const temp = context;
-  context = [];
+  const temp = stack;
+  stack = [];
   const value = signalish();
-  context = temp;
+  stack = temp;
 
   return value;
 }

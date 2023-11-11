@@ -15,7 +15,7 @@ export default function (props: ButtonProps = { start: 0 }) {
   return button(
     {
       ...rest,
-      "on:click": () => count.set((c) => c + 1),
+      "on-click": () => count.set((c) => c + 1),
     },
     "Clicked ",
     text(count),

@@ -11,8 +11,8 @@ const counters = tags.div(
   [...Array(10)].map((_) =>
     counter({
       count: shared,
-      "on:click": increase,
-      "style:record": { opacity },
+      "on-click": increase,
+      "style-record": { opacity },
     })
   )
 );

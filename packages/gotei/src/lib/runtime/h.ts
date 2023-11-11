@@ -2,7 +2,7 @@ import { effect } from "../state";
 import { Gotei } from "./ns";
 import { OrArray, MountFunction, mount, MountContext, AnyProps } from "./utils";
 
-const EVENT_LISTENER_PREFIX = "on:";
+const EVENT_LISTENER_PREFIX = "on-";
 const CSS_VAR_PREFIX = "--";
 const WHITESPACE = /\s+/;
 
@@ -79,12 +79,12 @@ function html<T extends Gotei.Tag>(
     const el = ctx.document.createElement(tag);
 
     const {
-      "bind:this": bindThis,
-      "bind:value": bindValue,
+      "bind-this": bindThis,
+      "bind-value": bindValue,
       use,
-      "class:list": classList,
-      "class:record": classRecord,
-      "style:record": styleRecord,
+      "class-list": classList,
+      "class-record": classRecord,
+      "style-record": styleRecord,
       ...rest
     } = props;
 

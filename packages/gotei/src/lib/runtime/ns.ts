@@ -727,144 +727,150 @@ export declare namespace Gotei {
       };
 
   type EventHandlers<T extends EventTarget> = {
-    [K in keyof GlobalEventHandlersEventMap as `on:${K}`]?: OrArray<
+    [K in keyof GlobalEventHandlersEventMap as `on-${K}`]?: OrArray<
       EventHandler<GlobalEventHandlersEventMap[K], T>
     >;
   };
 
-  export type Attributes<A extends HTMLAttributes, T extends EventTarget> = A &
-    EventHandlers<T> & {
-      "bind:this"?: SignalSetter<Node | null>;
-      "bind:value"?: "value" extends keyof A ? Signal<string | number> : never;
-      use?: OrArray<(element: T) => any>;
-      "class:list"?: OrComputed<string>[];
-      "class:record"?: Record<string, OrComputed<boolean>>;
-      "style:record"?: {
-        [K in keyof CSSProperties]?: OrComputed<CSSProperties[K]>;
-      } & {
-        [K in string as `--${K}`]: OrComputed<string>;
-      };
-      [customAttr: string]: any;
+  interface GoteiAttributes<T extends HTMLElement> extends EventHandlers<T> {
+    "bind-this"?: SignalSetter<Node | null>;
+
+    "bind-value"?: T extends HTMLInputElement | HTMLTextAreaElement
+      ? Signal<string | number>
+      : never;
+
+    use?: OrArray<(element: T) => any>;
+
+    "class-list"?: OrComputed<string>[];
+    "class-record"?: Record<string, OrComputed<boolean>>;
+
+    "style-record"?: {
+      [K in keyof CSSProperties]?: OrComputed<CSSProperties[K]>;
+    } & {
+      [K in string as `--${K}`]: OrComputed<string>;
     };
 
-  export type ElementAttrMap = {
-    a: Attributes<AnchorHTMLAttributes, HTMLAnchorElement>;
-    abbr: Attributes<HTMLAttributes, HTMLElement>;
-    address: Attributes<HTMLAttributes, HTMLElement>;
-    area: Attributes<AreaHTMLAttributes, HTMLAreaElement>;
-    article: Attributes<HTMLAttributes, HTMLElement>;
-    aside: Attributes<HTMLAttributes, HTMLElement>;
-    audio: Attributes<AudioHTMLAttributes, HTMLAudioElement>;
-    b: Attributes<HTMLAttributes, HTMLElement>;
-    base: Attributes<BaseHTMLAttributes, HTMLBaseElement>;
-    bdi: Attributes<HTMLAttributes, HTMLElement>;
-    bdo: Attributes<HTMLAttributes, HTMLElement>;
-    blockquote: Attributes<BlockquoteHTMLAttributes, HTMLQuoteElement>;
-    body: Attributes<HTMLAttributes, HTMLBodyElement>;
-    br: Attributes<HTMLAttributes, HTMLBRElement>;
-    button: Attributes<ButtonHTMLAttributes, HTMLButtonElement>;
-    canvas: Attributes<CanvasHTMLAttributes, HTMLCanvasElement>;
-    caption: Attributes<HTMLAttributes, HTMLTableCaptionElement>;
-    cite: Attributes<HTMLAttributes, HTMLElement>;
-    code: Attributes<HTMLAttributes, HTMLElement>;
-    col: Attributes<ColHTMLAttributes, HTMLTableColElement>;
-    colgroup: Attributes<ColgroupHTMLAttributes, HTMLTableColElement>;
-    data: Attributes<DataHTMLAttributes, HTMLDataElement>;
-    datalist: Attributes<HTMLAttributes, HTMLDataListElement>;
-    dd: Attributes<HTMLAttributes, HTMLElement>;
-    del: Attributes<DelHTMLAttributes, HTMLModElement>;
-    details: Attributes<DetailsHTMLAttributes, HTMLDetailsElement>;
-    dfn: Attributes<HTMLAttributes, HTMLElement>;
-    dialog: Attributes<DialogHTMLAttributes, HTMLDialogElement>;
-    div: Attributes<HTMLAttributes, HTMLDivElement>;
-    dl: Attributes<HTMLAttributes, HTMLDListElement>;
-    dt: Attributes<HTMLAttributes, HTMLElement>;
-    em: Attributes<HTMLAttributes, HTMLElement>;
-    embed: Attributes<EmbedHTMLAttributes, HTMLEmbedElement>;
-    fieldset: Attributes<FieldsetHTMLAttributes, HTMLFieldSetElement>;
-    figcaption: Attributes<HTMLAttributes, HTMLElement>;
-    figure: Attributes<HTMLAttributes, HTMLElement>;
-    footer: Attributes<HTMLAttributes, HTMLElement>;
-    form: Attributes<FormHTMLAttributes, HTMLFormElement>;
-    h1: Attributes<HTMLAttributes, HTMLHeadingElement>;
-    h2: Attributes<HTMLAttributes, HTMLHeadingElement>;
-    h3: Attributes<HTMLAttributes, HTMLHeadingElement>;
-    h4: Attributes<HTMLAttributes, HTMLHeadingElement>;
-    h5: Attributes<HTMLAttributes, HTMLHeadingElement>;
-    h6: Attributes<HTMLAttributes, HTMLHeadingElement>;
-    head: Attributes<HTMLAttributes, HTMLHeadElement>;
-    header: Attributes<HTMLAttributes, HTMLElement>;
-    hgroup: Attributes<HTMLAttributes, HTMLElement>;
-    hr: Attributes<HTMLAttributes, HTMLHRElement>;
-    html: Attributes<HtmlHTMLAttributes, HTMLHtmlElement>;
-    i: Attributes<HTMLAttributes, HTMLElement>;
-    iframe: Attributes<IframeHTMLAttributes, HTMLIFrameElement>;
-    img: Attributes<ImgHTMLAttributes, HTMLImageElement>;
-    input: Attributes<InputHTMLAttributes, HTMLInputElement>;
-    ins: Attributes<InsHTMLAttributes, HTMLModElement>;
-    kbd: Attributes<HTMLAttributes, HTMLElement>;
-    label: Attributes<LabelHTMLAttributes, HTMLLabelElement>;
-    legend: Attributes<HTMLAttributes, HTMLLegendElement>;
-    li: Attributes<LiHTMLAttributes, HTMLLIElement>;
-    link: Attributes<LinkHTMLAttributes, HTMLLinkElement>;
-    main: Attributes<HTMLAttributes, HTMLElement>;
-    map: Attributes<MapHTMLAttributes, HTMLMapElement>;
-    mark: Attributes<HTMLAttributes, HTMLElement>;
-    menu: Attributes<MenuHTMLAttributes, HTMLMenuElement>;
-    meta: Attributes<MetaHTMLAttributes, HTMLMetaElement>;
-    meter: Attributes<MeterHTMLAttributes, HTMLMeterElement>;
-    nav: Attributes<HTMLAttributes, HTMLElement>;
-    noscript: Attributes<HTMLAttributes, HTMLElement>;
-    object: Attributes<ObjectHTMLAttributes, HTMLObjectElement>;
-    ol: Attributes<OlHTMLAttributes, HTMLOListElement>;
-    optgroup: Attributes<OptgroupHTMLAttributes, HTMLOptGroupElement>;
-    option: Attributes<OptionHTMLAttributes, HTMLOptionElement>;
-    output: Attributes<OutputHTMLAttributes, HTMLOutputElement>;
-    p: Attributes<HTMLAttributes, HTMLParagraphElement>;
-    picture: Attributes<HTMLAttributes, HTMLPictureElement>;
-    pre: Attributes<HTMLAttributes, HTMLPreElement>;
-    progress: Attributes<ProgressHTMLAttributes, HTMLProgressElement>;
-    q: Attributes<QuoteHTMLAttributes, HTMLQuoteElement>;
-    rp: Attributes<HTMLAttributes, HTMLElement>;
-    rt: Attributes<HTMLAttributes, HTMLElement>;
-    ruby: Attributes<HTMLAttributes, HTMLElement>;
-    s: Attributes<HTMLAttributes, HTMLElement>;
-    samp: Attributes<HTMLAttributes, HTMLElement>;
-    slot: Attributes<SlotHTMLAttributes, HTMLSlotElement>;
-    script: Attributes<ScriptHTMLAttributes, HTMLScriptElement>;
-    search: Attributes<HTMLAttributes, HTMLElement>;
-    section: Attributes<HTMLAttributes, HTMLElement>;
-    select: Attributes<SelectHTMLAttributes, HTMLSelectElement>;
-    small: Attributes<HTMLAttributes, HTMLElement>;
-    source: Attributes<SourceHTMLAttributes, HTMLSourceElement>;
-    span: Attributes<HTMLAttributes, HTMLSpanElement>;
-    strong: Attributes<HTMLAttributes, HTMLElement>;
-    style: Attributes<StyleHTMLAttributes, HTMLStyleElement>;
-    sub: Attributes<HTMLAttributes, HTMLElement>;
-    summary: Attributes<HTMLAttributes, HTMLElement>;
-    sup: Attributes<HTMLAttributes, HTMLElement>;
-    table: Attributes<TableHTMLAttributes, HTMLTableElement>;
-    tbody: Attributes<HTMLAttributes, HTMLTableSectionElement>;
-    td: Attributes<TdHTMLAttributes, HTMLTableCellElement>;
-    template: Attributes<HTMLAttributes, HTMLTemplateElement>;
-    textarea: Attributes<TextareaHTMLAttributes, HTMLTextAreaElement>;
-    tfoot: Attributes<HTMLAttributes, HTMLTableSectionElement>;
-    th: Attributes<ThHTMLAttributes, HTMLTableCellElement>;
-    thead: Attributes<HTMLAttributes, HTMLTableSectionElement>;
-    time: Attributes<TimeHTMLAttributes, HTMLTimeElement>;
-    title: Attributes<HTMLAttributes, HTMLTitleElement>;
-    tr: Attributes<HTMLAttributes, HTMLTableRowElement>;
-    track: Attributes<TrackHTMLAttributes, HTMLTrackElement>;
-    u: Attributes<HTMLAttributes, HTMLElement>;
-    ul: Attributes<HTMLAttributes, HTMLUListElement>;
-    var: Attributes<HTMLAttributes, HTMLElement>;
-    video: Attributes<VideoHTMLAttributes, HTMLVideoElement>;
-    wbr: Attributes<HTMLAttributes, HTMLElement>;
-  };
+    [customAttr: string]: any;
+  }
 
-  export type Tag = keyof ElementAttrMap;
+  interface ElementAttrsMap {
+    a: AnchorHTMLAttributes & GoteiAttributes<HTMLAnchorElement>;
+    abbr: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    address: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    area: AreaHTMLAttributes & GoteiAttributes<HTMLAreaElement>;
+    article: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    aside: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    audio: AudioHTMLAttributes & GoteiAttributes<HTMLAudioElement>;
+    b: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    base: BaseHTMLAttributes & GoteiAttributes<HTMLBaseElement>;
+    bdi: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    bdo: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    blockquote: BlockquoteHTMLAttributes & GoteiAttributes<HTMLQuoteElement>;
+    body: HTMLAttributes & GoteiAttributes<HTMLBodyElement>;
+    br: HTMLAttributes & GoteiAttributes<HTMLBRElement>;
+    button: ButtonHTMLAttributes & GoteiAttributes<HTMLButtonElement>;
+    canvas: CanvasHTMLAttributes & GoteiAttributes<HTMLCanvasElement>;
+    caption: HTMLAttributes & GoteiAttributes<HTMLTableCaptionElement>;
+    cite: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    code: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    col: ColHTMLAttributes & GoteiAttributes<HTMLTableColElement>;
+    colgroup: ColgroupHTMLAttributes & GoteiAttributes<HTMLTableColElement>;
+    data: DataHTMLAttributes & GoteiAttributes<HTMLDataElement>;
+    datalist: HTMLAttributes & GoteiAttributes<HTMLDataListElement>;
+    dd: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    del: DelHTMLAttributes & GoteiAttributes<HTMLModElement>;
+    details: DetailsHTMLAttributes & GoteiAttributes<HTMLDetailsElement>;
+    dfn: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    dialog: DialogHTMLAttributes & GoteiAttributes<HTMLDialogElement>;
+    div: HTMLAttributes & GoteiAttributes<HTMLDivElement>;
+    dl: HTMLAttributes & GoteiAttributes<HTMLDListElement>;
+    dt: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    em: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    embed: EmbedHTMLAttributes & GoteiAttributes<HTMLEmbedElement>;
+    fieldset: FieldsetHTMLAttributes & GoteiAttributes<HTMLFieldSetElement>;
+    figcaption: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    figure: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    footer: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    form: FormHTMLAttributes & GoteiAttributes<HTMLFormElement>;
+    h1: HTMLAttributes & GoteiAttributes<HTMLHeadingElement>;
+    h2: HTMLAttributes & GoteiAttributes<HTMLHeadingElement>;
+    h3: HTMLAttributes & GoteiAttributes<HTMLHeadingElement>;
+    h4: HTMLAttributes & GoteiAttributes<HTMLHeadingElement>;
+    h5: HTMLAttributes & GoteiAttributes<HTMLHeadingElement>;
+    h6: HTMLAttributes & GoteiAttributes<HTMLHeadingElement>;
+    head: HTMLAttributes & GoteiAttributes<HTMLHeadElement>;
+    header: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    hgroup: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    hr: HTMLAttributes & GoteiAttributes<HTMLHRElement>;
+    html: HtmlHTMLAttributes & GoteiAttributes<HTMLHtmlElement>;
+    i: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    iframe: IframeHTMLAttributes & GoteiAttributes<HTMLIFrameElement>;
+    img: ImgHTMLAttributes & GoteiAttributes<HTMLImageElement>;
+    input: InputHTMLAttributes & GoteiAttributes<HTMLInputElement>;
+    ins: InsHTMLAttributes & GoteiAttributes<HTMLModElement>;
+    kbd: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    label: LabelHTMLAttributes & GoteiAttributes<HTMLLabelElement>;
+    legend: HTMLAttributes & GoteiAttributes<HTMLLegendElement>;
+    li: LiHTMLAttributes & GoteiAttributes<HTMLLIElement>;
+    link: LinkHTMLAttributes & GoteiAttributes<HTMLLinkElement>;
+    main: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    map: MapHTMLAttributes & GoteiAttributes<HTMLMapElement>;
+    mark: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    menu: MenuHTMLAttributes & GoteiAttributes<HTMLMenuElement>;
+    meta: MetaHTMLAttributes & GoteiAttributes<HTMLMetaElement>;
+    meter: MeterHTMLAttributes & GoteiAttributes<HTMLMeterElement>;
+    nav: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    noscript: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    object: ObjectHTMLAttributes & GoteiAttributes<HTMLObjectElement>;
+    ol: OlHTMLAttributes & GoteiAttributes<HTMLOListElement>;
+    optgroup: OptgroupHTMLAttributes & GoteiAttributes<HTMLOptGroupElement>;
+    option: OptionHTMLAttributes & GoteiAttributes<HTMLOptionElement>;
+    output: OutputHTMLAttributes & GoteiAttributes<HTMLOutputElement>;
+    p: HTMLAttributes & GoteiAttributes<HTMLParagraphElement>;
+    picture: HTMLAttributes & GoteiAttributes<HTMLPictureElement>;
+    pre: HTMLAttributes & GoteiAttributes<HTMLPreElement>;
+    progress: ProgressHTMLAttributes & GoteiAttributes<HTMLProgressElement>;
+    q: QuoteHTMLAttributes & GoteiAttributes<HTMLQuoteElement>;
+    rp: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    rt: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    ruby: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    s: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    samp: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    slot: SlotHTMLAttributes & GoteiAttributes<HTMLSlotElement>;
+    script: ScriptHTMLAttributes & GoteiAttributes<HTMLScriptElement>;
+    search: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    section: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    select: SelectHTMLAttributes & GoteiAttributes<HTMLSelectElement>;
+    small: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    source: SourceHTMLAttributes & GoteiAttributes<HTMLSourceElement>;
+    span: HTMLAttributes & GoteiAttributes<HTMLSpanElement>;
+    strong: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    style: StyleHTMLAttributes & GoteiAttributes<HTMLStyleElement>;
+    sub: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    summary: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    sup: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    table: TableHTMLAttributes & GoteiAttributes<HTMLTableElement>;
+    tbody: HTMLAttributes & GoteiAttributes<HTMLTableSectionElement>;
+    td: TdHTMLAttributes & GoteiAttributes<HTMLTableCellElement>;
+    template: HTMLAttributes & GoteiAttributes<HTMLTemplateElement>;
+    textarea: TextareaHTMLAttributes & GoteiAttributes<HTMLTextAreaElement>;
+    tfoot: HTMLAttributes & GoteiAttributes<HTMLTableSectionElement>;
+    th: ThHTMLAttributes & GoteiAttributes<HTMLTableCellElement>;
+    thead: HTMLAttributes & GoteiAttributes<HTMLTableSectionElement>;
+    time: TimeHTMLAttributes & GoteiAttributes<HTMLTimeElement>;
+    title: HTMLAttributes & GoteiAttributes<HTMLTitleElement>;
+    tr: HTMLAttributes & GoteiAttributes<HTMLTableRowElement>;
+    track: TrackHTMLAttributes & GoteiAttributes<HTMLTrackElement>;
+    u: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    ul: HTMLAttributes & GoteiAttributes<HTMLUListElement>;
+    var: HTMLAttributes & GoteiAttributes<HTMLElement>;
+    video: VideoHTMLAttributes & GoteiAttributes<HTMLVideoElement>;
+    wbr: HTMLAttributes & GoteiAttributes<HTMLElement>;
+  }
 
-  export type Attrs<T extends Tag> = ElementAttrMap[T];
+  export type Tag = keyof ElementAttrsMap;
+
+  export type Attrs<T extends Tag> = ElementAttrsMap[T];
 
   export type Child =
     | MountFunction

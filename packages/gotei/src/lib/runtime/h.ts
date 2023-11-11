@@ -98,7 +98,7 @@ function html<T extends Gotei.Tag>(
       } else {
         effect(() => {
           setAttribute(el, name, prop());
-        }, true);
+        });
       }
     }
 
@@ -107,7 +107,7 @@ function html<T extends Gotei.Tag>(
 
       effect(() => {
         setAttribute(el, "value", bindValue());
-      }, true);
+      });
       addEventListener(el, "input", (ev: any) => {
         const value = ev.currentTarget.value;
         // @ts-ignore
@@ -126,7 +126,7 @@ function html<T extends Gotei.Tag>(
             el.classList.remove(...tokens);
             tokens = cls2Tokens(cls());
             el.classList.add(...tokens);
-          }, true);
+          });
         }
       }
     }
@@ -147,7 +147,7 @@ function html<T extends Gotei.Tag>(
             } else {
               el.classList.remove(...tokens);
             }
-          }, true);
+          });
         }
       }
     }
@@ -165,7 +165,7 @@ function html<T extends Gotei.Tag>(
         } else {
           effect(() => {
             setFunction(el, prop, value());
-          }, true);
+          });
         }
       }
     }

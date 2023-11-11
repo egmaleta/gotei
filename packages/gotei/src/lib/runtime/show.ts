@@ -23,7 +23,7 @@ export function show<T extends Node>(
       } else {
         node && parent.removeChild(node);
       }
-    }, true);
+    });
 
     ctx.childIndex++;
 

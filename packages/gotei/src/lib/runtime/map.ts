@@ -34,7 +34,7 @@ export function map<T extends object, K extends keyof T>(
 
       cache.clear();
       for (const [id, node] of pairs) cache.set(id, node);
-    }, true);
+    });
 
     return [...cache.values()];
   };

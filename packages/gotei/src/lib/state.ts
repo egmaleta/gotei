@@ -1,39 +1,32 @@
-const $prioritized = Symbol();
-
-type Callback = {
-  (): any;
-  [$prioritized]: boolean;
+type Container<T> = {
+  value: T;
 };
 
-let stack: Callback[] = [];
+export type SignalSetter<T> = { set: (x: T | ((v: T) => T)) => void };
+export type Signal<T> = (() => T) & SignalSetter<T>;
 
-function run(cb: Callback) {
+let stack: (() => any)[] = [];
+
+function run(cb: () => any) {
   stack.push(cb);
   cb();
   stack.pop();
 }
 
-export function effect(callback: () => any, prioritize = false) {
-  const cb = Object.assign(callback, { [$prioritized]: prioritize });
-  run(cb);
-}
-
-type Container<T> = {
-  value: T;
-};
-
-function get<T>(this: Container<T>, deps: Callback[]) {
+function getValue<T>(this: Container<T>, deps: Set<() => any>) {
   if (stack.length > 0) {
     const cb = stack[stack.length - 1];
-    if (deps.indexOf(cb) === -1) {
-      !cb[$prioritized] ? deps.push(cb) : deps.unshift(cb);
-    }
+    deps.add(cb);
   }
 
   return this.value;
 }
 
-function set<T>(this: Container<T>, deps: Callback[], x: T | ((v: T) => T)) {
+function setValue<T>(
+  this: Container<T>,
+  deps: Set<() => any>,
+  x: T | ((v: T) => T)
+) {
   // @ts-ignore
   const value: T = typeof x === "function" ? x(this.value) : x;
 
@@ -46,27 +39,24 @@ function set<T>(this: Container<T>, deps: Callback[], x: T | ((v: T) => T)) {
   }
 }
 
-export type SignalSetter<T> = { set: (x: T | ((v: T) => T)) => void };
-export type Signal<T> = (() => T) & SignalSetter<T>;
-
-export function signal<T>(init: () => T): Signal<T>;
-export function signal<T>(value: T): Signal<T>;
-export function signal<T>(x: T | (() => T)): Signal<T> {
+function signal<T>(init: () => T): Signal<T>;
+function signal<T>(value: T): Signal<T>;
+function signal<T>(x: T | (() => T)): Signal<T> {
   // @ts-ignore
   const ct = { value: typeof x !== "function" ? x : x() };
-  const deps = [];
+  const deps = new Set();
 
   // @ts-ignore
-  return Object.assign(get.bind(ct, deps), {
-    set: set.bind(ct, deps),
+  return Object.assign(getValue.bind(ct, deps), {
+    set: setValue.bind(ct, deps),
   });
 }
 
-export function ref<T extends Node>(): Signal<T | null> {
+function ref<T extends Node>(): Signal<T | null> {
   return signal(null);
 }
 
-export function untrack<T>(signalish: () => T) {
+function untrack<T>(signalish: () => T) {
   const temp = stack;
   stack = [];
   const value = signalish();
@@ -74,3 +64,5 @@ export function untrack<T>(signalish: () => T) {
 
   return value;
 }
+
+export { run as effect, signal, ref, untrack };

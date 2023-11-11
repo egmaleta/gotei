@@ -14,7 +14,7 @@ export function text<T extends TextRenderizable>(
     } else {
       effect(() => {
         text.data = `${data()}`;
-      }, true);
+      });
     }
 
     ctx.parent.appendChild(text);

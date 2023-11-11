@@ -49,8 +49,11 @@ function set<T>(this: Container<T>, deps: Callback[], x: T | ((v: T) => T)) {
 export type SignalSetter<T> = { set: (x: T | ((v: T) => T)) => void };
 export type Signal<T> = (() => T) & SignalSetter<T>;
 
-export function signal<T>(value: T): Signal<T> {
-  const ct = { value };
+export function signal<T>(init: () => T): Signal<T>;
+export function signal<T>(value: T): Signal<T>;
+export function signal<T>(x: T | (() => T)): Signal<T> {
+  // @ts-ignore
+  const ct = { value: typeof x !== "function" ? x : x() };
   const deps = [];
 
   // @ts-ignore

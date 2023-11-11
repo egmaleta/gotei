@@ -3,7 +3,11 @@
   "version": "0.0.7",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "gotei.js",
+    "gotei-state.js",
+    "package.json",
+    "README.md"
   ],
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -26,7 +30,10 @@
     }
   },
   "scripts": {
-    "build": "vite build && vite build --config vite.browser.config.ts"
+    "build:module": "vite build --config build-config/module.ts",
+    "build:browser": "vite build --config build-config/browser.ts",
+    "build:browser-state": "vite build --config build-config/browser-state.ts",
+    "build": "vite build --config build-config/module.ts && vite build --config build-config/browser.ts && vite build --config build-config/browser-state.ts"
   },
   "devDependencies": {
     "happy-dom": "12.9.0"

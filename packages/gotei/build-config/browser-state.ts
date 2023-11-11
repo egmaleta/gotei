@@ -3,10 +3,10 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: ["./src/lib/state.ts"],
+      entry: ["./src/gotei-state.js"],
       formats: ["umd"],
       name: "St",
-      fileName: () => `gotei-state.js`,
+      fileName: (_, name) => `${name}.js`,
     },
     target: "ES2015",
     outDir: ".",

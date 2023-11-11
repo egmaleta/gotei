@@ -6,7 +6,7 @@ export default defineConfig({
       entry: ["./src/gotei.js"],
       formats: ["umd"],
       name: "Gotei",
-      fileName: () => `gotei.js`,
+      fileName: (_, name) => `${name}.js`,
     },
     target: "ES2015",
     outDir: ".",

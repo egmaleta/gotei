@@ -25,7 +25,9 @@ type Container<T> = {
 function get<T>(this: Container<T>, deps: Callback[]) {
   if (stack.length > 0) {
     const cb = stack[stack.length - 1];
-    !cb[$prioritized] ? deps.push(cb) : deps.unshift(cb);
+    if (deps.indexOf(cb) === -1) {
+      !cb[$prioritized] ? deps.push(cb) : deps.unshift(cb);
+    }
   }
 
   return this.value;

@@ -1,9 +1,4 @@
-type Container<T> = {
-  value: T;
-};
-
-export type SignalSetter<T> = { set: (x: T | ((v: T) => T)) => void };
-export type Signal<T> = (() => T) & SignalSetter<T>;
+import { Container, Signal } from "./types";
 
 let stack: (() => any)[] = [];
 

@@ -1,5 +1,25 @@
-import { AnyProps, MountFunction, OrArray, OrComputed } from "./utils";
-import { Signal, SignalSetter } from "../state";
+export type Container<T> = {
+  value: T;
+};
+
+export type SignalSetter<T> = { set: (x: T | ((v: T) => T)) => void };
+export type Signal<T> = (() => T) & SignalSetter<T>;
+
+export type OrComputed<T = any> = T | (() => T);
+export type OrArray<T = any> = T | T[];
+
+export type AnyProps = Record<string, any>;
+
+export interface MountContext {
+  readonly childIndex: number;
+  readonly parentNode: ParentNode;
+  increaseChildIndex(): void;
+}
+export type MountFunction<
+  T extends OrArray<Node> | null = OrArray<Node> | null,
+> = {
+  (ctx: MountContext): T;
+};
 
 export declare namespace Gotei {
   interface AriaAttributes {

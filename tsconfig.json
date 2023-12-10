@@ -10,7 +10,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "./dist",
-    "strict": false
+    "strict": true
   },
   "include": ["./src"],
   "exclude": ["./src/gotei.js", "./src/signals.js"]

@@ -73,15 +73,15 @@ function html<T extends Gotei.Tag>(
   }
 
   if (bindValue) {
-    const isNumber = typeof bindValue() === "number";
+    const [value, setValue] = bindValue;
+    const isNumber = typeof value() === "number";
 
     effect(() => {
-      setAttribute(el, "value", bindValue());
+      setAttribute(el, "value", value());
     });
     addEventListener(el, "input", (ev: any) => {
       const value = ev.currentTarget.value;
-      // @ts-ignore
-      bindValue.set(isNumber ? Number.parseFloat(value) : value);
+      setValue(isNumber ? Number.parseFloat(value) : value);
     });
   }
 
@@ -146,7 +146,7 @@ function html<T extends Gotei.Tag>(
 
     mountChildren(new MountContext(el), children);
 
-    bindThis?.set(el);
+    bindThis?.(el);
 
     if (use) {
       if (Array.isArray(use)) {

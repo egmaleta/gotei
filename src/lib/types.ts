@@ -1,9 +1,4 @@
-export type Container<T> = {
-  value: T;
-};
-
-export type SignalSetter<T> = { set: (x: T | ((v: T) => T)) => void };
-export type Signal<T> = (() => T) & SignalSetter<T>;
+import { Signal, SignalSetter } from "./state";
 
 export type OrComputed<T = any> = T | (() => T);
 export type OrArray<T = any> = T | T[];

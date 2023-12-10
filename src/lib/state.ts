@@ -1,4 +1,13 @@
-import { Container, Signal } from "./types";
+type Container<T> = {
+  value: T;
+};
+
+export type SignalGetter<T> = () => T;
+export type SignalSetter<T> = {
+  (newValue: T): void;
+  (mapFunction: (value: T) => T): void;
+};
+export type Signal<T> = readonly [SignalGetter<T>, SignalSetter<T>];
 
 let stack: (() => any)[] = [];
 
@@ -42,13 +51,11 @@ function signal<T>(x: T | (() => T)): Signal<T> {
   const deps = new Set();
 
   // @ts-ignore
-  return Object.assign(getValue.bind(ct, deps), {
-    set: setValue.bind(ct, deps),
-  });
+  return [getValue.bind(ct, deps), setValue(ct, deps)];
 }
 
-function ref<T extends Node>(): Signal<T | null> {
-  return signal(null);
+function ref<T extends Node>() {
+  return signal<T | null>(null);
 }
 
 function untrack<T>(signalish: () => T) {

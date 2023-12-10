@@ -1,30 +1,13 @@
-import { MountFunction, MountContext as IMC } from "./types";
+import { OrArray } from "./type-utils";
 
-export class MountContext implements IMC {
-  private _childIndex: number;
-
-  constructor(
-    readonly parentNode: ParentNode,
-    childIndex?: number
-  ) {
-    if (typeof childIndex === "undefined") {
-      this._childIndex = parentNode.childNodes.length;
-    } else {
-      this._childIndex = childIndex;
-    }
-  }
-
-  get childIndex() {
-    return this._childIndex;
-  }
-
-  increaseChildIndex() {
-    this._childIndex++;
-  }
-}
+export type MountFunction<
+  T extends OrArray<Node> | null = OrArray<Node> | null,
+> = {
+  (parent: ParentNode, index: number): T;
+};
 
 export function mount<T extends Node>(mf: MountFunction<T>, to: ParentNode) {
-  return mf(new MountContext(to));
+  return mf(to, to.childNodes.length);
 }
 
 export function replace<T extends Node>(node: Node, mf: MountFunction<T>) {
@@ -43,5 +26,5 @@ export function replace<T extends Node>(node: Node, mf: MountFunction<T>) {
   }
 
   parent.removeChild(node);
-  return mf(new MountContext(parent, index));
+  return mf(parent, index);
 }

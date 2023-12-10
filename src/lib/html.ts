@@ -1,7 +1,8 @@
-import { MountContext } from "./mount";
+import { MountFunction } from "./mount";
+import { Gotei } from "./ns";
 import { effect } from "./state";
-import { Gotei, MountFunction, OrArray } from "./types";
-import { flatten, mountChildren, mount } from "./utils";
+import { OrArray } from "./type-utils";
+import { flatten, mount, mountChildren } from "./utils";
 
 const EVENT_LISTENER_PREFIX = "on-";
 const CSS_VAR_PREFIX = "--";
@@ -140,11 +141,10 @@ function html<T extends Gotei.Tag>(
     }
   }
 
-  return (ctx) => {
-    mount(el, ctx.parentNode, ctx.childIndex);
-    ctx.increaseChildIndex();
+  return (parent, index) => {
+    mount(el, parent, index);
 
-    mountChildren(new MountContext(el), children);
+    mountChildren(children, el, 0);
 
     bindThis?.(el);
 

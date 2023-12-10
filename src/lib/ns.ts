@@ -1,20 +1,6 @@
+import { MountFunction } from "./mount";
 import { Signal, SignalSetter } from "./state";
-
-export type OrComputed<T = any> = T | (() => T);
-export type OrArray<T = any> = T | T[];
-
-export type AnyProps = Record<string, any>;
-
-export interface MountContext {
-  readonly childIndex: number;
-  readonly parentNode: ParentNode;
-  increaseChildIndex(): void;
-}
-export type MountFunction<
-  T extends OrArray<Node> | null = OrArray<Node> | null,
-> = {
-  (ctx: MountContext): T;
-};
+import { AnyProps, OrArray, OrComputed } from "./type-utils";
 
 export declare namespace Gotei {
   interface AriaAttributes {

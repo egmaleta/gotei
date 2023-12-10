@@ -1,4 +1,4 @@
-import { Gotei, MountContext } from "./types";
+import { Gotei } from "./ns";
 
 export function* flatten(possibleArray: any): Generator<any> {
   if (!Array.isArray(possibleArray)) yield possibleArray;
@@ -7,23 +7,28 @@ export function* flatten(possibleArray: any): Generator<any> {
   }
 }
 
-export function mountChildren(ctx: MountContext, children: Gotei.Child[]) {
+export function mountChildren(
+  children: Gotei.Child[],
+  parent: ParentNode,
+  index: number
+) {
   const nodes: Node[] = [];
+  let i = index;
 
   for (const child of children) {
     if (typeof child === "function") {
-      const mounted = child(ctx);
+      const mounted = child(parent, i);
 
       if (Array.isArray(mounted)) {
         nodes.push(...mounted);
+        i += mounted.length;
       } else if (mounted) {
         nodes.push(mounted);
+        i++;
       }
     } else if (typeof child === "string" || typeof child === "number") {
-      nodes.push(
-        ctx.parentNode.appendChild(document.createTextNode(`${child}`))
-      );
-      ctx.increaseChildIndex();
+      nodes.push(parent.appendChild(document.createTextNode(`${child}`)));
+      i++;
     }
   }
 

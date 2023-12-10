@@ -4,8 +4,7 @@
   "type": "module",
   "files": [
     "dist",
-    "gotei.js",
-    "gotei-state.js",
+    "src",
     "package.json",
     "README.md",
     "LICENSE"
@@ -27,10 +26,7 @@
     }
   },
   "scripts": {
-    "build:module": "vite build --config build-config/module.ts",
-    "build:browser": "vite build --config build-config/browser.ts",
-    "build:browser-state": "vite build --config build-config/browser-state.ts",
-    "build": "vite build --config build-config/module.ts && vite build --config build-config/browser.ts && vite build --config build-config/browser-state.ts"
+    "build": "bun run build.ts"
   },
   "devDependencies": {
     "typescript": "5.3.3",

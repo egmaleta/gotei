@@ -13,5 +13,5 @@
     "strict": false
   },
   "include": ["./src"],
-  "exclude": ["./src/gotei.js", "./src/gotei-state.js"]
+  "exclude": ["./src/gotei.js", "./src/signals.js"]
 }

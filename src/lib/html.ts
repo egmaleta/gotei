@@ -42,7 +42,7 @@ function setAttribute(el: Element, name: string, attr: any) {
   }
 }
 
-function html<T extends Gotei.Tag>(
+export function html<T extends Gotei.Tag>(
   tag: T,
   props: Gotei.Attrs<T>,
   children: Gotei.Child[]

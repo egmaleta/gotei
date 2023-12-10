@@ -30,5 +30,11 @@
     "build:browser": "vite build --config build-config/browser.ts",
     "build:browser-state": "vite build --config build-config/browser-state.ts",
     "build": "vite build --config build-config/module.ts && vite build --config build-config/browser.ts && vite build --config build-config/browser-state.ts"
+  },
+  "devDependencies": {
+    "typescript": "5.3.3",
+    "vite": "5.0.7",
+    "vite-plugin-dts": "3.6.4",
+    "prettier": "3.1.1"
   }
 }

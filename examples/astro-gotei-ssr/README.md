@@ -1,1 +1,0 @@
-# astro-gotei-ssr

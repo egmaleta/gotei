@@ -4,7 +4,7 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
   build: {
     lib: {
-      entry: ["src/index.ts", "src/runtime.ts", "src/state.ts", "src/ssr.ts"],
+      entry: ["src/index.ts", "src/runtime.ts", "src/state.ts"],
       formats: ["es"],
       fileName: (_, name) => `${name}.js`,
     },

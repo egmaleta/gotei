@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "strict": false
-  },
-  "include": ["./src"],
-  "exclude": ["./src/gotei.js", "./src/gotei-state.js"]
-}

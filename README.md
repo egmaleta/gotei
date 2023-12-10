@@ -1,1 +1,1 @@
-# gotei monorepo
+# gotei

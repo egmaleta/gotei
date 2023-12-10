@@ -1,11 +1,34 @@
 {
-  "name": "gotei-monorepo",
-  "devDependencies": {
-    "astro": "3.2.3",
-    "happy-dom": "12.9.0",
-    "prettier": "3.0.3",
-    "typescript": "5.2.2",
-    "vite": "4.4.9",
-    "vite-plugin-dts": "3.6.0"
+  "name": "gotei",
+  "version": "0.0.7",
+  "type": "module",
+  "files": [
+    "dist",
+    "gotei.js",
+    "gotei-state.js",
+    "package.json",
+    "README.md"
+  ],
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./state": {
+      "import": "./dist/state.js",
+      "types": "./dist/state.d.ts"
+    },
+    "./runtime": {
+      "import": "./dist/runtime.js",
+      "types": "./dist/runtime.d.ts"
+    }
+  },
+  "scripts": {
+    "build:module": "vite build --config build-config/module.ts",
+    "build:browser": "vite build --config build-config/browser.ts",
+    "build:browser-state": "vite build --config build-config/browser-state.ts",
+    "build": "vite build --config build-config/module.ts && vite build --config build-config/browser.ts && vite build --config build-config/browser-state.ts"
   }
 }

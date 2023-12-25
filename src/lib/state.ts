@@ -1,28 +1,32 @@
-type Container<T> = {
-  value: T;
-};
+type Container<T> = { value: T };
 
 export type SignalGetter<T> = () => T;
 export type SignalSetter<T> = {
   (newValue: T): void;
-  (mapFunction: (value: T) => T): void;
+  (mapF: (value: T) => T): void;
 };
 export type Signal<T> = readonly [SignalGetter<T>, SignalSetter<T>];
 
-let stack: (() => any)[] = [];
+let currentCb: (() => any) | null = null;
 
-function run(cb: () => any) {
-  stack.push(cb);
-  cb();
-  stack.pop();
+export function effect(callback: () => any) {
+  const temp = currentCb;
+  currentCb = callback;
+  callback();
+  currentCb = temp;
+}
+
+export function untrack<T>(signalish: () => T) {
+  const temp = currentCb;
+  currentCb = null;
+  const value = signalish();
+  currentCb = temp;
+
+  return value;
 }
 
 function getValue<T>(this: Container<T>, deps: Set<() => any>) {
-  if (stack.length > 0) {
-    const cb = stack[stack.length - 1];
-    deps.add(cb);
-  }
-
+  currentCb && deps.add(currentCb);
   return this.value;
 }
 
@@ -32,39 +36,27 @@ function setValue<T>(
   x: T | ((v: T) => T)
 ) {
   // @ts-ignore
-  const value: T = typeof x === "function" ? x(this.value) : x;
+  const value = typeof x !== "function" ? x : x(this.value);
 
   if (this.value !== value) {
     this.value = value;
 
     for (const cb of deps) {
-      run(cb);
+      effect(cb);
     }
   }
 }
 
-function signal<T>(init: () => T): Signal<T>;
-function signal<T>(value: T): Signal<T>;
-function signal<T>(x: T | (() => T)): Signal<T> {
-  // @ts-ignore
+export function signal<T>(init: () => T): Signal<T>;
+export function signal<T>(value: T): Signal<T>;
+export function signal<T>(x: unknown): Signal<T> {
   const ct = { value: typeof x !== "function" ? x : x() };
   const deps = new Set();
 
   // @ts-ignore
-  return [getValue.bind(ct, deps), setValue(ct, deps)];
+  return [getValue.bind(ct, deps), setValue.bind(ct, deps)];
 }
 
-function ref<T extends Node>() {
+export function ref<T extends Node>() {
   return signal<T | null>(null);
 }
-
-function untrack<T>(signalish: () => T) {
-  const temp = stack;
-  stack = [];
-  const value = signalish();
-  stack = temp;
-
-  return value;
-}
-
-export { run as effect, signal, ref, untrack };

@@ -1,6 +1,5 @@
-import { MountFunction } from "./mount";
 import { Signal, SignalSetter } from "./state";
-import { AnyProps, OrArray, OrComputed } from "./type-utils";
+import { OrArray, OrComputed } from "./utils";
 
 export declare namespace Gotei {
   interface AriaAttributes {
@@ -737,7 +736,7 @@ export declare namespace Gotei {
     "bind-this"?: SignalSetter<Node | null>;
 
     "bind-value"?: T extends HTMLInputElement | HTMLTextAreaElement
-      ? Signal<string | number>
+      ? Signal<string>
       : never;
 
     use?: OrArray<(element: T) => any>;
@@ -870,22 +869,13 @@ export declare namespace Gotei {
   }
 
   export type Tag = keyof ElementAttrsMap;
-
   export type Attrs<T extends Tag> = ElementAttrsMap[T];
 
-  export type Child =
-    | MountFunction
-    | string
-    | number
-    | boolean
-    | undefined
-    | null;
+  export interface VNode<
+    T extends OrArray<Node> | null = OrArray<Node> | null,
+  > {
+    render(): T;
+  }
 
-  export type Component<
-    P extends AnyProps = AnyProps,
-    C extends Child = Child,
-    R extends OrArray<Child> = OrArray<Child>,
-  > = {
-    (props: P, children: C[]): R;
-  };
+  export type Child = VNode | string | number | boolean | undefined | null;
 }

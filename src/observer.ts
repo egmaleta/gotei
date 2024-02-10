@@ -11,18 +11,12 @@ import { handleReactiveAttrs } from "./attr-handler/reactive";
 const $OBSERVED = Symbol();
 
 function handle(element: HTMLElement) {
-  // @ts-ignore
-  if (!element[$OBSERVED]) {
-    handleData(element);
-    handleReactiveAttrs(element);
-    handleEventAttrs(element);
-    handleTextAttr(element);
-    handleShowAttr(element);
-    handleListAttr(element);
-
-    // @ts-ignore
-    element[$OBSERVED] = true;
-  }
+  handleData(element);
+  handleReactiveAttrs(element);
+  handleEventAttrs(element);
+  handleTextAttr(element);
+  handleShowAttr(element);
+  handleListAttr(element);
 }
 
 function handleTree(element: HTMLElement) {
@@ -45,12 +39,16 @@ const observer = new MutationObserver((mutations) => {
       if (!isElement(node)) continue;
 
       // @ts-ignore
-      if (!node[$IS_FRAGMENT]) {
-        handle(node);
-      } else {
-        handleTree(node);
+      if (!node[$OBSERVED]) {
         // @ts-ignore
-        node[$IS_FRAGMENT] = false;
+        if (node[$IS_FRAGMENT]) {
+          handleTree(node);
+        } else {
+          handle(node);
+        }
+
+        // @ts-ignore
+        node[$OBSERVED] = true;
       }
     }
   }

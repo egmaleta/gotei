@@ -173,5 +173,5 @@ function derived<T>(computation: () => T) {
   return new DerivedSignal(computation);
 }
 
-export type { TrackedArrayOp, ReadableSignal };
+export type { TrackedArrayOp };
 export { effect, signal, derived };

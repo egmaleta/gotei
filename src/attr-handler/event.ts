@@ -1,25 +1,33 @@
 import { createFunction } from "../function";
+import { attr } from "./attr";
 
-function handleEventAttr(element: Element, name: string, value: string) {
-  const names = name.split("|");
-  const eventName = names[0];
-  const optionNames = names.slice(1);
+const EVENT_ATTR_PREFIX = attr("on:");
 
-  const f = createFunction(element, value, ["ev"]);
+function handleEventAttrs(element: Element) {
+  for (const attr of element.attributes) {
+    if (!attr.name.startsWith(EVENT_ATTR_PREFIX)) continue;
 
-  const options: Record<string, boolean> = {};
-  for (const name of optionNames) {
-    options[name] = true;
+    const names = attr.name.slice(EVENT_ATTR_PREFIX.length).split("|");
+
+    const eventName = names[0];
+
+    const options: Record<string, boolean> = {};
+    for (const name of names.slice(1)) {
+      options[name] = true;
+    }
+
+    const stmt = attr.value;
+    const f = createFunction(element, stmt, ["ev"]);
+
+    element.addEventListener(
+      eventName,
+      (ev) => {
+        ev.preventDefault();
+        f(ev);
+      },
+      options,
+    );
   }
-
-  element.addEventListener(
-    eventName,
-    (ev) => {
-      ev.preventDefault();
-      f(ev);
-    },
-    options,
-  );
 }
 
-export { handleEventAttr };
+export { handleEventAttrs };

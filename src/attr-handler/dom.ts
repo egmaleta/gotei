@@ -1,9 +1,14 @@
 import { createSignal, createComputation } from "../function";
-import { ReadableSignal, TrackedArrayOp, effect } from "../state";
+import { TrackedArrayOp, effect } from "../state";
 import { setVar } from "../store";
-import { $IS_FRAGMENT } from "./symbols";
+import { attr, isEmpty } from "./attr";
 
-function handleTextContent(element: Element, expr: string) {
+const TEXT_ATTR = attr("text");
+
+function handleTextAttr(element: Element) {
+  const expr = element.getAttribute(TEXT_ATTR);
+  if (isEmpty(expr)) return;
+
   const comp = createComputation(element, expr);
 
   if ("v" in comp) {
@@ -13,7 +18,12 @@ function handleTextContent(element: Element, expr: string) {
   }
 }
 
-function handleHideableElement(element: HTMLElement, expr: string) {
+const SHOW_ATTR = attr("show");
+
+function handleShowAttr(element: HTMLElement) {
+  const expr = element.getAttribute(SHOW_ATTR);
+  if (isEmpty(expr)) return;
+
   const comp = createComputation(element, expr);
 
   if ("v" in comp) {
@@ -32,8 +42,14 @@ function handleHideableElement(element: HTMLElement, expr: string) {
   }
 }
 
+const LIST_ATTR = attr("list");
+const ITEM_NAME_ATTR = attr("item-name");
+const LIST_NAME_ATTR = attr("list-name");
+
 const DEFAULT_ITEM_NAME = "item";
 const DEFAULT_LIST_NAME = "items";
+
+const $IS_FRAGMENT = Symbol();
 
 function createElement(
   template: Element,
@@ -50,27 +66,24 @@ function createElement(
   return element;
 }
 
-function handleReactiveList(element: Element, expr: string) {
+function handleListAttr(element: Element) {
+  const expr = element.getAttribute(LIST_ATTR);
+  if (isEmpty(expr)) return;
+
   const template = element.querySelector("template")?.content.firstElementChild;
-  if (!template) {
-    return;
-  }
+  if (!template) return;
 
-  const _name = element.getAttribute(":list-name");
-  const name = _name === null || _name.length === 0 ? DEFAULT_LIST_NAME : _name;
+  const _name = element.getAttribute(LIST_NAME_ATTR);
+  const name = isEmpty(_name) ? DEFAULT_LIST_NAME : _name;
 
-  const _itemName = element.getAttribute(":item-name");
-  const itemName =
-    _itemName === null || _itemName.length === 0
-      ? DEFAULT_ITEM_NAME
-      : _itemName;
+  const _itemName = element.getAttribute(ITEM_NAME_ATTR);
+  const itemName = isEmpty(_itemName) ? DEFAULT_ITEM_NAME : _itemName;
 
-  const list = createSignal(element, expr) as ReadableSignal<any[]>;
-
+  const list = createSignal(element, expr);
   const create = createElement.bind(null, template, name, itemName);
 
   effect<TrackedArrayOp>((op) => {
-    const newData = list.v;
+    const newData: any[] = list.v;
     setVar(element, name, newData);
 
     if (op) {
@@ -150,14 +163,4 @@ function handleReactiveList(element: Element, expr: string) {
   });
 }
 
-function handleDomAttr(element: HTMLElement, name: string, value: string) {
-  if (name === "text") {
-    handleTextContent(element, value);
-  } else if (name === "show") {
-    handleHideableElement(element, value);
-  } else if (name === "list") {
-    handleReactiveList(element, value);
-  }
-}
-
-export { handleDomAttr };
+export { handleTextAttr, handleShowAttr, handleListAttr, $IS_FRAGMENT };

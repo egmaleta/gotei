@@ -3,15 +3,10 @@
     "target": "ES2015",
     "moduleResolution": "bundler",
     "isolatedModules": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "allowJs": true,
-    "skipLibCheck": true,
+    "noEmit": true,
+    "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "outDir": "./dist",
-    "strict": true
+    "noUnusedParameters": true
   },
-  "include": ["./src"],
-  "exclude": ["./src/gotei.js", "./src/signals.js"]
+  "include": ["src"]
 }

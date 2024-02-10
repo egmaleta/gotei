@@ -24,6 +24,19 @@ function* ancestors(element: Element) {
   }
 }
 
+function getVar(element: Element, name: string) {
+  for (const el of ancestors(element)) {
+    if ($STORE in el) {
+      const store = el[$STORE] as Store;
+      if (store.has(name)) {
+        return store.get(name)!;
+      }
+    }
+  }
+
+  return null;
+}
+
 function getNamedVars(element: Element) {
   const superStore: Store = new Map();
 
@@ -41,4 +54,4 @@ function getNamedVars(element: Element) {
   return [...superStore.entries()];
 }
 
-export { setVar, getNamedVars };
+export { setVar, getVar, getNamedVars };

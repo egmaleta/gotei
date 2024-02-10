@@ -9,7 +9,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "bun run build.ts"
+    "build": "bun run build.ts",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "prettier": "3.1.1",

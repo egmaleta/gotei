@@ -10,5 +10,5 @@ await build({
     },
     target: "ES2015",
     minify: false,
-  }
+  },
 });

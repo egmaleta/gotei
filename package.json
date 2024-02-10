@@ -1,7 +1,6 @@
 {
   "name": "gotei",
   "version": "0.0.7",
-  "type": "module",
   "files": [
     "dist",
     "src",
@@ -9,22 +8,6 @@
     "README.md",
     "LICENSE"
   ],
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./state": {
-      "import": "./dist/state.js",
-      "types": "./dist/state.d.ts"
-    },
-    "./runtime": {
-      "import": "./dist/runtime.js",
-      "types": "./dist/runtime.d.ts"
-    }
-  },
   "scripts": {
     "build": "bun run build.ts"
   },

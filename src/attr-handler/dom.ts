@@ -3,13 +3,8 @@ import { TrackedArrayOp, effect } from "../state";
 import { setVar } from "../store";
 import { attr, isEmpty } from "./attr";
 
-const TEXT_ATTR = attr("text");
-
-function handleTextAttr(element: Element) {
-  const expr = element.getAttribute(TEXT_ATTR);
-  if (isEmpty(expr)) return;
-
-  const comp = createComputation(element, expr);
+function handleTextContent(element: Element, textExpr: string) {
+  const comp = createComputation(element, textExpr);
 
   if ("v" in comp) {
     effect(() => (element.textContent = comp.v));
@@ -18,13 +13,8 @@ function handleTextAttr(element: Element) {
   }
 }
 
-const SHOW_ATTR = attr("show");
-
-function handleShowAttr(element: HTMLElement) {
-  const expr = element.getAttribute(SHOW_ATTR);
-  if (isEmpty(expr)) return;
-
-  const comp = createComputation(element, expr);
+function handleHideableElement(element: HTMLElement, conditionExpr: string) {
+  const comp = createComputation(element, conditionExpr);
 
   if ("v" in comp) {
     const display = element.style.display;
@@ -42,7 +32,6 @@ function handleShowAttr(element: HTMLElement) {
   }
 }
 
-const LIST_ATTR = attr("list");
 const ITEM_NAME_ATTR = attr("item-name");
 const LIST_NAME_ATTR = attr("list-name");
 
@@ -50,6 +39,11 @@ const DEFAULT_ITEM_NAME = "item";
 const DEFAULT_LIST_NAME = "items";
 
 const $IS_FRAGMENT = Symbol();
+
+function isFragment(element: Element): boolean {
+  // @ts-ignore
+  return element[$IS_FRAGMENT] ?? false;
+}
 
 function createElement(
   template: Element,
@@ -66,10 +60,7 @@ function createElement(
   return element;
 }
 
-function handleListAttr(element: Element) {
-  const expr = element.getAttribute(LIST_ATTR);
-  if (isEmpty(expr)) return;
-
+function handleReactiveList(element: Element, listExpr: string) {
   const template = element.querySelector("template")?.content.firstElementChild;
   if (!template) return;
 
@@ -79,7 +70,7 @@ function handleListAttr(element: Element) {
   const _itemName = element.getAttribute(ITEM_NAME_ATTR);
   const itemName = isEmpty(_itemName) ? DEFAULT_ITEM_NAME : _itemName;
 
-  const list = createSignal(element, expr);
+  const list = createSignal(element, listExpr);
   const create = createElement.bind(null, template, name, itemName);
 
   effect<TrackedArrayOp>((op) => {
@@ -163,4 +154,9 @@ function handleListAttr(element: Element) {
   });
 }
 
-export { handleTextAttr, handleShowAttr, handleListAttr, $IS_FRAGMENT };
+export {
+  handleTextContent,
+  handleHideableElement,
+  handleReactiveList,
+  isFragment,
+};

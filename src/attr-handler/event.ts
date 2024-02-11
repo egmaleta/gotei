@@ -1,6 +1,8 @@
 import { createFunction } from "../function";
 
-function handleEvent(element: Element, names: string, stmt: string) {
+function handleEvent(element: Element, attrSuffix: string, stmt: string) {
+  const names = attrSuffix.split("|");
+
   const eventName = names[0];
 
   const options: Record<string, boolean> = {};

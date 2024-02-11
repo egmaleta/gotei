@@ -1,7 +1,7 @@
-const PREFIX = "gt-";
+import config from "../config";
 
 function attr(name: string) {
-  return `${PREFIX}${name}`;
+  return `${config.prefix}${name}`;
 }
 
 function isEmpty(attr: string | null): attr is "" | null {

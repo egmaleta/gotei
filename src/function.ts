@@ -27,12 +27,12 @@ function createFunction(
 
 function createSignal(element: Element, expr: string) {
   const f = createFunction(element, `return ${expr};`);
-
-  if (TRACKED_PATTERN.test(expr)) {
-    return derived(f);
-  }
-
   return signal(f());
+}
+
+function createDerivedSignal(element: Element, expr: string) {
+  const f = createFunction(element, `return ${expr};`);
+  return derived(f);
 }
 
 function createComputation(element: Element, expr: string) {
@@ -44,4 +44,4 @@ function createComputation(element: Element, expr: string) {
   return f;
 }
 
-export { createFunction, createSignal, createComputation };
+export { createFunction, createSignal, createDerivedSignal, createComputation };

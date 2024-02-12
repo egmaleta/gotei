@@ -1,4 +1,4 @@
-import { createSignal, createComputation } from "../function";
+import { createComputation, createDerivedSignal } from "../function";
 import { TrackedArrayOp, effect } from "../state";
 import { setVar } from "../store";
 import { attr, isEmpty } from "./attr";
@@ -54,7 +54,7 @@ function createElement(
 ) {
   const element = template.cloneNode(true) as HTMLElement;
   element.setAttribute(
-    `${DATA_ATTR_PREFIX}${itemName}`,
+    `${DATA_ATTR_PREFIX}${itemName}|rx`,
     `${listName}[${itemIndex}]`,
   );
 
@@ -74,11 +74,11 @@ function handleReactiveList(element: Element, listExpr: string) {
   const _itemName = element.getAttribute(ITEM_NAME_ATTR);
   const itemName = isEmpty(_itemName) ? DEFAULT_ITEM_NAME : _itemName;
 
-  const list = createSignal(element, listExpr);
+  const list = createDerivedSignal(element, listExpr);
   const create = createElement.bind(null, template, name, itemName);
 
   effect<TrackedArrayOp>((op) => {
-    const newData: any[] = list.v;
+    const newData = list.v as any[];
     setVar(element, name, newData);
 
     if (op) {

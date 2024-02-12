@@ -1,5 +1,5 @@
 import { attr } from "./attr";
-import { handleData } from "./data";
+import { DATA_ATTR_PREFIX, handle as handleData } from "./data";
 import {
   handleHideableElement,
   handleReactiveList,
@@ -16,11 +16,12 @@ const EVENT_ATTR_PREFIX = attr("on:");
 const RX_ATTR_PREFIX = attr("rx:");
 
 function handle(element: HTMLElement) {
-  handleData(element);
-
   for (const { name, value } of element.attributes) {
     // I HATE THIS
     switch (true) {
+      case name.startsWith(DATA_ATTR_PREFIX):
+        handleData(element, name.slice(DATA_ATTR_PREFIX.length), value);
+        break;
       case name.startsWith(RX_ATTR_PREFIX):
         handleReactiveAttr(element, name.slice(RX_ATTR_PREFIX.length), value);
         break;

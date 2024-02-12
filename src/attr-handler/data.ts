@@ -1,19 +1,19 @@
 import { createFunction, createSignal } from "../function";
 import { setVar } from "../store";
+import { attr } from "./attr";
 
-function handleData(element: HTMLElement) {
-  const dataset = element.dataset;
-  for (const name in dataset) {
-    const expr = dataset[name]!;
+const DATA_ATTR_PREFIX = attr("data:");
 
-    if (name.startsWith("$")) {
-      const s = createSignal(element, expr);
-      setVar(element, name.slice(1), s);
-    } else {
-      const f = createFunction(element, `return ${expr};`);
-      setVar(element, name, f());
-    }
+function handle(element: HTMLElement, attrSuffix: string, expr: string) {
+  const name = attrSuffix;
+
+  if (name.startsWith("$")) {
+    const s = createSignal(element, expr);
+    setVar(element, name.slice(1), s);
+  } else {
+    const f = createFunction(element, `return ${expr};`);
+    setVar(element, name, f());
   }
 }
 
-export { handleData };
+export { handle, DATA_ATTR_PREFIX };

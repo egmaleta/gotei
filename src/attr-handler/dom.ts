@@ -2,6 +2,7 @@ import { createSignal, createComputation } from "../function";
 import { TrackedArrayOp, effect } from "../state";
 import { setVar } from "../store";
 import { attr, isEmpty } from "./attr";
+import { DATA_ATTR_PREFIX } from "./data";
 
 function handleTextContent(element: Element, textExpr: string) {
   const comp = createComputation(element, textExpr);
@@ -52,7 +53,10 @@ function createElement(
   itemIndex: number,
 ) {
   const element = template.cloneNode(true) as HTMLElement;
-  element.dataset[itemName] = `${listName}[${itemIndex}]`;
+  element.setAttribute(
+    `${DATA_ATTR_PREFIX}${itemName}`,
+    `${listName}[${itemIndex}]`,
+  );
 
   // @ts-ignore
   element[$IS_FRAGMENT] = true;

@@ -3,7 +3,7 @@ import { createComputation, createSignal } from "../function";
 import { setVar } from "../store";
 import { attr } from "./attr";
 
-const DATA_ATTR_PREFIX = attr("data:");
+const DATA_ATTR_PREFIX = attr("data-");
 
 function getItem(storage: Storage, key: string, as: string) {
   const value = storage.getItem(key);
@@ -21,13 +21,13 @@ function getItem(storage: Storage, key: string, as: string) {
 }
 
 function handle(element: HTMLElement, attrSuffix: string, expr: string) {
-  const names = attrSuffix.split("|");
+  const names = attrSuffix.split("-");
 
-  const name = names[0];
+  const name = names[names.length - 1];
 
   let option: "rx" | "local" | "session" | null = null;
   if (names.length > 1) {
-    const opt = names[1];
+    const opt = names[0];
     if (opt === "rx" || opt === "local" || opt === "session") {
       option = opt;
     }

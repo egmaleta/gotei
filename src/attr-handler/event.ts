@@ -1,7 +1,7 @@
 import { createFunction } from "../function";
 
 function handleEvent(element: Element, attrSuffix: string, stmt: string) {
-  const names = attrSuffix.split("|");
+  const names = attrSuffix.split("-");
 
   const eventName = names[0];
 

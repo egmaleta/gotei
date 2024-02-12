@@ -54,7 +54,7 @@ function createElement(
 ) {
   const element = template.cloneNode(true) as HTMLElement;
   element.setAttribute(
-    `${DATA_ATTR_PREFIX}${itemName}|rx`,
+    `${DATA_ATTR_PREFIX}rx-${itemName}`,
     `${listName}[${itemIndex}]`,
   );
 

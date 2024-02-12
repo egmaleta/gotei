@@ -12,8 +12,8 @@ import { handleReactiveAttr } from "./reactive";
 const TEXT_ATTR = attr("text");
 const SHOW_ATTR = attr("show");
 const LIST_ATTR = attr("list");
-const EVENT_ATTR_PREFIX = attr("on:");
-const RX_ATTR_PREFIX = attr("rx:");
+const EVENT_ATTR_PREFIX = attr("on-");
+const RX_ATTR_PREFIX = attr("rx-");
 
 function handle(element: HTMLElement) {
   for (const { name, value } of element.attributes) {
